@@ -1,0 +1,102 @@
+## References:
+## ----------
+##
+##  1. Docker Compose example for Simple Monitor: https://github.com/camunda-community-hub/zeebe-docker-compose/blob/master/simple-monitor/docker-compose.yml
+##  2. Zeebe with Hazelcast exporter image: https://github.com/camunda-community-hub/zeebe-hazelcast-exporter/pkgs/container/zeebe-with-hazelcast-exporter
+##  3. Camunda Zeebe Docker images: https://hub.docker.com/r/camunda/zeebe/tags
+##  4. Simple Monitor Docker images: https://github.com/camunda-community-hub/zeebe-simple-monitor/pkgs/container/zeebe-simple-monitor
+##  5. Camunda Platform 8 Docs, Zeebe, Docker: https://docs.camunda.io/docs/1.0/components/zeebe/deployment-guide/docker/install/
+##  6. Camunda Platform 8, Docker Compose: https://github.com/camunda/camunda-platform/blob/main/docker-compose.yaml
+##  7. Camunda Platform 8, Docker Compose (core): https://github.com/camunda/camunda-platform/blob/main/docker-compose-core.yaml
+##  8. Task List, Docker images: https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
+##  9. Task List, configuration: https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
+##
+
+version: '3.7'
+
+services:
+  zeebe:
+    container_name: zeebe
+#    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.0.6-1.2.2-snapshot
+    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter@sha256:93c12cd47e0d78dfc263985d51b5225a25f6f8964da9678f1bdd4f8ca0d767b7
+    environment:
+      - ZEEBE_LOG_LEVEL=debug
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
+      - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
+      - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
+      - "JAVA_TOOL_OPTIONS=-Xms512m -Xmx512m"
+    ports:
+      - "26500:26500"
+      - "5701:5701"
+      - "9600:9600"
+    volumes:
+      - zeebe-data:/usr/local/zeebe/data
+    depends_on:
+      - elasticsearch
+
+  monitor:
+    container_name: monitor
+#    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.4.1-snapshot
+    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor@sha256:cd1b10061d2cd87027557c32c89970b5eabed57978ee68c0e71b51b0e4748fd8
+    environment:
+      - zeebe.client.broker.gatewayAddress=zeebe:26500
+      - zeebe.client.worker.hazelcast.connection=zeebe:5701
+    ports:
+      - "8082:8082"
+    depends_on:
+      - zeebe
+
+  tasklist:
+#    image: camunda/tasklist:8.0.6
+    image: camunda/tasklist@sha256:bf2c6ec906dea3ad705855af0c4ecec6d61e38c9a61c81d7a6ac82d4a110eeb4
+    container_name: tasklist
+    ports:
+      - "8081:8080"
+    environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
+      - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - zeebe
+      - elasticsearch
+
+  elasticsearch:
+#    image: elasticsearch:7.17.0
+    image: elasticsearch@sha256:fa7141154a7e14df214e42f08c333702403eb88c02ba44e79322a1f42d733013
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+
+  db:
+    build:
+      context: ./postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  zeebe-data:
+  elastic-data:
+  postgres-data:
