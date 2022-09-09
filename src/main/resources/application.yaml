@@ -1,0 +1,34 @@
+##
+## References:
+## 1. [GitHub, Camunda, Getting started](https://github.com/camunda/camunda-platform-get-started)
+##
+
+
+spring:
+  application:
+    name: trip-flow
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5432/tripflow"
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 5000
+  flyway:
+    schemas: public
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+
+zeebe:
+  client:
+    broker:
+      gateway-address: 127.0.0.1:26500
+    security:
+      plaintext: true
+
+logging:
+  level:
+    com.github.tripflow: debug
+    org.springframework:
+      jdbc: debug
+      data.jdbc: debug

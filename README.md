@@ -17,3 +17,9 @@ code for more detailed references.
 
 1. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started/blob/main/spring/src/main/java/io/camunda/getstarted/ProcessApplication.java)
 2. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
+
+## Sample data
+
+For the realistic data samples (flights, hotels, car rentals) a search was performed in Google.
+
+1. Google flights
