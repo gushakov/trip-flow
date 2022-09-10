@@ -20,8 +20,12 @@
 
     <div class="row-cols-1">
         <ul>
-            <li><a th:href="@{/foo}">foo</a></li>
-            <li><a th:href="@{/bar}">bar</a></li>
+            <li>
+                <form method="post" action="@{/createNewTripBooking}">
+
+                </form>
+            </li>
+            <li><a th:href="@{/browseActiveTripBookings}">Browse active trips</a></li>
         </ul>
     </div>
 
