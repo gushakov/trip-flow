@@ -28,10 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-
                 .authorizeRequests()
-                .antMatchers("/", "/index.html").permitAll()
                 .anyRequest().authenticated()
 
                 .and().formLogin(withDefaults())
@@ -43,7 +40,8 @@ public class SecurityConfig {
 
     /*
         Create some users for the application. Use simple in-memory user details
-        to be used for demonstration only.
+        to be used for demonstration only. Note that the roles need to match the
+        values of "Assignee" section in BPMN.
      */
     @Bean
     public UserDetailsService userDetailsService() {

@@ -1,4 +1,4 @@
-package com.github.tripflow.core;
+package com.github.tripflow.core.model;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.github.tripflow.core.trip;
+package com.github.tripflow.core.model.trip;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import static com.github.tripflow.core.Validator.notNull;
+import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

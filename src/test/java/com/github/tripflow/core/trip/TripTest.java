@@ -1,5 +1,7 @@
 package com.github.tripflow.core.trip;
 
+import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripId;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

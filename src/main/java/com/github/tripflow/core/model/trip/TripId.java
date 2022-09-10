@@ -1,8 +1,8 @@
-package com.github.tripflow.core.trip;
+package com.github.tripflow.core.model.trip;
 
 import lombok.Value;
 
-import static com.github.tripflow.core.Validator.notNull;
+import static com.github.tripflow.core.model.Validator.notNull;
 
 @Value
 public class TripId {
