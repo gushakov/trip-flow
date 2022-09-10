@@ -17,6 +17,7 @@ code for more detailed references.
 
 1. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started/blob/main/spring/src/main/java/io/camunda/getstarted/ProcessApplication.java)
 2. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
+3. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
 
 ## Sample data
 

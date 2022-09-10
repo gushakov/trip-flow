@@ -3,6 +3,9 @@
 ## 1. [GitHub, Camunda, Getting started](https://github.com/camunda/camunda-platform-get-started)
 ##
 
+server:
+  servlet:
+    context-path: /trip
 
 spring:
   application:
@@ -30,5 +33,6 @@ logging:
   level:
     com.github.tripflow: debug
     org.springframework:
-      jdbc: debug
       data.jdbc: debug
+      jdbc: debug
+      security: debug
