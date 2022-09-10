@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import java.util.Objects;
  */
 
 @Controller
+@Slf4j
 public class ErrorController {
 
     /*
@@ -25,6 +27,8 @@ public class ErrorController {
     @RequestMapping("/error")
     public String onError(@SessionAttribute(required = false) String errorMessage, Model model,
                           HttpServletRequest request) {
+
+        log.error("Error occurred: %s".formatted(errorMessage));
 
         model.addAttribute("errorMessage",
                 Objects.requireNonNullElse(errorMessage, "Unknown error"));

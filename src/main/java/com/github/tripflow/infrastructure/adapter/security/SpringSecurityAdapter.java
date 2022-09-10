@@ -4,6 +4,7 @@ import com.github.tripflow.core.port.operation.security.SecurityOperationsOutput
 import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,6 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
             throw new TripFlowSecurityError("User is not authenticated");
         }
 
-        return (String) authentication.getPrincipal();
+        return ((User) authentication.getPrincipal()).getUsername();
     }
 }

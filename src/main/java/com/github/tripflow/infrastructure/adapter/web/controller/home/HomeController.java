@@ -20,7 +20,7 @@ public class HomeController {
      */
     @RequestMapping("/")
     @ResponseBody
-    void welcome() {
+    public void welcome() {
 
         WelcomeInputPort useCase = applicationContext.getBean(WelcomeInputPort.class);
         useCase.welcomeUser();

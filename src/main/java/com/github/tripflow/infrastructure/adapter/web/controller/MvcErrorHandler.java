@@ -30,7 +30,7 @@ public class MvcErrorHandler {
 
         request.getSession().setAttribute("errorMessage", exception.getMessage());
         try {
-            response.sendRedirect("/error");
+            response.sendRedirect("error");
         } catch (IOException e) {
             log.error("[Error handling] Cannot redirect to error handling endpoint: %s"
                     .formatted(exception.getMessage()));
