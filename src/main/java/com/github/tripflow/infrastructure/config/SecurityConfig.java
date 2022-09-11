@@ -28,6 +28,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+//                .csrf()
+//                .disable()
+
                 .authorizeRequests()
                 .anyRequest().authenticated()
 
@@ -47,7 +50,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username("user1").password("user1").roles("TRIPFLOW_USER").build());
+                .username("user1").password("demo").roles("TRIPFLOW_USER").build());
         return userDetailsManager;
     }
 

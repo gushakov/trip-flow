@@ -4,9 +4,18 @@ import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+/*
+    References:
+    ----------
+
+    1.  Spring MVC, redirect on empty path: https://stackoverflow.com/questions/16175035/spring-requestmapping-for-empty-servlet-path-is-not-working
+ */
 
 @Controller
 @Slf4j
@@ -14,6 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class HomeController {
 
     private final ApplicationContext applicationContext;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String emptyPathRedirect(){
+        return "redirect:/";
+    }
 
     /**
      * Entry point into the application (after the login).
@@ -24,5 +38,12 @@ public class HomeController {
 
         WelcomeInputPort useCase = applicationContext.getBean(WelcomeInputPort.class);
         useCase.welcomeUser();
+    }
+
+    @RequestMapping(value = "/createNewTripBooking", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseBody
+    public void createNewTripBooking(){
+        log.debug("[POST] [createNewTripBooking] Received request for new trip booking");
     }
 }

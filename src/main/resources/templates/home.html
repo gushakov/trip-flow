@@ -5,6 +5,7 @@
     ==========
 
     1.  Some templates are copied from cargo-clean project. See: https://github.com/gushakov/cargo-clean.
+    2.  Use link to submit a form: https://stackoverflow.com/questions/4286466/use-a-normal-link-to-submit-a-form
 -->
 
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
@@ -21,8 +22,8 @@
     <div class="row-cols-1">
         <ul>
             <li>
-                <form method="post" action="@{/createNewTripBooking}">
-
+                <form method="post" action="#" th:action="@{/createNewTripBooking}">
+                    <a href="#" onclick="this.closest('form').submit();return false;">Book new trip</a>
                 </form>
             </li>
             <li><a th:href="@{/browseActiveTripBookings}">Browse active trips</a></li>
