@@ -8,4 +8,8 @@ public class GenericTripFlowError extends RuntimeException {
     public GenericTripFlowError(String message) {
         super(message);
     }
+
+    public GenericTripFlowError(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

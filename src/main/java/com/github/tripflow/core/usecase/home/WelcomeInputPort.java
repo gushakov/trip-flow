@@ -4,4 +4,6 @@ public interface WelcomeInputPort {
 
     void welcomeUser();
 
+    void startNewTripBooking();
+
 }
