@@ -25,3 +25,9 @@ VALUES ('IB3403', 'Iberia', 'Paris', 'ORY', 'Madrid', 'MAD', 122);
 INSERT INTO public.flight
 (fight_number, airline, origin_city, origin_iata_code, destination_city, destination_iata_code, price)
 VALUES ('LX1622', 'SWISS', 'Zurich', 'ZRH', 'Milan', 'MXP', 193);
+
+CREATE TABLE public.trip
+(
+    trip_id bigint NOT NULL,
+    CONSTRAINT trip_pk PRIMARY KEY (trip_id)
+);
