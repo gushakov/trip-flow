@@ -1,5 +1,6 @@
 package com.github.tripflow.core.usecase.home;
 
+import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
@@ -15,6 +16,11 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
     private final WorkflowOperationsOutputPort workflowOps;
 
+    /**
+     * Welcome user by presenting a list of available operations
+     * depending on her role in TripFlow application. Uses security
+     * operations to retrieve user's information (username, roles).
+     */
     @Override
     public void welcomeUser() {
 
@@ -24,6 +30,10 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
     }
 
+    /**
+     * Start new trip booking workflow process and record corresponding
+     * {@link Trip} aggregate instance in the database.
+     */
     @Transactional
     @Override
     public void startNewTripBooking() {
