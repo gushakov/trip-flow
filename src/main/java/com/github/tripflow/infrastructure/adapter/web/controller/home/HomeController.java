@@ -25,7 +25,7 @@ public class HomeController {
     private final ApplicationContext applicationContext;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String emptyPathRedirect(){
+    public String emptyPathRedirect() {
         return "redirect:/";
     }
 
@@ -35,15 +35,18 @@ public class HomeController {
     @RequestMapping("/")
     @ResponseBody
     public void welcome() {
-
-        WelcomeInputPort useCase = applicationContext.getBean(WelcomeInputPort.class);
-        useCase.welcomeUser();
+        useCase().welcomeUser();
     }
 
     @RequestMapping(value = "/createNewTripBooking", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
-    public void createNewTripBooking(){
+    public void createNewTripBooking() {
         log.debug("[POST] [createNewTripBooking] Received request for new trip booking");
+        useCase().startNewTripBooking();
+    }
+
+    private WelcomeInputPort useCase() {
+        return applicationContext.getBean(WelcomeInputPort.class);
     }
 }

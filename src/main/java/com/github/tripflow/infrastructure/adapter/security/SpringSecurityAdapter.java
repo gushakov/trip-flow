@@ -14,7 +14,7 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()){
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new TripFlowSecurityError("User is not authenticated");
         }
 

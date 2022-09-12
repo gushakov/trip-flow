@@ -24,7 +24,7 @@ public class UseCaseConfig {
     public WelcomeInputPort welcomeUseCase(WelcomePresenterOutputPort presenter,
                                            SecurityOperationsOutputPort securityOps,
                                            WorkflowOperationsOutputPort workflowOps,
-                                           DbPersistenceOperationsOutputPort dbOps){
+                                           DbPersistenceOperationsOutputPort dbOps) {
 
         return new WelcomeUseCase(presenter, securityOps, workflowOps, dbOps);
     }

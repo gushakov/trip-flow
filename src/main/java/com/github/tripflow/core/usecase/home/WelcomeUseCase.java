@@ -59,15 +59,16 @@ public class WelcomeUseCase implements WelcomeInputPort {
             // aggregate
 
             Trip trip = Trip.builder()
-                        .tripId(TripId.of(pik))
-                        .build();
+                    .tripId(TripId.of(pik))
+                    .build();
 
             // try to persist Trip instance to DB
             try {
                 dbOps.save(trip);
             } catch (TripFlowDbPersistenceError e) {
 
-                // to be consistent we need to cancel the created workflow
+                // to be consistent, we need to cancel the created workflow
+                // if there were problems persisting the corresponding aggregate
                 workflowOps.cancelTripBookingProcess(pik);
             }
         } catch (Exception e) {

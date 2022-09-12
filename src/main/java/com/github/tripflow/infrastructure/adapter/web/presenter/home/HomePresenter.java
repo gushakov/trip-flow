@@ -42,6 +42,6 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     public void presentResultOfStartingNewTripBooking(Long pik) {
         String message = "Successfully started new trip booking workflow, key: %s"
                 .formatted(pik);
-        redirect("browse/trip-bookings", Map.of("message", message));
+        redirect("browse-trip-bookings", Map.of("message", message));
     }
 }

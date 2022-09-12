@@ -4,7 +4,7 @@ package com.github.tripflow.infrastructure.map;
     References:
     ----------
 
-    1.  This class is copied from cargo-clean project. See https://github.com/gushakov/cargo-clean/blob/main/src/main/java/com/github/cargoclean/infrastructure/adapter/map/IgnoreForMapping.java.
+    1.  This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
     2.  Ignoring methods with MapStruct: https://bit.ly/38T5TfY
  */
 

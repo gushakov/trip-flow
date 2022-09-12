@@ -9,7 +9,7 @@ public class TripId {
 
     Long id;
 
-    public static TripId of(long id){
+    public static TripId of(long id) {
         return new TripId(id);
     }
 

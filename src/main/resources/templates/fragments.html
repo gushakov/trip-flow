@@ -17,6 +17,10 @@
     Example of using Camunda Platform 8 with Clean Architecture
 </div>
 
+<div th:if="${message != null && !#strings.isEmpty(message)}" class="row-cols-1 mt-5 rounded" style="background-color: palegreen;"
+     th:text="${message}">
+</div>
+
 <th:block th:fragment="footer">
     <hr/>
     <div class="row">

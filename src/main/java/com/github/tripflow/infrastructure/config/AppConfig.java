@@ -11,7 +11,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 /*
     References:
 
-    1. Some configuration is copied from cargo-clean project. See https://github.com/gushakov/cargo-clean.
+    1. Some configuration is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
     2. How to access Spring's DispatcherServlet (answer): https://stackoverflow.com/a/68536242
  */
 

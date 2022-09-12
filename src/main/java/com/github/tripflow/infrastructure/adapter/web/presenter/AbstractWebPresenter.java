@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.presenter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,31 +16,39 @@ import java.util.Map;
     References:
     ----------
 
-    1.  This class is copied from cargo-clean project. See https://github.com/gushakov/cargo-clean.
+    1.  This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean.
     2.  Rollback active transaction: https://stackoverflow.com/a/23502214
  */
 
 
 /**
  * Presents Thymeleaf views by delegating to {@code render()} method of {@link LocalDispatcherServlet}.
- * Concrete Presenters should override providing {@code Response Model} and
+ * Concrete Presenters should override this method providing {@code Response Model} and
  * the name of the view to render. Can also be used to "redirect" response to a particular path.
+ * <p>
+ * Provides shared mechanism for presenting errors by redirecting to a well-known "/error" path.
  *
  * @see LocalDispatcherServlet
  * @see #redirect(String, Map)
+ * @see com.github.tripflow.infrastructure.adapter.web.controller.ErrorController
  */
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractWebPresenter {
 
     private final LocalDispatcherServlet dispatcher;
     private final HttpServletRequest httpRequest;
     private final HttpServletResponse httpResponse;
 
-    protected void storeInSession(String attributeName, Object attributeValue){
+    protected void storeInSession(String attributeName, Object attributeValue) {
         httpRequest.getSession().setAttribute(attributeName, attributeValue);
     }
 
     public void presentError(Exception e) {
+
+        // if we are here it usually means that we may have an unforeseen
+        // error which we may need to log
+        log.error(e.getMessage(), e);
 
         // we need to roll back any active transaction
         try {

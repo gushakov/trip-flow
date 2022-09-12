@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
     References:
     ----------
 
-    1.  This class is copied from cargo-clean project. See https://github.com/gushakov/cargo-clean.
+    1.  This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
     2.  How to access Spring's DispatcherServlet: https://stackoverflow.com/questions/68376668/how-to-get-the-dispatcherservlet-from-spring-webapplicationcontext
  */
 

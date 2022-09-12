@@ -13,7 +13,7 @@ import java.util.Objects;
     References:
     ----------
 
-    1. This class is copied from cargo-clean project. See https://github.com/gushakov/cargo-clean.
+    1. This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
  */
 
 @Controller
