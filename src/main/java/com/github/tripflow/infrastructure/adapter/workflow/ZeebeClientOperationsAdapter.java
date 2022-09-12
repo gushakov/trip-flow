@@ -17,7 +17,7 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
 
 
     @Override
-    public long startNewTripBookingProcess() {
+    public Long startNewTripBookingProcess() {
         ProcessInstanceEvent start;
         try {
             start = zeebeClient
@@ -31,5 +31,17 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
         }
 
         return start.getProcessDefinitionKey();
+    }
+
+    @Override
+    public void cancelTripBookingProcess(Long pik) {
+
+        try {
+            zeebeClient.newCancelInstanceCommand(pik)
+                    .send()
+                    .join();
+        } catch (ClientException e) {
+            throw new WorkflowClientOperationError(e.getMessage(), e);
+        }
     }
 }

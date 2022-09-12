@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.presenter.home;
 
+import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.presenter.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.presenter.LocalDispatcherServlet;
@@ -30,5 +31,17 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     public void presentWelcomeView(String userName) {
 
         presentModelAndView(Map.of("userName", userName), "home");
+    }
+
+    @Override
+    public void presentErrorStartingNewWorkflowInstance(WorkflowClientOperationError e) {
+        redirectError(e.getMessage());
+    }
+
+    @Override
+    public void presentResultOfStartingNewTripBooking(Long pik) {
+        String message = "Successfully started new trip booking workflow, key: %s"
+                .formatted(pik);
+        redirect("browse/trip-bookings", Map.of("message", message));
     }
 }

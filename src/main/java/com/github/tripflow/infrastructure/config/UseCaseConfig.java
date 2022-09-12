@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.config;
 
+import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
@@ -22,9 +23,10 @@ public class UseCaseConfig {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WelcomeInputPort welcomeUseCase(WelcomePresenterOutputPort presenter,
                                            SecurityOperationsOutputPort securityOps,
-                                           WorkflowOperationsOutputPort workflowOps){
+                                           WorkflowOperationsOutputPort workflowOps,
+                                           DbPersistenceOperationsOutputPort dbOps){
 
-        return new WelcomeUseCase(presenter, securityOps, workflowOps);
+        return new WelcomeUseCase(presenter, securityOps, workflowOps, dbOps);
     }
 
 }
