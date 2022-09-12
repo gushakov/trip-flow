@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.web.presenter;
+package com.github.tripflow.infrastructure.adapter.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @see LocalDispatcherServlet
  * @see #redirect(String, Map)
- * @see com.github.tripflow.infrastructure.adapter.web.controller.ErrorController
+ * @see ErrorController
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -86,7 +86,7 @@ public abstract class AbstractWebPresenter {
     protected void redirectError(String errorMessage) {
         try {
             httpRequest.getSession().setAttribute("errorMessage", errorMessage);
-            httpResponse.sendRedirect("/error");
+            httpResponse.sendRedirect("error");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.config;
 
-import com.github.tripflow.infrastructure.adapter.web.presenter.LocalDispatcherServlet;
+import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;

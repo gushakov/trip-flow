@@ -19,7 +19,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public Trip save(Trip trip) {
         try {
-            TripEntity saved = jdbcAggregateTemplate.save(dbMapper.convert(trip));
+            TripEntity saved = jdbcAggregateTemplate.insert(dbMapper.convert(trip));
             return dbMapper.convert(saved);
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot save Trip: %s"

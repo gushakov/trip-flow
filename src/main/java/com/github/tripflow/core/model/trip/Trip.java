@@ -16,9 +16,12 @@ public class Trip {
     @EqualsAndHashCode.Include
     TripId tripId;
 
+    String startedBy;
+
     @Builder
-    public Trip(TripId tripId) {
+    public Trip(TripId tripId, String startedBy) {
         this.tripId = notNull(tripId);
+        this.startedBy = notNull(startedBy);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.web.controller.home;
+package com.github.tripflow.infrastructure.adapter.web.home;
 
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,6 @@ public class HomeController {
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
     public void createNewTripBooking() {
-        log.debug("[POST] [createNewTripBooking] Received request for new trip booking");
         useCase().startNewTripBooking();
     }
 

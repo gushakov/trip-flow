@@ -28,6 +28,7 @@ VALUES ('LX1622', 'SWISS', 'Zurich', 'ZRH', 'Milan', 'MXP', 193);
 
 CREATE TABLE public.trip
 (
-    trip_id bigint NOT NULL,
+    trip_id    bigint  NOT NULL,
+    started_by varchar NOT NULL,
     CONSTRAINT trip_pk PRIMARY KEY (trip_id)
 );

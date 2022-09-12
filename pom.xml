@@ -147,7 +147,7 @@
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${parent.version}</version>
+                            <version>${project.parent.version}</version>
                         </path>
                         <path>
                             <groupId>org.mapstruct</groupId>

@@ -10,10 +10,10 @@ public class Validator {
      * @param something any object
      * @param <T>       any type
      * @return argument object if not {@code null}
-     * @throws IllegalArgumentException if argument is {@code null}
+     * @throws TripFlowValidationError if argument is {@code null}
      */
     public static <T> T notNull(T something) {
-        return Optional.ofNullable(something).orElseThrow(IllegalArgumentException::new);
+        return Optional.ofNullable(something).orElseThrow(() -> new TripFlowValidationError("Argument cannot be null"));
     }
 
 }

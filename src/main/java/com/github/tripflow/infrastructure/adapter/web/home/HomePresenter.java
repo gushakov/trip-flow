@@ -1,9 +1,9 @@
-package com.github.tripflow.infrastructure.adapter.web.presenter.home;
+package com.github.tripflow.infrastructure.adapter.web.home;
 
 import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
-import com.github.tripflow.infrastructure.adapter.web.presenter.AbstractWebPresenter;
-import com.github.tripflow.infrastructure.adapter.web.presenter.LocalDispatcherServlet;
+import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
+import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,8 +40,6 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
 
     @Override
     public void presentResultOfStartingNewTripBooking(Long pik) {
-        String message = "Successfully started new trip booking workflow, key: %s"
-                .formatted(pik);
-        redirect("browse-trip-bookings", Map.of("message", message));
+        redirect("browse-trip-bookings", Map.of("newPik", pik.toString()));
     }
 }

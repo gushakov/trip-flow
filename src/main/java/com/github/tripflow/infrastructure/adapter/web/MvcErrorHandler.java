@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.web.controller;
+package com.github.tripflow.infrastructure.adapter.web;
 
 /*
     References:

@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.web.presenter;
+package com.github.tripflow.infrastructure.adapter.web;
 
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;

@@ -1,5 +1,6 @@
 package com.github.tripflow.core.usecase.home;
 
+import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
@@ -44,34 +45,31 @@ public class WelcomeUseCase implements WelcomeInputPort {
     @Override
     public void startNewTripBooking() {
 
-        // first we need to start a new instance of the TripFlow process
+        // start a new instance of the TripFlow process
 
         Long pik;
         try {
-            try {
-                pik = workflowOps.startNewTripBookingProcess();
-            } catch (WorkflowClientOperationError e) {
-                presenter.presentErrorStartingNewWorkflowInstance(e);
-                return;
-            }
+            pik = workflowOps.startNewTripBookingProcess();
+        } catch (WorkflowClientOperationError e) {
+            presenter.presentErrorStartingNewWorkflowInstance(e);
+            return;
+        }
 
-            // if the process started OK, proceed to create new instance of Trip
-            // aggregate
+        // if the process has started OK, proceed to create and persist a new instance of Trip
+        // aggregate
 
+        try {
             Trip trip = Trip.builder()
                     .tripId(TripId.of(pik))
+                    .startedBy(securityOps.loggedInUserName())
                     .build();
+            dbOps.save(trip);
+        } catch (TripFlowValidationError | TripFlowDbPersistenceError e) {
 
-            // try to persist Trip instance to DB
-            try {
-                dbOps.save(trip);
-            } catch (TripFlowDbPersistenceError e) {
-
-                // to be consistent, we need to cancel the created workflow
-                // if there were problems persisting the corresponding aggregate
-                workflowOps.cancelTripBookingProcess(pik);
-            }
-        } catch (Exception e) {
+            // to be consistent, we need to cancel the created workflow
+            // if there were problems creating, validating, or persisting
+            // the corresponding aggregate
+            workflowOps.cancelTripBookingProcess(pik);
             presenter.presentError(e);
             return;
         }
