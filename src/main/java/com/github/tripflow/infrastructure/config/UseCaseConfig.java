@@ -2,8 +2,11 @@ package com.github.tripflow.infrastructure.config;
 
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
+import com.github.tripflow.core.usecase.browse.BrowseActiveUserTasksInputPort;
+import com.github.tripflow.core.usecase.browse.BrowseActiveUserTasksUseCase;
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -27,6 +30,12 @@ public class UseCaseConfig {
                                            DbPersistenceOperationsOutputPort dbOps) {
 
         return new WelcomeUseCase(presenter, securityOps, workflowOps, dbOps);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public BrowseActiveUserTasksInputPort browseActiveUserTasksUseCase(BrowseActiveUserTasksInputPort presenter, TasksOperationsOutputPort taskOps){
+        return new BrowseActiveUserTasksUseCase(presenter, taskOps);
     }
 
 }
