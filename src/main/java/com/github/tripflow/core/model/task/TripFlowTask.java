@@ -7,6 +7,8 @@ import lombok.Value;
 @Builder
 public class TripFlowTask {
 
+    String id;
 
+    String name;
 
 }

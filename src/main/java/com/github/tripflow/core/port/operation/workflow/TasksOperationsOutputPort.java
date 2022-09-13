@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface TasksOperationsOutputPort {
 
-        List<TripFlowTask> listTasksForAssignee(String assigneeRole);
+        List<TripFlowTask> listActiveTasksForAssignee(String assigneeRole);
 }
