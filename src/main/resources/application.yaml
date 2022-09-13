@@ -29,6 +29,7 @@ zeebe:
     security:
       plaintext: true
 
+
 logging:
   level:
     com.github.tripflow: debug
@@ -36,3 +37,7 @@ logging:
       data.jdbc: debug
       jdbc: debug
       security: debug
+
+tripflow:
+  task-client-password: demo
+  task-client-user-name: demo
