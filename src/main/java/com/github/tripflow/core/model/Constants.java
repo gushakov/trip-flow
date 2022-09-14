@@ -7,4 +7,9 @@ public class Constants {
      */
     public static final String TRIPFLOW_PROCESS_ID = "TripFlow";
 
+    /**
+     * Roles for TripFlow. Also match "Assignee" attributes for user tasks in BPMN.
+     */
+    public static final String ROLE_TRIPFLOW_CUSTOMER = "ROLE_TRIPFLOW_CUSTOMER";
+
 }

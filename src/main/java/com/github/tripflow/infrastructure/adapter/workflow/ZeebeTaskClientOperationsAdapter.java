@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
-import com.github.tripflow.core.model.task.TripFlowTask;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMapper;
@@ -44,7 +44,7 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public List<TripFlowTask> listActiveTasksForAssignee(String assigneeRole) {
+    public List<TripTask> listActiveTasksForAssignee(String assigneeRole) {
         try {
             return taskListClient.getAssigneeTasks(assigneeRole, TaskState.CREATED, Integer.MAX_VALUE, true)
                     .stream().map(taskMapper::convert).collect(Collectors.toList());

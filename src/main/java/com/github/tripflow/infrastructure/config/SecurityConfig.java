@@ -28,14 +28,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf()
-//                .disable()
-
                 .authorizeRequests()
                 .anyRequest().authenticated()
 
                 .and().formLogin(withDefaults())
-
         ;
 
         return http.build();
@@ -45,12 +41,14 @@ public class SecurityConfig {
         Create some users for the application. Use simple in-memory user details
         to be used for demonstration only. Note that the roles need to match the
         values of "Assignee" section in BPMN.
+        Note roles are added as granted authorities with "ROLE_" prefix by Spring
+        Security by default.
      */
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username("user1").password("demo").roles("TRIPFLOW_USER").build());
+                .username("user1").password("demo").roles("TRIPFLOW_CUSTOMER").build());
         return userDetailsManager;
     }
 

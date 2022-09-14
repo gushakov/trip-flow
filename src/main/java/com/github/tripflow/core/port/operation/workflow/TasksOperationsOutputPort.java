@@ -1,10 +1,10 @@
 package com.github.tripflow.core.port.operation.workflow;
 
-import com.github.tripflow.core.model.task.TripFlowTask;
+import com.github.tripflow.core.model.trip.TripTask;
 
 import java.util.List;
 
 public interface TasksOperationsOutputPort {
 
-        List<TripFlowTask> listActiveTasksForAssignee(String assigneeRole);
+        List<TripTask> listActiveTasksForAssignee(String assigneeRole);
 }

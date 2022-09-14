@@ -1,10 +1,10 @@
 package com.github.tripflow.infrastructure.adapter.workflow.map;
 
-import com.github.tripflow.core.model.task.TripFlowTask;
+import com.github.tripflow.core.model.trip.TripTask;
 import io.camunda.tasklist.dto.Task;
 
 public interface WorkflowTaskMapper {
 
-    TripFlowTask convert(Task workflowTask);
+    TripTask convert(Task workflowTask);
 
 }

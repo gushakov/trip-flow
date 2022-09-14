@@ -4,9 +4,10 @@ import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputP
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
-import com.github.tripflow.core.usecase.browse.BrowseActiveUserTasksInputPort;
-import com.github.tripflow.core.usecase.browse.BrowseActiveUserTasksUseCase;
+import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
+import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -34,8 +35,9 @@ public class UseCaseConfig {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public BrowseActiveUserTasksInputPort browseActiveUserTasksUseCase(BrowseActiveUserTasksInputPort presenter, TasksOperationsOutputPort taskOps){
-        return new BrowseActiveUserTasksUseCase(presenter, taskOps);
+    public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter, SecurityOperationsOutputPort securityOps,
+                                                               TasksOperationsOutputPort taskOps){
+        return new BrowseActiveTripsUseCase(presenter, securityOps, taskOps);
     }
 
 }

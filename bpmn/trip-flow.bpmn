@@ -7,7 +7,7 @@
     <bpmn:sequenceFlow id="Flow_02gp6dg" sourceRef="StartEvent_1" targetRef="Activity_19a0muq" />
     <bpmn:userTask id="Activity_19a0muq" name="book flight">
       <bpmn:extensionElements>
-        <zeebe:assignmentDefinition assignee="ROLE_TRIPFLOW_USER" />
+        <zeebe:assignmentDefinition assignee="ROLE_TRIPFLOW_CUSTOMER" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02gp6dg</bpmn:incoming>
       <bpmn:outgoing>Flow_0uppo89</bpmn:outgoing>
@@ -19,13 +19,13 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TripFlow">
-      <bpmndi:BPMNEdge id="Flow_02gp6dg_di" bpmnElement="Flow_02gp6dg">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="270" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0uppo89_di" bpmnElement="Flow_0uppo89">
         <di:waypoint x="370" y="117" />
         <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02gp6dg_di" bpmnElement="Flow_02gp6dg">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
