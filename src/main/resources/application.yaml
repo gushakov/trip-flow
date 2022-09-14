@@ -39,5 +39,8 @@ logging:
       security: debug
 
 tripflow:
-  task-client-password: demo
-  task-client-user-name: demo
+  task-list-client-user-name: demo
+  task-list-client-password: demo
+  task-list-host: localhost
+  task-list-port: 8081
+  task-list-scheme: http

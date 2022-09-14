@@ -12,7 +12,7 @@ public class TripFlowProperties {
     private String taskListScheme = "http";
     private String taskListHost = "localhost";
     private int taskListPort = 8081;
-    private String taskClientUserName = "demo";
-    private String taskClientPassword = "demo";
+    private String taskListClientUserName = "demo";
+    private String taskListClientPassword = "demo";
 
 }

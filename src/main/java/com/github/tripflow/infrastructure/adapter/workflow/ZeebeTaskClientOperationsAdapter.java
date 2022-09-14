@@ -25,7 +25,7 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
 
         this.taskMapper = taskMapper;
 
-        SimpleAuthentication auth = new SimpleAuthentication(tripFlowProps.getTaskClientUserName(), tripFlowProps.getTaskClientPassword());
+        SimpleAuthentication auth = new SimpleAuthentication(tripFlowProps.getTaskListClientUserName(), tripFlowProps.getTaskListClientPassword());
 
         try {
             taskListClient = new CamundaTaskListClient.Builder()
