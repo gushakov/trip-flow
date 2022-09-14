@@ -11,6 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
@@ -21,6 +22,8 @@ public class BrowseActiveTripsPresenter extends AbstractWebPresenter implements 
 
     @Override
     public void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks) {
+
+        presentModelAndView(Map.of("tripTasks", tasks), "browse-active-trips");
 
     }
 }

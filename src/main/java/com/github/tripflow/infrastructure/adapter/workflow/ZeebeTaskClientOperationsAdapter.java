@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPort {
@@ -47,7 +46,7 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     public List<TripTask> listActiveTasksForAssignee(String assigneeRole) {
         try {
             return taskListClient.getAssigneeTasks(assigneeRole, TaskState.CREATED, Integer.MAX_VALUE, true)
-                    .stream().map(taskMapper::convert).collect(Collectors.toList());
+                    .stream().map(taskMapper::convert).toList();
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
