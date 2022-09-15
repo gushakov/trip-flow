@@ -45,7 +45,8 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     @Override
     public List<TripTask> listActiveTasksForAssignee(String assigneeRole) {
         try {
-            return taskListClient.getAssigneeTasks(assigneeRole, TaskState.CREATED, Integer.MAX_VALUE, true)
+            // can only get 1000 tasks at one time maximum
+            return taskListClient.getAssigneeTasks(assigneeRole, TaskState.CREATED, 1000, true)
                     .stream().map(taskMapper::convert).toList();
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);

@@ -16,6 +16,6 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
     @IgnoreForMapping
     @Override
     public TripTask convert(Task workflowTask) {
-        return null;
+        return map(workflowTask);
     }
 }
