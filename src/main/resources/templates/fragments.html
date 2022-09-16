@@ -7,19 +7,22 @@
 </head>
 <body>
 
-<div th:fragment="header" class="row-cols-1 mt-5 rounded" style="background-color: lightgoldenrodyellow; text-align: center;">
+<div th:fragment="header">
 
-    <div class="row">
-        <a href="/trip">Home</a>
+    <div class="row-cols-1 mt-5 rounded" style="background-color: lightgoldenrodyellow; text-align: center;">
+
+        <div class="row">
+            <a href="/trip">Home</a>
+        </div>
+        <h2>Trip booking workflow</h2>
+
+        Example of using Camunda Platform 8 with Clean Architecture
     </div>
-    <h2>Trip booking workflow</h2>
-
-    Example of using Camunda Platform 8 with Clean Architecture
+    <div class="row-cols-1 mt-3 rounded" style="background-color: palegreen;"
+         th:text="${message}">
+    </div>
 </div>
 
-<div th:if="${message != null && !#strings.isEmpty(message)}" class="row-cols-1 mt-5 rounded" style="background-color: palegreen;"
-     th:text="${message}">
-</div>
 
 <th:block th:fragment="footer">
     <hr/>

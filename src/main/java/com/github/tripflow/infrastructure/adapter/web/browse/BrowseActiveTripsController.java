@@ -22,8 +22,7 @@ public class BrowseActiveTripsController {
 
         BrowseActiveTripsInputPort useCase = applicationContext.getBean(BrowseActiveTripsInputPort.class);
 
-        // TODO: pass newPik to the use case and present a message if new trip was just created
-        useCase.listTripsByActiveTasksAssignedToUser();
+        useCase.listTripsByActiveTasksAssignedToUser(newPik);
     }
 
 }
