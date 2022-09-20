@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.workflow.map;
 
+import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
@@ -20,7 +21,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
     @Named("mapTripTaskIdFromTaskVariable")
     protected TripId mapTripTaskIdFromTaskVariable(Task workflowTask) {
         Long tripId = workflowTask.getVariables().stream()
-                .filter(variable -> variable.getName().equals("tripId"))
+                .filter(variable -> variable.getName().equals(Constants.TRIP_ID_PROCESS_VARIABLE))
                 .map(Variable::getValue)
                 .map(Long.class::cast)
                 .findFirst().orElseThrow(() -> new TaskOperationError("No Trip ID variable associated with the task: %s"

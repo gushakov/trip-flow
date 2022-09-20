@@ -39,7 +39,7 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
             // store process instance key (trip ID) as a flow
             // variable for reference
             SetVariablesResponse variableStatus = zeebeClient.newSetVariablesCommand(pik)
-                    .variables(Map.of("tripId", pik))
+                    .variables(Map.of(Constants.TRIP_ID_PROCESS_VARIABLE, pik))
                     .send()
                     .join();
 

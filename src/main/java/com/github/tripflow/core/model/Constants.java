@@ -12,4 +12,10 @@ public class Constants {
      */
     public static final String ROLE_TRIPFLOW_CUSTOMER = "ROLE_TRIPFLOW_CUSTOMER";
 
+    /**
+     * Name of the variable associated with each process instance identifying
+     * each trip.
+     */
+    public static final String TRIP_ID_PROCESS_VARIABLE = "tripId";
+
 }
