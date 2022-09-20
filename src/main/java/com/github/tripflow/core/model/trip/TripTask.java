@@ -12,10 +12,21 @@ import lombok.Value;
 @Builder
 public class TripTask {
 
+    /**
+     * Equals to the process instance key.
+     */
     TripId tripId;
 
     String taskId;
 
+    /**
+     * User-friendly task name.
+     */
     String name;
+
+    /**
+     * Action to be executed for the task.
+     */
+    String action;
 
 }

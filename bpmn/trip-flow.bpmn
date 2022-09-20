@@ -8,6 +8,9 @@
     <bpmn:userTask id="Activity_19a0muq" name="book flight">
       <bpmn:extensionElements>
         <zeebe:assignmentDefinition assignee="ROLE_TRIPFLOW_CUSTOMER" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;book-fight&#34;" target="action" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02gp6dg</bpmn:incoming>
       <bpmn:outgoing>Flow_0uppo89</bpmn:outgoing>

@@ -14,6 +14,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
+    @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
     @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripTaskIdFromTaskVariable")
     @Mapping(target = "taskId", source = "id")
     protected abstract TripTask map(Task workflowTask);
@@ -24,9 +25,21 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .filter(variable -> variable.getName().equals(Constants.TRIP_ID_PROCESS_VARIABLE))
                 .map(Variable::getValue)
                 .map(Long.class::cast)
-                .findFirst().orElseThrow(() -> new TaskOperationError("No Trip ID variable associated with the task: %s"
+                .findFirst()
+                .orElseThrow(() -> new TaskOperationError("No Trip ID variable associated with the task: %s"
                         .formatted(workflowTask.getId())));
         return TripId.of(tripId);
+    }
+
+    @Named("mapActionFromTaskVariable")
+    protected String mapActionFromTaskVariable(Task workflowTask) {
+        return workflowTask.getVariables().stream()
+                .filter(variable -> variable.getName().equals(Constants.ACTION_VARIABLE))
+                .map(Variable::getValue)
+                .map(String.class::cast)
+                .findFirst()
+                .orElseThrow(() -> new TaskOperationError("No action variable associated with the task: %s"
+                        .formatted(workflowTask.getId())));
     }
 
     @IgnoreForMapping
