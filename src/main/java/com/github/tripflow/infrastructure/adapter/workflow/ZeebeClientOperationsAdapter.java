@@ -5,10 +5,13 @@ import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationE
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import io.camunda.zeebe.client.api.command.ClientException;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.client.api.response.SetVariablesResponse;
 import io.camunda.zeebe.spring.client.lifecycle.ZeebeClientLifecycle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +31,21 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
                     .latestVersion()
                     .send()
                     .join();
+            long pik = start.getProcessInstanceKey();
+
             log.debug("[Zeebe Client] Started new instance of process: {} with process instance key: {}",
-                    Constants.TRIPFLOW_PROCESS_ID, start.getProcessInstanceKey());
+                    Constants.TRIPFLOW_PROCESS_ID, pik);
+
+            // store process instance key (trip ID) as a flow
+            // variable for reference
+            SetVariablesResponse variableStatus = zeebeClient.newSetVariablesCommand(pik)
+                    .variables(Map.of("tripId", pik))
+                    .send()
+                    .join();
+
+            log.debug("[Zeebe Client] Set trip ID variable for the new process: {}, variable key: {}",
+                    pik, variableStatus.getKey());
+
         } catch (ClientException e) {
             throw new WorkflowClientOperationError(e.getMessage(), e);
         }

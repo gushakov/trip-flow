@@ -6,4 +6,8 @@ public class TaskOperationError extends GenericTripFlowError {
     public TaskOperationError(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public TaskOperationError(String message) {
+        super(message);
+    }
 }

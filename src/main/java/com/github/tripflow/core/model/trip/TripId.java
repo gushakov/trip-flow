@@ -16,4 +16,9 @@ public class TripId {
     public TripId(Long id) {
         this.id = notNull(id);
     }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
 }

@@ -21,7 +21,7 @@
             <!--/*@thymesVar id="tripTasks" type="java.util.List<com.github.tripflow.core.model.trip.TripTask>"*/-->
             <tr th:each="task: ${tripTasks}">
 
-                <td></td>
+                <td th:text="${task.taskId}"></td>
                 <td th:text="${task.name}"></td>
                 <td>
                     <form method="post" action="#" th:action="@{/continueTripTask}">
