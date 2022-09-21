@@ -10,6 +10,7 @@ package com.github.tripflow.infrastructure.config;
  */
 
 
+import com.github.tripflow.core.model.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,7 +49,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username("customer1").password("demo").roles("TRIPFLOW_CUSTOMER").build());
+                .username("customer1").password("demo").roles(Constants.ROLE_TRIPFLOW_CUSTOMER.replaceFirst("ROLE_", "")).build());
         return userDetailsManager;
     }
 
