@@ -1,5 +1,12 @@
 <!DOCTYPE HTML>
 
+<!--
+    References:
+    ----------
+
+    1. Thymeleaf, input text in "action" attribute: https://stackoverflow.com/questions/45716052/thymeleaf-pass-input-text-as-parameter-in-form-action
+-->
+
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="fragments :: head"></head>
 <body>
@@ -21,11 +28,12 @@
             <!--/*@thymesVar id="tripTasks" type="java.util.List<com.github.tripflow.core.model.trip.TripTask>"*/-->
             <tr th:each="task: ${tripTasks}">
 
-                <td th:text="${task.taskId}"></td>
+                <td th:text="${task.tripId}"></td>
                 <td th:text="${task.name}"></td>
                 <td>
-                    <form method="post" action="#" th:action="@{/continueTripTask}">
-                        <button class="btn btn-info" onclick="this.closest('form').submit();return false;">Continue</button>
+                    <form method="post" action="#" th:action="@{/forwardActionRequest(action=${task.action},tripId=${task.tripId})}">
+                        <button class="btn btn-info" onclick="this.closest('form').submit();return false;">Continue
+                        </button>
                     </form>
                 </td>
 

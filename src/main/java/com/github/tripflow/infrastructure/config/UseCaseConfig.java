@@ -5,11 +5,15 @@ import com.github.tripflow.core.port.operation.security.SecurityOperationsOutput
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
+import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
+import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
+import com.github.tripflow.core.usecase.flight.BookFlightUseCase;
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
+import com.github.tripflow.infrastructure.adapter.web.flight.BookFlightPresenter;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +42,12 @@ public class UseCaseConfig {
     public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter, SecurityOperationsOutputPort securityOps,
                                                                TasksOperationsOutputPort taskOps){
         return new BrowseActiveTripsUseCase(presenter, securityOps, taskOps);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort presenter, DbPersistenceOperationsOutputPort dbOps){
+        return new BookFlightUseCase(presenter, dbOps);
     }
 
 }

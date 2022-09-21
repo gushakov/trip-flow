@@ -63,7 +63,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
                     .tripId(TripId.of(pik))
                     .startedBy(securityOps.loggedInUserName())
                     .build();
-            dbOps.save(trip);
+            dbOps.saveTrip(trip);
         } catch (TripFlowValidationError | TripFlowDbPersistenceError e) {
 
             // to be consistent, we need to cancel the created workflow

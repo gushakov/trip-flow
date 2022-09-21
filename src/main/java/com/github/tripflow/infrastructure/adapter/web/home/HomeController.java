@@ -8,13 +8,20 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /*
     References:
     ----------
 
     1.  Spring MVC, redirect on empty path: https://stackoverflow.com/questions/16175035/spring-requestmapping-for-empty-servlet-path-is-not-working
+    2.  Spring MVC, redirect to external URL: https://stackoverflow.com/questions/17955777/redirect-to-an-external-url-from-controller-action-in-spring-mvc
  */
 
 @Controller
@@ -36,6 +43,17 @@ public class HomeController {
     @ResponseBody
     public void welcome() {
         useCase().welcomeUser();
+    }
+
+    /**
+     * Will forward POST request to provided {@code action} parameter.
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/forwardActionRequest",
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseBody
+    public void forwardActionRequest(@RequestParam String action, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("[Forward request] action: {}", action);
+        request.getRequestDispatcher(action).forward(request, response);
     }
 
     @RequestMapping(value = "/createNewTripBooking", method = RequestMethod.POST,
