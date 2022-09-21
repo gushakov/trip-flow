@@ -48,7 +48,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username("user1").password("demo").roles("TRIPFLOW_CUSTOMER").build());
+                .username("customer1").password("demo").roles("TRIPFLOW_CUSTOMER").build());
         return userDetailsManager;
     }
 

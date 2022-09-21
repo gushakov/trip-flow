@@ -13,11 +13,11 @@ public class TripTest {
 
         Trip tripOne = Trip.builder()
                 .tripId(TripId.of(12345))
-                .startedBy("user1")
+                .startedBy("customer1")
                 .build();
         Trip tripTwo = Trip.builder()
                 .tripId(TripId.of(12345))
-                .startedBy("user2")
+                .startedBy("customer1")
                 .build();
 
         assertThat(tripOne.equals(tripTwo)).isTrue();
