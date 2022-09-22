@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.map;
 
+import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.TripId;
 import org.mapstruct.Mapper;
 
@@ -24,6 +25,10 @@ public class CommonMapStructConverters {
 
     public TripId convertLongToTripId(Long id) {
         return TripId.of(id);
+    }
+
+    public FlightNumber convertStringToFlightNumber(String number){
+        return FlightNumber.of(number);
     }
 
 }

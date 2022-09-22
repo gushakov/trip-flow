@@ -1,7 +1,10 @@
 package com.github.tripflow.core.port.operation.db;
 
+import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
+
+import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
 
@@ -9,5 +12,6 @@ public interface DbPersistenceOperationsOutputPort {
 
     Trip loadTrip(TripId tripId);
 
+    List<Flight> loadAllFlights();
 
 }
