@@ -24,7 +24,7 @@
         <ul>
             <li>
                 <form method="post" action="#" th:action="@{/createNewTripBooking}">
-                    <a href="#" onclick="this.closest('form').submit();return false;">Book new trip</a>
+                    <a href="#" onclick="submit(this)">Book new trip</a>
                 </form>
             </li>
             <li><a th:href="@{/browseActiveTrips}">Browse active trips</a></li>

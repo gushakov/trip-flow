@@ -39,8 +39,7 @@
                     <td th:text="${#strings.concat(flight.getPrice(), ' CHF')}"></td>
                     <td style="text-align: right">
                         <form method="post" action="#" th:action="@{/selectFlightForTrip(tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
-                            <button class="btn btn-sm btn-success"
-                                    onclick="this.closest('form').submit();return false;">Select</button>
+                            <button class="btn btn-sm btn-success" onclick="submit(this)">Select</button>
                         </form>
                     </td>
                 </tr>

@@ -32,7 +32,7 @@
                 <td th:text="${task.name}"></td>
                 <td>
                     <form method="post" action="#" th:action="@{/performTaskAction(action=${task.action},taskId=${task.taskId})}">
-                        <button class="btn btn-sm btn-success" onclick="this.closest('form').submit();return false;">Continue
+                        <button class="btn btn-sm btn-success" onclick="submit(this)">Continue
                         </button>
                     </form>
                 </td>
