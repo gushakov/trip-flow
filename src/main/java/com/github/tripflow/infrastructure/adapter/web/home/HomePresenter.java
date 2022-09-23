@@ -40,6 +40,9 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
 
     @Override
     public void presentResultOfStartingNewTripBooking(Long pik) {
-        redirect("browseActiveTrips", Map.of("newPik", pik.toString()));
+        message(
+                "New process with ID %s just started. You may need to refresh this view."
+                        .formatted(pik));
+        redirect("browseActiveTrips");
     }
 }

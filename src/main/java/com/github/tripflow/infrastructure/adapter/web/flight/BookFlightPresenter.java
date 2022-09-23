@@ -1,7 +1,9 @@
 package com.github.tripflow.infrastructure.adapter.web.flight;
 
 import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -23,17 +25,19 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
 
     @Override
     public void presentFlightsForSelectionByCustomer(Trip trip, List<Flight> flights) {
+        FlightNumber flightNumber = trip.getFlightNumber();
         presentModelAndView(Map.of("bookFlightForm",
                 BookFlightForm.builder()
                         .tripId(trip.getTripId().getId())
                         .flights(flights)
+                        .selectedFlightNumber(flightNumber != null ? flightNumber.getNumber() : null)
                         .build()), "book-flight");
     }
 
     @Override
-    public void presentResultOfRegisteringSelectedFlightWithTrip(Long tripId, String flightNumber) {
-        redirect("bookFlight", Map.of(
-                "message", "Successfully selected flight with number %s for the trip with ID %s.".formatted(tripId, flightNumber),
-                "tripId", Long.toString(tripId)));
+    public void presentResultOfRegisteringSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber) {
+        message("Successfully registered flight %s for trip with ID: %s"
+                .formatted(tripId, flightNumber));
+        redirect("bookFlight", Map.of("tripId", tripId.toString()));
     }
 }

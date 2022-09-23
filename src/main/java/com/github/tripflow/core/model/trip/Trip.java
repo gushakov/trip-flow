@@ -28,8 +28,8 @@ public class Trip {
         this.flightNumber = flightNumber;
     }
 
-    public Trip withFlightNumber(String number) {
-        return newTrip().flightNumber(FlightNumber.of(number)).build();
+    public Trip withFlightNumber(FlightNumber number) {
+        return newTrip().flightNumber(number).build();
     }
 
     private TripBuilder newTrip(){

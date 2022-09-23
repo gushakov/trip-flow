@@ -40,8 +40,14 @@ public abstract class AbstractWebPresenter {
     private final HttpServletRequest httpRequest;
     private final HttpServletResponse httpResponse;
 
-    protected void storeInSession(String attributeName, Object attributeValue) {
-        httpRequest.getSession().setAttribute(attributeName, attributeValue);
+    protected void message(String text) {
+        httpRequest.getSession().setAttribute("message", text);
+    }
+
+    private String getMessageFromSession() {
+        Object message = httpRequest.getSession().getAttribute("message");
+        httpRequest.getSession().removeAttribute("message");
+        return (String) message;
     }
 
     public void presentError(Exception e) {
@@ -63,6 +69,11 @@ public abstract class AbstractWebPresenter {
 
     protected void presentModelAndView(Map<String, Object> responseModel, String viewName) {
         final ModelAndView mav = new ModelAndView(viewName, responseModel);
+        // check if there is a message in the session and add it to the response model
+        String message = getMessageFromSession();
+        if (message != null) {
+            mav.addObject("message", message);
+        }
         try {
             dispatcher.render(mav, httpRequest, httpResponse);
         } catch (Exception e) {
@@ -76,8 +87,15 @@ public abstract class AbstractWebPresenter {
         final String uri = uriBuilder.toUriString();
 
         try {
-            httpRequest.getSession().setAttribute("lastError", Map.copyOf(params));
             httpResponse.sendRedirect(httpResponse.encodeRedirectURL(uri));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void redirect(String path) {
+        try {
+            httpResponse.sendRedirect(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

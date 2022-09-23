@@ -18,11 +18,11 @@ public class BrowseActiveTripsController {
 
     @RequestMapping("/browseActiveTrips")
     @ResponseBody
-    public void browseActiveTrips(@RequestParam(required = false) String newPik) {
+    public void browseActiveTrips() {
 
         BrowseActiveTripsInputPort useCase = applicationContext.getBean(BrowseActiveTripsInputPort.class);
 
-        useCase.listTripsByActiveTasksAssignedToUser(newPik);
+        useCase.listTripsByActiveTasksAssignedToUser();
     }
 
 }

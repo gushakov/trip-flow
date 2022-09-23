@@ -6,5 +6,5 @@ import com.github.tripflow.core.port.error.ErrorHandlingPresenterOutputPort;
 import java.util.List;
 
 public interface BrowseActiveTripsPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
-    void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks, String newPik);
+    void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks);
 }

@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.flight;
 
-import com.github.tripflow.core.GenericTripFlowError;
+import com.github.tripflow.core.model.flight.FlightNumber;
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -31,12 +30,11 @@ public class BookFlightController {
 
         BookFlightInputPort useCase = useCase();
 
-        if (taskId != null){
+        if (taskId != null) {
             useCase.initializeFlightBookingForCustomer(taskId);
-        }
-        else {
-            if (tripId != null){
-                useCase.returnToFlightBookingForCustomer(tripId);
+        } else {
+            if (tripId != null) {
+                useCase.returnToFlightBookingForCustomer(TripId.of(tripId));
             }
         }
 
@@ -47,8 +45,7 @@ public class BookFlightController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
     public void selectFlightForTrip(@RequestParam Long tripId, @RequestParam String flightNumber) {
-        useCase().registerSelectedFlightWithTrip(tripId, flightNumber);
-        useCase().returnToFlightBookingForCustomer(tripId);
+        useCase().registerSelectedFlightWithTrip(TripId.of(tripId), FlightNumber.of(flightNumber));
     }
 
     @NotNull

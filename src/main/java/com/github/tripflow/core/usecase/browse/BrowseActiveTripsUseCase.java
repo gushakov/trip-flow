@@ -19,7 +19,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
     private final TasksOperationsOutputPort tasksOps;
 
     @Override
-    public void listTripsByActiveTasksAssignedToUser(String newPik) {
+    public void listTripsByActiveTasksAssignedToUser() {
 
         /*
             Get the list of all active tasks assigned to the current user
@@ -33,6 +33,6 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
             return;
         }
 
-        presenter.presentListOfTripsByActiveTasksAssignedToUser(tasks, newPik);
+        presenter.presentListOfTripsByActiveTasksAssignedToUser(tasks);
     }
 }

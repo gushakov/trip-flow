@@ -2,6 +2,7 @@ package com.github.tripflow.core.usecase.flight;
 
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
@@ -48,10 +49,10 @@ public class BookFlightUseCase implements BookFlightInputPort {
     }
 
     @Override
-    public void registerSelectedFlightWithTrip(Long tripId, String flightNumber) {
+    public void registerSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber) {
         Trip trip;
         try {
-            trip = dbOps.loadTrip(TripId.of(tripId));
+            trip = dbOps.loadTrip(tripId);
             dbOps.saveNewTrip(trip.withFlightNumber(flightNumber));
         }
         catch (GenericTripFlowError e) {
@@ -63,13 +64,13 @@ public class BookFlightUseCase implements BookFlightInputPort {
     }
 
     @Override
-    public void returnToFlightBookingForCustomer(Long tripId) {
+    public void returnToFlightBookingForCustomer(TripId tripId) {
         List<Flight> flights;
         Trip trip;
         try {
 
             // load the trip
-            trip = dbOps.loadTrip(TripId.of(tripId));
+            trip = dbOps.loadTrip(tripId);
 
             // load all flights
             flights = dbOps.loadAllFlights();

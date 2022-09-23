@@ -1,10 +1,13 @@
 package com.github.tripflow.core.usecase.flight;
 
+import com.github.tripflow.core.model.flight.FlightNumber;
+import com.github.tripflow.core.model.trip.TripId;
+
 public interface BookFlightInputPort {
 
     void initializeFlightBookingForCustomer(String taskId);
 
-    void registerSelectedFlightWithTrip(Long tripId, String flightNumber);
+    void registerSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber);
 
-    void returnToFlightBookingForCustomer(Long tripId);
+    void returnToFlightBookingForCustomer(TripId tripId);
 }

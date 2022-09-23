@@ -10,7 +10,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +21,9 @@ public class BrowseActiveTripsPresenter extends AbstractWebPresenter implements 
     }
 
     @Override
-    public void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks, String newPik) {
+    public void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks) {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("tripTasks", tasks);
-        if (newPik != null){
-            map.put("message", "New process with ID %s just started. You may need to refresh this view."
-                    .formatted(newPik));
-        }
-
-        presentModelAndView(map, "browse-active-trips");
+        presentModelAndView(Map.of("tripTasks", tasks), "browse-active-trips");
 
     }
 }
