@@ -3,6 +3,7 @@ package com.github.tripflow.core.usecase.flight;
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
@@ -44,5 +45,39 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
         presenter.presentFlightsForSelectionByCustomer(trip, flights);
 
+    }
+
+    @Override
+    public void registerSelectedFlightWithTrip(Long tripId, String flightNumber) {
+        Trip trip;
+        try {
+            trip = dbOps.loadTrip(TripId.of(tripId));
+            dbOps.saveNewTrip(trip.withFlightNumber(flightNumber));
+        }
+        catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
+
+        presenter.presentResultOfRegisteringSelectedFlightWithTrip(tripId, flightNumber);
+    }
+
+    @Override
+    public void returnToFlightBookingForCustomer(Long tripId) {
+        List<Flight> flights;
+        Trip trip;
+        try {
+
+            // load the trip
+            trip = dbOps.loadTrip(TripId.of(tripId));
+
+            // load all flights
+            flights = dbOps.loadAllFlights();
+        } catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
+
+        presenter.presentFlightsForSelectionByCustomer(trip, flights);
     }
 }

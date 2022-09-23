@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
 
-    Trip saveTrip(Trip trip);
+    Trip saveNewTrip(Trip trip);
+
+    Trip updateTrip(Trip trip);
 
     Trip loadTrip(TripId tripId);
 

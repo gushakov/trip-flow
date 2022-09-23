@@ -29,4 +29,11 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
                         .flights(flights)
                         .build()), "book-flight");
     }
+
+    @Override
+    public void presentResultOfRegisteringSelectedFlightWithTrip(Long tripId, String flightNumber) {
+        redirect("bookFlight", Map.of(
+                "message", "Successfully selected flight with number %s for the trip with ID %s.".formatted(tripId, flightNumber),
+                "tripId", Long.toString(tripId)));
+    }
 }

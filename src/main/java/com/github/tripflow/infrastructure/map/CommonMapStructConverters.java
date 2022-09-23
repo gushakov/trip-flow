@@ -32,6 +32,10 @@ public class CommonMapStructConverters {
         return FlightNumber.of(number);
     }
 
+    public String convertFlightNumberToString(FlightNumber flightNumber){
+        return flightNumber.getNumber();
+    }
+
     public Boolean convertTaskStateToBoolean(TaskState taskState){
         return taskState == TaskState.CREATED;
     }

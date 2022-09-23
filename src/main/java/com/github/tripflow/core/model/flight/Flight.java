@@ -9,23 +9,24 @@ import lombok.experimental.FieldDefaults;
 import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Flight {
 
     @EqualsAndHashCode.Include
-    private final FlightNumber flightNumber;
+    FlightNumber flightNumber;
 
-    private final String airline;
+    String airline;
 
-    private final String originCity;
+    String originCity;
 
-    private final String originIataCode;
+    String originIataCode;
 
-    private final String destinationCity;
+    String destinationCity;
 
-    private final String destinationIataCode;
+    String destinationIataCode;
 
-    private final int price;
+    int price;
 
     @Builder
     public Flight(FlightNumber flightNumber, String airline, String originCity, String originIataCode,

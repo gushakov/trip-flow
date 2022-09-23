@@ -18,7 +18,7 @@
         <div class="row-cols-2 mt-2">
 
             <table>
-                <thead style="background-color: paleturquoise">
+                <thead>
                 <tr>
                     <th>Number</th>
                     <th>Origin</th>
@@ -29,7 +29,7 @@
                     <th style="text-align: right">Action</th>
                 </tr>
                 </thead>
-                <tbody style="background-color: aliceblue">
+                <tbody>
                 <tr th:each="flight: *{flights}">
                     <td th:text="${flight.getFlightNumber()}"></td>
                     <td th:text="${flight.getOriginCity()}"></td>
@@ -39,7 +39,7 @@
                     <td th:text="${#strings.concat(flight.getPrice(), ' CHF')}"></td>
                     <td style="text-align: right">
                         <form method="post" action="#" th:action="@{/selectFlightForTrip(tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
-                            <button class="btn btn-sm btn-success" onclick="submit(this)">Select</button>
+                            <button class="btn btn-sm btn-success" onclick="submitForm(this)">Select</button>
                         </form>
                     </td>
                 </tr>

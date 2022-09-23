@@ -22,12 +22,23 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     private final TripDbMapper dbMapper;
 
     @Override
-    public Trip saveTrip(Trip trip) {
+    public Trip saveNewTrip(Trip trip) {
         try {
             TripEntity saved = jdbcAggregateTemplate.insert(dbMapper.convert(trip));
             return dbMapper.convert(saved);
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot save Trip: %s"
+                    .formatted(trip.getTripId()), e);
+        }
+    }
+
+    @Override
+    public Trip updateTrip(Trip trip) {
+        try {
+            TripEntity updated = jdbcAggregateTemplate.update(dbMapper.convert(trip));
+            return dbMapper.convert(updated);
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot update Trip: %s"
                     .formatted(trip.getTripId()), e);
         }
     }

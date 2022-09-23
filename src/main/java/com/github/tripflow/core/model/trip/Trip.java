@@ -1,5 +1,6 @@
 package com.github.tripflow.core.model.trip;
 
+import com.github.tripflow.core.model.flight.FlightNumber;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -9,18 +10,33 @@ import lombok.experimental.FieldDefaults;
 import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Trip {
 
     @EqualsAndHashCode.Include
-    private final TripId tripId;
+    TripId tripId;
 
-    private final String startedBy;
+    String startedBy;
+
+    FlightNumber flightNumber;
 
     @Builder
-    public Trip(TripId tripId, String startedBy) {
+    public Trip(TripId tripId, String startedBy, FlightNumber flightNumber) {
         this.tripId = notNull(tripId);
         this.startedBy = notNull(startedBy);
+        this.flightNumber = flightNumber;
     }
 
+    public Trip withFlightNumber(String number) {
+        return newTrip().flightNumber(FlightNumber.of(number)).build();
+    }
+
+    private TripBuilder newTrip(){
+        return new TripBuilder()
+                .tripId(tripId)
+                .startedBy(startedBy)
+                .flightNumber(flightNumber);
+
+    }
 }

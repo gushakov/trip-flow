@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface BookFlightPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
     void presentFlightsForSelectionByCustomer(Trip trip, List<Flight> flights);
+
+    void presentResultOfRegisteringSelectedFlightWithTrip(Long tripId, String flightNumber);
 }
