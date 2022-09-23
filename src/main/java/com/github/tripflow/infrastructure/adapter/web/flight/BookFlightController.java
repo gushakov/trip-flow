@@ -1,6 +1,5 @@
 package com.github.tripflow.infrastructure.adapter.web.flight;
 
-import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class BookFlightController {
 
     private final ApplicationContext applicationContext;
 
-    @RequestMapping("/book-flight")
+    @RequestMapping("/bookFlight")
     @ResponseBody
     public void bookFlight(@RequestParam String taskId) {
 
@@ -29,6 +28,13 @@ public class BookFlightController {
 
         useCase.initializeFlightBookingForCustomer(taskId);
 
+    }
+
+    @RequestMapping(value = "/selectFlightForTrip", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseBody
+    public void selectFlightForTrip(@RequestParam Long tripId, @RequestParam String flightNumber) {
+        System.out.println("----->"+flightNumber);
     }
 
 }

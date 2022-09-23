@@ -16,7 +16,7 @@ public class BrowseActiveTripsController {
 
     private final ApplicationContext applicationContext;
 
-    @RequestMapping("/browse-active-trips")
+    @RequestMapping("/browseActiveTrips")
     @ResponseBody
     public void browseActiveTrips(@RequestParam(required = false) String newPik) {
 

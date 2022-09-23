@@ -40,6 +40,6 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
 
     @Override
     public void presentResultOfStartingNewTripBooking(Long pik) {
-        redirect("browse-active-trips", Map.of("newPik", pik.toString()));
+        redirect("browseActiveTrips", Map.of("newPik", pik.toString()));
     }
 }

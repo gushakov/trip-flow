@@ -14,7 +14,7 @@
 
     <div th:replace="fragments :: header"></div>
 
-    <div class="row-cols-1 mt-3">
+    <div class="row-cols-2 mt-3">
 
         <table>
             <thead>
@@ -31,12 +31,11 @@
                 <td th:text="${task.tripId}"></td>
                 <td th:text="${task.name}"></td>
                 <td>
-                    <form method="get" action="#" th:action="@{/redirectActionRequest(action=${task.action},taskId=${task.taskId})}">
-                        <button class="btn btn-info" onclick="this.closest('form').submit();return false;">Continue
+                    <form method="post" action="#" th:action="@{/performTaskAction(action=${task.action},taskId=${task.taskId})}">
+                        <button class="btn btn-sm btn-success" onclick="this.closest('form').submit();return false;">Continue
                         </button>
                     </form>
                 </td>
-
             </tr>
             </tbody>
         </table>

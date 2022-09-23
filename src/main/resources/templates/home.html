@@ -17,7 +17,7 @@
     <div th:replace="fragments :: header"></div>
 
     <div class="row-cols-1 mt-3">
-       Hello <span th:text="${userName}" style="font-weight: bold;">user</span>.  Currently, we can do the following:
+       Hello <span th:text="${userName}" style="font-weight: bold;">user</span>.  Currently, you can do the following:
     </div>
 
     <div class="row-cols-1">
@@ -27,7 +27,7 @@
                     <a href="#" onclick="this.closest('form').submit();return false;">Book new trip</a>
                 </form>
             </li>
-            <li><a th:href="@{/browse-active-trips}">Browse active trips</a></li>
+            <li><a th:href="@{/browseActiveTrips}">Browse active trips</a></li>
         </ul>
     </div>
 

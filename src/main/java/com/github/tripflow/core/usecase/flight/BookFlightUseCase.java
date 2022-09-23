@@ -2,6 +2,8 @@ package com.github.tripflow.core.usecase.flight;
 
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
@@ -24,10 +26,14 @@ public class BookFlightUseCase implements BookFlightInputPort {
     @Override
     public void initializeFlightBookingForCustomer(String taskId) {
         List<Flight> flights;
-
+        TripTask tripTask;
+        Trip trip;
         try {
+            // get the task from the workflow engine
+            tripTask = tasksOps.retrieveActiveTaskForAssignee(taskId, securityOps.tripFlowAssigneeRole());
 
-            tasksOps.retrieveActiveTaskForAssignee(taskId, securityOps.tripFlowAssigneeRole());
+            // load the trip
+            trip = dbOps.loadTrip(tripTask.getTripId());
 
             // load all flights
             flights = dbOps.loadAllFlights();
@@ -36,8 +42,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
             return;
         }
 
-        presenter.presentFlightsForSelectionByCustomer(null, flights);
-
+        presenter.presentFlightsForSelectionByCustomer(trip, flights);
 
     }
 }

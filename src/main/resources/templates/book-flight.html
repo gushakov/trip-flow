@@ -1,17 +1,54 @@
 <!DOCTYPE HTML>
-
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="fragments :: head"></head>
+<head th:replace="fragments :: head">
+    <title></title>
+</head>
 <body>
 <div class="container-fluid">
 
     <div th:replace="fragments :: header"></div>
 
-    <div class="row-cols-1 mt-3">
+    <!--/*@thymesVar id="bookFlightForm" type="com.github.tripflow.infrastructure.adapter.web.flight.BookFlightForm"*/-->
+    <th:block th:object="${bookFlightForm}">
 
-        search and book a flight here for trip <span th:text="${tripId}"/>
+        <div class="row-cols-1 mt-3">
+            Please select a flight for your trip N°: <span th:text="*{tripId}"/>
+        </div>
 
-    </div>
+        <div class="row-cols-2 mt-2">
+
+            <table>
+                <thead style="background-color: paleturquoise">
+                <tr>
+                    <th>Number</th>
+                    <th>Origin</th>
+                    <th>Airport</th>
+                    <th>Destination</th>
+                    <th>Airport</th>
+                    <th>Price</th>
+                    <th style="text-align: right">Action</th>
+                </tr>
+                </thead>
+                <tbody style="background-color: aliceblue">
+                <tr th:each="flight: *{flights}">
+                    <td th:text="${flight.getFlightNumber()}"></td>
+                    <td th:text="${flight.getOriginCity()}"></td>
+                    <td th:text="${flight.getOriginIataCode()}"></td>
+                    <td th:text="${flight.getDestinationCity()}"></td>
+                    <td th:text="${flight.getDestinationIataCode()}"></td>
+                    <td th:text="${#strings.concat(flight.getPrice(), ' CHF')}"></td>
+                    <td style="text-align: right">
+                        <form method="post" action="#" th:action="@{/selectFlightForTrip(tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
+                            <button class="btn btn-sm btn-success"
+                                    onclick="this.closest('form').submit();return false;">Select</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </th:block>
 
 </div>
 
