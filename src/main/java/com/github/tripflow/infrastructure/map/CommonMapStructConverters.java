@@ -2,6 +2,7 @@ package com.github.tripflow.infrastructure.map;
 
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.TripId;
+import io.camunda.tasklist.dto.TaskState;
 import org.mapstruct.Mapper;
 
 /*
@@ -29,6 +30,10 @@ public class CommonMapStructConverters {
 
     public FlightNumber convertStringToFlightNumber(String number){
         return FlightNumber.of(number);
+    }
+
+    public Boolean convertTaskStateToBoolean(TaskState taskState){
+        return taskState == TaskState.CREATED;
     }
 
 }

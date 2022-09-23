@@ -9,14 +9,13 @@ import lombok.experimental.FieldDefaults;
 import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Trip {
 
     @EqualsAndHashCode.Include
-    TripId tripId;
+    private final TripId tripId;
 
-    String startedBy;
+    private final String startedBy;
 
     @Builder
     public Trip(TripId tripId, String startedBy) {

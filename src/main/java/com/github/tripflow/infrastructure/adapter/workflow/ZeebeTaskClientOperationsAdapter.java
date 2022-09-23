@@ -7,6 +7,7 @@ import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMappe
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.tasklist.auth.SimpleAuthentication;
+import io.camunda.tasklist.dto.Task;
 import io.camunda.tasklist.dto.TaskState;
 import io.camunda.tasklist.exception.TaskListException;
 import org.springframework.stereotype.Service;
@@ -51,5 +52,29 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public TripTask retrieveActiveTaskForAssignee(String taskId, String assigneeRole) {
+
+        try {
+            TripTask tripTask = taskMapper.convert(taskListClient.getTask(taskId, true));
+
+            if (!tripTask.isActive()){
+                throw new TaskOperationError("Task with ID %s, is not active"
+                        .formatted(taskId));
+            }
+            else {
+                if (!tripTask.getAssigneeRole().equals(assigneeRole)){
+                    throw new TaskOperationError("Task with ID %s, is not assigned to role %s"
+                            .formatted(taskId, assigneeRole));
+                }
+            }
+
+            return tripTask;
+        } catch (TaskListException e) {
+            throw new TaskOperationError(e.getMessage(), e);
+        }
+
     }
 }

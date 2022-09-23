@@ -7,4 +7,6 @@ import java.util.List;
 public interface TasksOperationsOutputPort {
 
         List<TripTask> listActiveTasksForAssignee(String assigneeRole);
+
+        TripTask retrieveActiveTaskForAssignee(String taskId, String assigneeRole);
 }

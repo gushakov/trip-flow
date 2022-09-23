@@ -4,12 +4,14 @@ import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,14 +48,21 @@ public class HomeController {
     }
 
     /**
-     * Will forward POST request to provided {@code action} parameter.
+     * Will redirect request to the path provided {@code action} parameter.
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/forwardActionRequest",
+    @RequestMapping(method = RequestMethod.GET, value = "/redirectActionRequest",
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
-    public void forwardActionRequest(@RequestParam String action, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("[Forward request] action: {}", action);
-        request.getRequestDispatcher(action).forward(request, response);
+    public void redirectActionRequest(@RequestParam String action, HttpServletRequest request, HttpServletResponse response) {
+        log.debug("[Redirect request] action: {}", action);
+        try {
+            response.sendRedirect(response.encodeRedirectURL(UriComponentsBuilder
+                    .fromHttpRequest((HttpRequest) request)
+                    .replaceQueryParam("action")
+                    .toUriString()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @RequestMapping(value = "/createNewTripBooking", method = RequestMethod.POST,

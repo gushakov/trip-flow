@@ -4,6 +4,7 @@ import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
+import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import io.camunda.tasklist.dto.Task;
 import io.camunda.tasklist.dto.Variable;
@@ -11,16 +12,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
+    @Mapping(target = "assigneeRole", source = "assignee")
+    @Mapping(target = "active", source = "taskState")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
-    @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripTaskIdFromTaskVariable")
+    @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripIdFromTaskVariable")
     @Mapping(target = "taskId", source = "id")
     protected abstract TripTask map(Task workflowTask);
 
-    @Named("mapTripTaskIdFromTaskVariable")
-    protected TripId mapTripTaskIdFromTaskVariable(Task workflowTask) {
+    @Named("mapTripIdFromTaskVariable")
+    protected TripId mapTripIdFromTaskVariable(Task workflowTask) {
         Long tripId = workflowTask.getVariables().stream()
                 .filter(variable -> variable.getName().equals(Constants.TRIP_ID_PROCESS_VARIABLE))
                 .map(Variable::getValue)

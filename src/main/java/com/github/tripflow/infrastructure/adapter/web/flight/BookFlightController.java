@@ -19,16 +19,15 @@ public class BookFlightController {
 
     private final ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/book-flight", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @RequestMapping("/book-flight")
     @ResponseBody
-    public void bookFlight(@RequestParam Long tripId) {
+    public void bookFlight(@RequestParam String taskId) {
 
-        log.debug("[POST][Book flight] booking flight, trip ID: {}", tripId);
+        log.debug("[GET][Book flight] booking flight, task ID: {}", taskId);
 
         BookFlightInputPort useCase = applicationContext.getBean(BookFlightInputPort.class);
 
-        useCase.initializeFlightBookingForCustomer(TripId.of(tripId));
+        useCase.initializeFlightBookingForCustomer(taskId);
 
     }
 

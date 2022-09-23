@@ -29,4 +29,14 @@ public class TripTask {
      */
     String action;
 
+    /**
+     * Task is active if corresponding workflow task is "CREATED".
+     */
+    boolean active;
+
+    /**
+     * Corresponds to the "Assignee" of the workflow task.
+     */
+    String assigneeRole;
+
 }
