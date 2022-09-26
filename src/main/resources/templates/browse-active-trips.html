@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <th>Trip ID</th>
+                <th>Done</th>
                 <th>Next task</th>
                 <th>Action</th>
             </tr>
@@ -29,6 +30,12 @@
             <tr th:each="task: ${tripTasks}">
 
                 <td th:text="${task.tripId}"></td>
+
+                <td>
+                    <i class="fa fa-plane"></i>
+                    <i class="fa fa-hotel"></i>
+                </td>
+
                 <td th:text="${task.name}"></td>
                 <td>
                     <form method="post" action="#" th:action="@{/performTaskAction(action=${task.action},taskId=${task.taskId})}">
