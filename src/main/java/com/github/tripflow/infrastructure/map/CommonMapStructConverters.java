@@ -5,6 +5,8 @@ import com.github.tripflow.core.model.trip.TripId;
 import io.camunda.tasklist.dto.TaskState;
 import org.mapstruct.Mapper;
 
+import java.util.Optional;
+
 /*
     References:
     ----------
@@ -21,19 +23,19 @@ import org.mapstruct.Mapper;
 public class CommonMapStructConverters {
 
     public Long convertTripIdToLong(TripId tripId) {
-        return tripId.getId();
+        return Optional.ofNullable(tripId).map(TripId::getId).orElse(null);
     }
 
     public TripId convertLongToTripId(Long id) {
-        return TripId.of(id);
+        return Optional.ofNullable(id).map(TripId::of).orElse(null);
     }
 
     public FlightNumber convertStringToFlightNumber(String number){
-        return FlightNumber.of(number);
+        return Optional.ofNullable(number).map(FlightNumber::of).orElse(null);
     }
 
     public String convertFlightNumberToString(FlightNumber flightNumber){
-        return flightNumber.getNumber();
+        return Optional.ofNullable(flightNumber).map(FlightNumber::getNumber).orElse(null);
     }
 
     public Boolean convertTaskStateToBoolean(TaskState taskState){

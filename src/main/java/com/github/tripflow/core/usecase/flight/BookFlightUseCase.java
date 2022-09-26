@@ -26,7 +26,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Override
-    public void initializeFlightBookingForCustomer(String taskId) {
+    public void proposeFlightsForSelectionByCustomer(String taskId) {
         List<Flight> flights;
         TripTask tripTask;
         Trip trip;
@@ -44,41 +44,23 @@ public class BookFlightUseCase implements BookFlightInputPort {
             return;
         }
 
-        presenter.presentFlightsForSelectionByCustomer(trip, flights);
+        presenter.presentFlightsForSelectionByCustomer(taskId, trip, flights);
 
     }
 
     @Override
-    public void registerSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber) {
+    public void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
         Trip trip;
         try {
             trip = dbOps.loadTrip(tripId);
-            dbOps.saveNewTrip(trip.withFlightNumber(flightNumber));
+            dbOps.updateTrip(trip.withFlightNumber(flightNumber));
         }
         catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentResultOfRegisteringSelectedFlightWithTrip(tripId, flightNumber);
+        presenter.presentResultOfRegisteringSelectedFlightWithTrip(taskId, tripId, flightNumber);
     }
 
-    @Override
-    public void returnToFlightBookingForCustomer(TripId tripId) {
-        List<Flight> flights;
-        Trip trip;
-        try {
-
-            // load the trip
-            trip = dbOps.loadTrip(tripId);
-
-            // load all flights
-            flights = dbOps.loadAllFlights();
-        } catch (GenericTripFlowError e) {
-            presenter.presentError(e);
-            return;
-        }
-
-        presenter.presentFlightsForSelectionByCustomer(trip, flights);
-    }
 }

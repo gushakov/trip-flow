@@ -9,7 +9,7 @@ import com.github.tripflow.core.port.error.ErrorHandlingPresenterOutputPort;
 import java.util.List;
 
 public interface BookFlightPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
-    void presentFlightsForSelectionByCustomer(Trip trip, List<Flight> flights);
+    void presentFlightsForSelectionByCustomer(String taskId, Trip trip, List<Flight> flights);
 
-    void presentResultOfRegisteringSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber);
+    void presentResultOfRegisteringSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber);
 }

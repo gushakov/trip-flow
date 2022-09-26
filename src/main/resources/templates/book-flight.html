@@ -20,6 +20,7 @@
             <table>
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Number</th>
                     <th>Origin</th>
                     <th>Airport</th>
@@ -31,6 +32,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="flight: *{flights}">
+                    <td>
+                        <input type="radio" th:checked="${#object.selectedFlightNumber == flight.flightNumber.number}" readonly>
+                    </td>
                     <td th:text="${flight.getFlightNumber()}"></td>
                     <td th:text="${flight.getOriginCity()}"></td>
                     <td th:text="${flight.getOriginIataCode()}"></td>
@@ -38,9 +42,11 @@
                     <td th:text="${flight.getDestinationIataCode()}"></td>
                     <td th:text="${#strings.concat(flight.getPrice(), ' CHF')}"></td>
                     <td style="text-align: right">
-                        <form method="post" action="#" th:action="@{/selectFlightForTrip(tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
-                            <button class="btn btn-sm btn-success" onclick="submitForm(this)">Select</button>
-                        </form>
+                        <th:block th:if="${#object.selectedFlightNumber != flight.flightNumber.number}">
+                            <form method="post" action="#" th:action="@{/selectFlightForTrip(taskId=*{taskId},tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
+                                <button class="btn btn-sm btn-success" onclick="submitForm(this)">Select</button>
+                            </form>
+                        </th:block>
                     </td>
                 </tr>
                 </tbody>

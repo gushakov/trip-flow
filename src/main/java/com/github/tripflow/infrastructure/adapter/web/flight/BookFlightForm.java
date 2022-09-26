@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class BookFlightForm {
 
+    String taskId;
     Long tripId;
     List<Flight> flights;
     String selectedFlightNumber;

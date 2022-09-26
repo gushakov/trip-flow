@@ -24,10 +24,11 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     }
 
     @Override
-    public void presentFlightsForSelectionByCustomer(Trip trip, List<Flight> flights) {
+    public void presentFlightsForSelectionByCustomer(String taskId, Trip trip, List<Flight> flights) {
         FlightNumber flightNumber = trip.getFlightNumber();
         presentModelAndView(Map.of("bookFlightForm",
                 BookFlightForm.builder()
+                        .taskId(taskId)
                         .tripId(trip.getTripId().getId())
                         .flights(flights)
                         .selectedFlightNumber(flightNumber != null ? flightNumber.getNumber() : null)
@@ -35,9 +36,9 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     }
 
     @Override
-    public void presentResultOfRegisteringSelectedFlightWithTrip(TripId tripId, FlightNumber flightNumber) {
+    public void presentResultOfRegisteringSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
         message("Successfully registered flight %s for trip with ID: %s"
-                .formatted(tripId, flightNumber));
-        redirect("bookFlight", Map.of("tripId", tripId.toString()));
+                .formatted(flightNumber, tripId));
+        redirect("bookFlight", Map.of("taskId", taskId));
     }
 }
