@@ -41,4 +41,10 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
                 .formatted(flightNumber, tripId));
         redirect("bookFlight", Map.of("taskId", taskId));
     }
+
+    @Override
+    public void presentSuccessfulResultOfCompletingFlightBooking(String taskId) {
+        message("Successfully completed flight booking task with ID: %s".formatted(taskId));
+        redirect("browseActiveTrips");
+    }
 }

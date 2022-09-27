@@ -16,6 +16,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.Map;
 
+/*
+    References:
+    ----------
+
+    1. Camunda, human tasks, best practices: https://docs.camunda.io/docs/components/best-practices/architecture/understanding-human-tasks-management/
+ */
+
+
 @Service
 public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPort {
 
@@ -47,10 +55,10 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public List<TripTask> listActiveTasksForAssignee(String assigneeRole) {
+    public List<TripTask> listActiveTasksForAssigneeCandidateGroup(String assigneeRole) {
         try {
             // can only get 1000 tasks at one time maximum
-            return taskListClient.getAssigneeTasks(assigneeRole, TaskState.CREATED, 1000, true)
+            return taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
                     .stream().map(taskMapper::convert).toList();
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
@@ -58,22 +66,14 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public TripTask retrieveActiveTaskForAssignee(String taskId, String assigneeRole) {
+    public TripTask retrieveActiveTaskForAssigneeCandidateGroup(String taskId, String assigneeRole) {
 
         try {
-            TripTask tripTask = taskMapper.convert(taskListClient.getTask(taskId, true));
-
-            if (!tripTask.isActive()) {
-                throw new TaskOperationError("Task with ID %s, is not active"
-                        .formatted(taskId));
-            } else {
-                if (!tripTask.getAssigneeRole().equals(assigneeRole)) {
-                    throw new TaskOperationError("Task with ID %s, is not assigned to role %s"
-                            .formatted(taskId, assigneeRole));
-                }
-            }
-
-            return tripTask;
+            return taskMapper.convert(taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
+                    .stream().filter(task -> task.getId().equals(taskId))
+                    .findAny()
+                    .orElseThrow(() -> new TaskOperationError("Cannot find active task with ID: %s, assigned to candidate group: %s"
+                            .formatted(taskId, assigneeRole))));
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
@@ -81,17 +81,18 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public TripTask completeFlightBookingByCustomer(String taskId) {
+    public void completeTask(String taskId) {
 
         try {
 
-            // need to claim the task for "demo" user used by TaskClist client
+            // need to claim the task for "demo" (Camunda administrator) user used by TaskList client
             // before completing it on behalf of the current user of Trip Flow
 
             taskListClient.claim(taskId, taskListClientUserName);
 
             // complete the task
-            return taskMapper.convert(taskListClient.completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true)));
+
+            taskMapper.convert(taskListClient.completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true)));
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

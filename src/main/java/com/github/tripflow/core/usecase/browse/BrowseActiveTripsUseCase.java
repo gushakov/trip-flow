@@ -27,7 +27,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
          */
         List<TripTask> tasks;
         try {
-            tasks = tasksOps.listActiveTasksForAssignee(securityOps.tripFlowAssigneeRole());
+            tasks = tasksOps.listActiveTasksForAssigneeCandidateGroup(securityOps.tripFlowAssigneeRole());
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;

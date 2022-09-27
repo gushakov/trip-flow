@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface TasksOperationsOutputPort {
 
-    List<TripTask> listActiveTasksForAssignee(String assigneeRole);
+    List<TripTask> listActiveTasksForAssigneeCandidateGroup(String assigneeRole);
 
-    TripTask retrieveActiveTaskForAssignee(String taskId, String assigneeRole);
+    TripTask retrieveActiveTaskForAssigneeCandidateGroup(String taskId, String assigneeRole);
 
-    TripTask completeFlightBookingByCustomer(String taskId);
+    void completeTask(String taskId);
 }

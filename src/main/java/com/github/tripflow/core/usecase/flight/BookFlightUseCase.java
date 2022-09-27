@@ -32,7 +32,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
         Trip trip;
         try {
             // get the task from the workflow engine
-            tripTask = tasksOps.retrieveActiveTaskForAssignee(taskId, securityOps.tripFlowAssigneeRole());
+            tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
 
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
@@ -54,8 +54,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
         try {
             trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.withFlightNumber(flightNumber));
-        }
-        catch (GenericTripFlowError e) {
+        } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
@@ -66,10 +65,15 @@ public class BookFlightUseCase implements BookFlightInputPort {
     @Override
     public void confirmFlightBooking(String taskId) {
 
-        // complete the task
-        TripTask completedTask = tasksOps.completeFlightBookingByCustomer(taskId);
+        try {
+            // complete the task
+            tasksOps.completeTask(taskId);
+        } catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
 
-        System.out.println(completedTask);
+        presenter.presentSuccessfulResultOfCompletingFlightBooking(taskId);
     }
 
 }

@@ -7,28 +7,43 @@
     <bpmn:sequenceFlow id="Flow_02gp6dg" sourceRef="StartEvent_1" targetRef="Activity_19a0muq" />
     <bpmn:userTask id="Activity_19a0muq" name="book flight">
       <bpmn:extensionElements>
-        <zeebe:assignmentDefinition assignee="ROLE_TRIPFLOW_CUSTOMER" />
+        <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;bookFlight&#34;" target="action" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02gp6dg</bpmn:incoming>
-      <bpmn:outgoing>Flow_0uppo89</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18lybuw</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="Event_0rr0lae">
-      <bpmn:incoming>Flow_0uppo89</bpmn:incoming>
+      <bpmn:incoming>Flow_19307zt</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0uppo89" sourceRef="Activity_19a0muq" targetRef="Event_0rr0lae" />
+    <bpmn:userTask id="Activity_1fc4aw0" name="book hotel">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;bookHotel&#34;" target="action" />
+        </zeebe:ioMapping>
+        <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18lybuw</bpmn:incoming>
+      <bpmn:outgoing>Flow_19307zt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_18lybuw" sourceRef="Activity_19a0muq" targetRef="Activity_1fc4aw0" />
+    <bpmn:sequenceFlow id="Flow_19307zt" sourceRef="Activity_1fc4aw0" targetRef="Event_0rr0lae" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TripFlow">
-      <bpmndi:BPMNEdge id="Flow_0uppo89_di" bpmnElement="Flow_0uppo89">
-        <di:waypoint x="370" y="117" />
-        <di:waypoint x="432" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02gp6dg_di" bpmnElement="Flow_02gp6dg">
         <di:waypoint x="215" y="117" />
         <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18lybuw_di" bpmnElement="Flow_18lybuw">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="450" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19307zt_di" bpmnElement="Flow_19307zt">
+        <di:waypoint x="550" y="117" />
+        <di:waypoint x="632" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
@@ -37,7 +52,10 @@
         <dc:Bounds x="270" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0rr0lae_di" bpmnElement="Event_0rr0lae">
-        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <dc:Bounds x="632" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1icuft6_di" bpmnElement="Activity_1fc4aw0">
+        <dc:Bounds x="450" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

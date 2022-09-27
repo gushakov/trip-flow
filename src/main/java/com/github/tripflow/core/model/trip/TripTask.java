@@ -3,6 +3,8 @@ package com.github.tripflow.core.model.trip;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 /**
  * Value object modeling all information relevant to an instance of a user task in
  * a particular TripFlow process instance. Encapsulates workflow variables associated
@@ -13,11 +15,14 @@ import lombok.Value;
 public class TripTask {
 
     /**
-     * Equals to the process instance key.
+     * ID of the task (job) in the workflow.
+     */
+    String taskId;
+
+    /**
+     * TripFlow process instance key.
      */
     TripId tripId;
-
-    String taskId;
 
     /**
      * User-friendly task name.
@@ -35,9 +40,14 @@ public class TripTask {
     boolean active;
 
     /**
-     * Corresponds to the "Assignee" of the workflow task.
+     * Corresponds to the "Assignee" of the workflow task, "Assignment" section.
      */
-    String assigneeRole;
+    String assignee;
+
+    /**
+     * Corresponds to the "Candidate groups" of the workflow task, "Assignment" section.
+     */
+    List<String> candidateGroups;
 
     /**
      * Will be {@code true} if a flight booking has been complete.

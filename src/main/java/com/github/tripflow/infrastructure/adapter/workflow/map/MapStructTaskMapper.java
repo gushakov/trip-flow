@@ -15,12 +15,11 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
-    @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
-    @Mapping(target = "assigneeRole", source = "assignee")
+    @Mapping(target = "taskId", source = "id")
     @Mapping(target = "active", source = "taskState")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
     @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripIdFromTaskVariable")
-    @Mapping(target = "taskId", source = "id")
+    @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
     protected abstract TripTask map(Task workflowTask);
 
     @Named("mapTripIdFromTaskVariable")
@@ -51,8 +50,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
         return workflowTask.getVariables().stream()
                 .filter(variable -> variable.getName().equals(Constants.FLIGHT_BOOKED_VARIABLE))
                 .map(Variable::getValue)
-                .map(String.class::cast)
-                .map(Boolean::valueOf)
+                .map(Boolean.class::cast)
                 .findFirst()
                 .orElse(false);
     }

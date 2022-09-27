@@ -41,7 +41,7 @@ public class SecurityConfig {
     /*
         Create some users for the application. Use simple in-memory user details
         to be used for demonstration only. Note that the roles need to match the
-        values of "Assignee" section in BPMN.
+        values of "Assignment", "Candidate groups" section in BPMN.
         Note roles are added as granted authorities with "ROLE_" prefix by Spring
         Security by default.
      */
@@ -49,7 +49,9 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username("customer1").password("demo").roles(Constants.ROLE_TRIPFLOW_CUSTOMER.replaceFirst("ROLE_", "")).build());
+                .username("customer1")
+                .password("demo")
+                .roles(Constants.ROLE_TRIPFLOW_CUSTOMER.replaceFirst("ROLE_", "")).build());
         return userDetailsManager;
     }
 
