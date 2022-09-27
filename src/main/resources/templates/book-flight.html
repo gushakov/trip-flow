@@ -33,7 +33,8 @@
                 <tbody>
                 <tr th:each="flight: *{flights}">
                     <td>
-                        <input type="radio" th:checked="${#object.selectedFlightNumber == flight.flightNumber.number}" readonly>
+                        <input type="radio" th:checked="${#object.selectedFlightNumber == flight.flightNumber.number}"
+                               disabled="disabled">
                     </td>
                     <td th:text="${flight.getFlightNumber()}"></td>
                     <td th:text="${flight.getOriginCity()}"></td>

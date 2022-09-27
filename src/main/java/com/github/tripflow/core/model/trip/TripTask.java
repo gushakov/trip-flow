@@ -39,4 +39,9 @@ public class TripTask {
      */
     String assigneeRole;
 
+    /**
+     * Will be {@code true} if a flight booking has been complete.
+     */
+    boolean flightBooked;
+
 }

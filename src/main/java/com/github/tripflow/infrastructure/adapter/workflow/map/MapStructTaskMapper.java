@@ -15,6 +15,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
+    @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
     @Mapping(target = "assigneeRole", source = "assignee")
     @Mapping(target = "active", source = "taskState")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
@@ -29,8 +30,8 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(Long.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new TaskOperationError("No Trip ID variable associated with the task: %s"
-                        .formatted(workflowTask.getId())));
+                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
+                        .formatted(Constants.TRIP_ID_PROCESS_VARIABLE, workflowTask.getId())));
         return TripId.of(tripId);
     }
 
@@ -41,8 +42,19 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(String.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new TaskOperationError("No action variable associated with the task: %s"
-                        .formatted(workflowTask.getId())));
+                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
+                        .formatted(Constants.ACTION_VARIABLE, workflowTask.getId())));
+    }
+
+    @Named("mapFlightBookedFromTaskVariable")
+    protected boolean mapFlightBookedFromTaskVariable(Task workflowTask) {
+        return workflowTask.getVariables().stream()
+                .filter(variable -> variable.getName().equals(Constants.FLIGHT_BOOKED_VARIABLE))
+                .map(Variable::getValue)
+                .map(String.class::cast)
+                .map(Boolean::valueOf)
+                .findFirst()
+                .orElse(false);
     }
 
     @IgnoreForMapping

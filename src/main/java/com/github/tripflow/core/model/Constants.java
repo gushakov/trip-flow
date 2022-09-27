@@ -13,7 +13,7 @@ public class Constants {
     public static final String ROLE_TRIPFLOW_CUSTOMER = "ROLE_TRIPFLOW_CUSTOMER";
 
     /**
-     * Name of the variable identifying a trip associated with corresponding process
+     * Name of the process instance variable identifying a trip associated with corresponding process
      * instance. Will contain process instance key.
      */
     public static final String TRIP_ID_PROCESS_VARIABLE = "tripId";
@@ -23,5 +23,10 @@ public class Constants {
      * be executed for the task.
      */
     public static final String ACTION_VARIABLE = "action";
+
+    /**
+     * Name of the process instance variable set when a flight booking has been completed.
+     */
+    public static final String FLIGHT_BOOKED_VARIABLE = "flightBooked";
 
 }
