@@ -21,7 +21,7 @@ an example application.
 - Camunda Self-Managed instance (with Hazelcast exporter): localhost, ports: 26500 (and others)
 - Zeebe Simple Monitor: http://localhost:8082/
 - Tasklist application: http://localhost:8081/
-- Elastic search (neede )
+- Elastic search
 - Postgres database: localhost, port 5432, database: `tripflow`
 
 ## References
@@ -38,3 +38,9 @@ code for more detailed references.
 To have somewhat realistic data samples for flights, hotels, car rentals, etc., the following resources (publicly available).
 
 1. [Google flights](https://www.google.com/travel/flights)
+
+## Notes
+
+1. For user tasks, we should use "Candidate groups" to assign such and such task to a group of users (depending on their
+role in the application.). Then, when completing the task, we should first `claim` the task first (using `CamundaTaskListClient`)
+and, then, `complete` the task.

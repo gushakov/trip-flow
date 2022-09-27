@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
@@ -7,13 +8,13 @@ import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMappe
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.tasklist.auth.SimpleAuthentication;
-import io.camunda.tasklist.dto.Task;
 import io.camunda.tasklist.dto.TaskState;
 import io.camunda.tasklist.exception.TaskListException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPort {
@@ -21,9 +22,11 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     private final CamundaTaskListClient taskListClient;
     private final WorkflowTaskMapper taskMapper;
 
-    public ZeebeTaskClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper) {
+    private final String taskListClientUserName;
 
+    public ZeebeTaskClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper) {
         this.taskMapper = taskMapper;
+        this.taskListClientUserName = tripFlowProps.getTaskListClientUserName();
 
         SimpleAuthentication auth = new SimpleAuthentication(tripFlowProps.getTaskListClientUserName(), tripFlowProps.getTaskListClientPassword());
 
@@ -60,18 +63,35 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
         try {
             TripTask tripTask = taskMapper.convert(taskListClient.getTask(taskId, true));
 
-            if (!tripTask.isActive()){
+            if (!tripTask.isActive()) {
                 throw new TaskOperationError("Task with ID %s, is not active"
                         .formatted(taskId));
-            }
-            else {
-                if (!tripTask.getAssigneeRole().equals(assigneeRole)){
+            } else {
+                if (!tripTask.getAssigneeRole().equals(assigneeRole)) {
                     throw new TaskOperationError("Task with ID %s, is not assigned to role %s"
                             .formatted(taskId, assigneeRole));
                 }
             }
 
             return tripTask;
+        } catch (TaskListException e) {
+            throw new TaskOperationError(e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public TripTask completeFlightBookingByCustomer(String taskId) {
+
+        try {
+
+            // need to claim the task for "demo" user used by TaskClist client
+            // before completing it on behalf of the current user of Trip Flow
+
+            taskListClient.claim(taskId, taskListClientUserName);
+
+            // complete the task
+            return taskMapper.convert(taskListClient.completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true)));
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

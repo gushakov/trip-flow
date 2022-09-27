@@ -41,6 +41,15 @@ public class BookFlightController {
         useCase().registerSelectedFlightWithTrip(taskId, TripId.of(tripId), FlightNumber.of(flightNumber));
     }
 
+    @RequestMapping(value = "/confirmFlightBooking", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseBody
+    public void confirmFlightBooking(@RequestParam String taskId) {
+        useCase().confirmFlightBooking(taskId);
+    }
+
+
+
     @NotNull
     private BookFlightInputPort useCase() {
         return applicationContext.getBean(BookFlightInputPort.class);

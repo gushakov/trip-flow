@@ -54,6 +54,13 @@
             </table>
 
         </div>
+
+        <div class="row-cols-2 mt-2">
+            <form method="post" action="#" th:action="@{/confirmFlightBooking(taskId=*{taskId})}">
+                <button class="btn btn-sm btn-info" onclick="submitForm(this)">Confirm booking</button>
+            </form>
+        </div>
+
     </th:block>
 
 </div>

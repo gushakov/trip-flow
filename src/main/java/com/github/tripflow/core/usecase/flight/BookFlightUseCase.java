@@ -63,4 +63,13 @@ public class BookFlightUseCase implements BookFlightInputPort {
         presenter.presentResultOfRegisteringSelectedFlightWithTrip(taskId, tripId, flightNumber);
     }
 
+    @Override
+    public void confirmFlightBooking(String taskId) {
+
+        // complete the task
+        TripTask completedTask = tasksOps.completeFlightBookingByCustomer(taskId);
+
+        System.out.println(completedTask);
+    }
+
 }

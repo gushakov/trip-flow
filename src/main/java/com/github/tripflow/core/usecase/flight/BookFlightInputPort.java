@@ -9,4 +9,5 @@ public interface BookFlightInputPort {
 
     void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber);
 
+    void confirmFlightBooking(String taskId);
 }
