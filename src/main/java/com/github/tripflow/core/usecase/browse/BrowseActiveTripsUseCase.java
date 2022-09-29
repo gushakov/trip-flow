@@ -19,20 +19,22 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
     private final TasksOperationsOutputPort tasksOps;
 
     @Override
-    public void listTripsByActiveTasksAssignedToUser() {
+    public void listActiveTasksForTripsStartedByUser() {
 
-        /*
-            Get the list of all active tasks assigned to the current user
-            in all active TripFlow instances.
-         */
         List<TripTask> tasks;
         try {
-            tasks = tasksOps.listActiveTasksForAssigneeCandidateGroup(securityOps.tripFlowAssigneeRole());
+            // get the list of all active tasks assigned the candidate group (or role)
+            // of the user and filter only the tasks for the trips started by the user
+            tasks = tasksOps.listActiveTasksForAssigneeCandidateGroup(securityOps.tripFlowAssigneeRole())
+                    .stream()
+                    .filter(tripTask -> tripTask.getTripStartedBy().equals(securityOps.loggedInUserName()))
+                    .toList();
+
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentListOfTripsByActiveTasksAssignedToUser(tasks);
+        presenter.presentActiveTasksForTripsStartedByUser(tasks);
     }
 }

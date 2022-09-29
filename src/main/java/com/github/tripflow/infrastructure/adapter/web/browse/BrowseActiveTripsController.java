@@ -21,7 +21,7 @@ public class BrowseActiveTripsController {
 
         BrowseActiveTripsInputPort useCase = applicationContext.getBean(BrowseActiveTripsInputPort.class);
 
-        useCase.listTripsByActiveTasksAssignedToUser();
+        useCase.listActiveTasksForTripsStartedByUser();
     }
 
 }

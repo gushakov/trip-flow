@@ -21,7 +21,7 @@ public class BrowseActiveTripsPresenter extends AbstractWebPresenter implements 
     }
 
     @Override
-    public void presentListOfTripsByActiveTasksAssignedToUser(List<TripTask> tasks) {
+    public void presentActiveTasksForTripsStartedByUser(List<TripTask> tasks) {
 
         presentModelAndView(Map.of("tripTasks", tasks), "browse-active-trips");
 

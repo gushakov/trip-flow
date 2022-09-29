@@ -20,9 +20,15 @@ public class TripTask {
     String taskId;
 
     /**
-     * TripFlow process instance key.
+     * TripFlow process instance key, also the ID of the
+     * corresponding {@code Trip} instance.
      */
     TripId tripId;
+
+    /**
+     * Customer who started the trip.
+     */
+    String tripStartedBy;
 
     /**
      * User-friendly task name.
@@ -38,11 +44,6 @@ public class TripTask {
      * Task is active if corresponding workflow task is "CREATED".
      */
     boolean active;
-
-    /**
-     * Corresponds to the "Assignee" of the workflow task, "Assignment" section.
-     */
-    String assignee;
 
     /**
      * Corresponds to the "Candidate groups" of the workflow task, "Assignment" section.

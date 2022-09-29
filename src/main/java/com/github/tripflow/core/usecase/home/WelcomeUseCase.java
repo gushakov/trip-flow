@@ -1,11 +1,13 @@
 package com.github.tripflow.core.usecase.home;
 
+import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
 import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
@@ -31,9 +33,19 @@ public class WelcomeUseCase implements WelcomeInputPort {
     @Override
     public void welcomeUser() {
 
-        String userName = securityOps.loggedInUserName();
+        String userName;
+        boolean isCustomer;
 
-        presenter.presentWelcomeView(userName);
+        try {
+            userName = securityOps.loggedInUserName();
+            isCustomer = securityOps.isCustomer();
+        }
+        catch (GenericTripFlowError e){
+            presenter.presentError(e);
+            return;
+        }
+
+        presenter.presentWelcomeView(userName, isCustomer);
 
     }
 
@@ -45,11 +57,22 @@ public class WelcomeUseCase implements WelcomeInputPort {
     @Override
     public void startNewTripBooking() {
 
+        Long pik;
+        String tripStartedBy;
+
+        // get the current user
+
+        try {
+            tripStartedBy = securityOps.loggedInUserName();
+        } catch (TripFlowSecurityError e) {
+            presenter.presentError(e);
+            return;
+        }
+
         // start a new instance of the TripFlow process
 
-        Long pik;
         try {
-            pik = workflowOps.startNewTripBookingProcess();
+            pik = workflowOps.startNewTripBookingProcess(tripStartedBy);
         } catch (WorkflowClientOperationError e) {
             presenter.presentErrorStartingNewWorkflowInstance(e);
             return;
@@ -61,7 +84,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
         try {
             Trip trip = Trip.builder()
                     .tripId(TripId.of(pik))
-                    .startedBy(securityOps.loggedInUserName())
+                    .startedBy(tripStartedBy)
                     .build();
             dbOps.saveNewTrip(trip);
         } catch (TripFlowValidationError | TripFlowDbPersistenceError e) {

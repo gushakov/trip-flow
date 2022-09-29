@@ -19,6 +19,12 @@ public class Constants {
     public static final String TRIP_ID_PROCESS_VARIABLE = "tripId";
 
     /**
+     * Name of the variable storing the username of the customer who
+     * started the trip.
+     */
+    public static final String TRIP_STARTED_BY_VARIABLE = "tripStartedBy";
+
+    /**
      * Name of the input variable for each user task. Will contain the action to
      * be executed for the task.
      */

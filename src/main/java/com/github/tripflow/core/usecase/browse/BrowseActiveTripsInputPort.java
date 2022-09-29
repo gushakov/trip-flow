@@ -2,6 +2,6 @@ package com.github.tripflow.core.usecase.browse;
 
 public interface BrowseActiveTripsInputPort {
 
-    void listTripsByActiveTasksAssignedToUser();
+    void listActiveTasksForTripsStartedByUser();
 
 }

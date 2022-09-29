@@ -7,4 +7,8 @@ public class TripFlowSecurityError extends GenericTripFlowError {
     public TripFlowSecurityError(String message) {
         super(message);
     }
+
+    public TripFlowSecurityError(Exception e) {
+        super(e.getMessage(), e);
+    }
 }

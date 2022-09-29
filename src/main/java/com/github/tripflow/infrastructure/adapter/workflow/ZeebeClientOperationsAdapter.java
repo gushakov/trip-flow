@@ -22,7 +22,7 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
 
 
     @Override
-    public Long startNewTripBookingProcess() {
+    public Long startNewTripBookingProcess(String tripStartedBy) {
         ProcessInstanceEvent start;
         try {
             start = zeebeClient
@@ -36,10 +36,11 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
             log.debug("[Zeebe Client] Started new instance of process: {} with process instance key: {}",
                     Constants.TRIPFLOW_PROCESS_ID, pik);
 
-            // store process instance key (trip ID) as a flow
-            // variable for reference
+            // store process instance key (trip ID) and the username of the customer who started
+            // the trip as the flow variables
             SetVariablesResponse variableStatus = zeebeClient.newSetVariablesCommand(pik)
-                    .variables(Map.of(Constants.TRIP_ID_PROCESS_VARIABLE, pik))
+                    .variables(Map.of(Constants.TRIP_ID_PROCESS_VARIABLE, pik,
+                            Constants.TRIP_STARTED_BY_VARIABLE, tripStartedBy))
                     .send()
                     .join();
 

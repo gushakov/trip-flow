@@ -4,7 +4,7 @@ import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationE
 import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
 
 public interface WelcomePresenterOutputPort extends ErrorHandlingPresenterOutputPort {
-    void presentWelcomeView(String userName);
+    void presentWelcomeView(String userName, boolean isCustomer);
 
     void presentErrorStartingNewWorkflowInstance(WorkflowClientOperationError e);
 

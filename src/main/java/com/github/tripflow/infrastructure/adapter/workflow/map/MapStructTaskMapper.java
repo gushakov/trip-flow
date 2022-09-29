@@ -17,6 +17,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
     @Mapping(target = "taskId", source = "id")
     @Mapping(target = "active", source = "taskState")
+    @Mapping(target = "tripStartedBy", source = "workflowTask", qualifiedByName = "mapTripStartedByFromTaskVariable")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
     @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripIdFromTaskVariable")
     @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
@@ -53,6 +54,17 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Boolean.class::cast)
                 .findFirst()
                 .orElse(false);
+    }
+
+    @Named("mapTripStartedByFromTaskVariable")
+    protected String mapTripStartedByFromTaskVariable(Task workflowTask) {
+        return workflowTask.getVariables().stream()
+                .filter(variable -> variable.getName().equals(Constants.TRIP_STARTED_BY_VARIABLE))
+                .map(Variable::getValue)
+                .map(String.class::cast)
+                .findFirst()
+                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
+                        .formatted(Constants.TRIP_STARTED_BY_VARIABLE, workflowTask.getId())));
     }
 
     @IgnoreForMapping

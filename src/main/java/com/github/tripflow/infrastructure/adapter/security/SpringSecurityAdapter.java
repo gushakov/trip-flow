@@ -14,9 +14,13 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
     @Override
     public String loggedInUserName() {
 
-        Authentication authentication = authentication();
+        try {
+            Authentication authentication = authentication();
 
-        return ((User) authentication.getPrincipal()).getUsername();
+            return ((User) authentication.getPrincipal()).getUsername();
+        } catch (Exception e) {
+            throw new TripFlowSecurityError(e);
+        }
     }
 
     @Override

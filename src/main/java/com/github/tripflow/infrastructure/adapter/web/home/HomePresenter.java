@@ -28,9 +28,10 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     }
 
     @Override
-    public void presentWelcomeView(String userName) {
+    public void presentWelcomeView(String userName, boolean isCustomer) {
 
-        presentModelAndView(Map.of("userName", userName), "home");
+        presentModelAndView(Map.of("userName", userName,
+                "isCustomer", isCustomer), "home");
     }
 
     @Override

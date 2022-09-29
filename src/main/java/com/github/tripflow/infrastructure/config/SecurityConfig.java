@@ -28,14 +28,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+
+        return http.authorizeRequests()
                 .anyRequest().authenticated()
-
                 .and().formLogin(withDefaults())
-        ;
-
-        return http.build();
+                .build();
     }
 
     /*
@@ -50,6 +47,10 @@ public class SecurityConfig {
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(User.withDefaultPasswordEncoder()
                 .username("customer1")
+                .password("demo")
+                .roles(Constants.ROLE_TRIPFLOW_CUSTOMER.replaceFirst("ROLE_", "")).build());
+        userDetailsManager.createUser(User.withDefaultPasswordEncoder()
+                .username("customer2")
                 .password("demo")
                 .roles(Constants.ROLE_TRIPFLOW_CUSTOMER.replaceFirst("ROLE_", "")).build());
         return userDetailsManager;

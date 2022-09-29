@@ -25,7 +25,7 @@
        Hello <span class="tb" th:text="${userName}">user</span>.  Currently, you can do the following:
     </div>
 
-    <div class="row-cols-1">
+    <div th:if="${isCustomer}" class="row-cols-1">
         <ul>
             <li>
                 <form method="post" action="#" th:action="@{/createNewTripBooking}">
