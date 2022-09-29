@@ -13,6 +13,7 @@ import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputP
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -49,6 +50,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
     }
 
     @Override
+    @Transactional
     public void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
         Trip trip;
         try {

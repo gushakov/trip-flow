@@ -28,7 +28,7 @@ public class Trip {
         this.flightNumber = flightNumber;
     }
 
-    public boolean hasFlightBooked(){
+    public boolean hasFlightBooked() {
         return flightNumber != null;
     }
 
@@ -36,7 +36,7 @@ public class Trip {
         return newTrip().flightNumber(number).build();
     }
 
-    private TripBuilder newTrip(){
+    private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)
                 .startedBy(startedBy)

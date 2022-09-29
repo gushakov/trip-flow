@@ -1,9 +1,8 @@
 package com.github.tripflow.infrastructure.adapter.web;
 
+import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,15 +25,19 @@ import java.util.Map;
  * Concrete Presenters should override this method providing {@code Response Model} and
  * the name of the view to render. Can also be used to "redirect" response to a particular path.
  * <p>
- * Provides shared mechanism for presenting errors by redirecting to a well-known "/error" path.
+ * Provides shared mechanism for presenting errors by redirecting to a well-known "error" path.
+ * <p>
+ * Also provides a mechanism for storing "message" into current HTTP session. This can be used
+ * from Presenters to store a message to be displayed after the redirects.
  *
  * @see LocalDispatcherServlet
- * @see #redirect(String, Map)
  * @see ErrorController
+ * @see #presentModelAndView(Map, String)
+ * @see #redirect(String, Map)
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractWebPresenter {
+public abstract class AbstractWebPresenter extends AbstractErrorHandler {
 
     private final LocalDispatcherServlet dispatcher;
     private final HttpServletRequest httpRequest;
@@ -52,16 +55,8 @@ public abstract class AbstractWebPresenter {
 
     public void presentError(Exception e) {
 
-        // if we are here it usually means that we may have an unforeseen
-        // error which we may need to log
-        log.error(e.getMessage(), e);
-
-        // we need to roll back any active transaction
-        try {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-        } catch (NoTransactionException nte) {
-            // do nothing if not running in a transactional context
-        }
+        // do common error handling
+        logErrorAndRollback(e);
 
         // redirect to special error handling controller
         redirectError(e.getMessage());

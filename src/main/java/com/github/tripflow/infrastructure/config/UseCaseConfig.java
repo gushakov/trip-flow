@@ -43,7 +43,7 @@ public class UseCaseConfig {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter,
                                                                SecurityOperationsOutputPort securityOps,
-                                                               TasksOperationsOutputPort tasksOps){
+                                                               TasksOperationsOutputPort tasksOps) {
         return new BrowseActiveTripsUseCase(presenter, securityOps, tasksOps);
     }
 
@@ -52,7 +52,7 @@ public class UseCaseConfig {
     public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort presenter,
                                                  SecurityOperationsOutputPort securityOps,
                                                  TasksOperationsOutputPort tasksOps,
-                                                 DbPersistenceOperationsOutputPort dbOps){
+                                                 DbPersistenceOperationsOutputPort dbOps) {
         return new BookFlightUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 
@@ -61,7 +61,7 @@ public class UseCaseConfig {
     public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort presenter,
                                                      SecurityOperationsOutputPort securityOps,
                                                      TasksOperationsOutputPort tasksOps,
-                                                     DbPersistenceOperationsOutputPort dbOps){
+                                                     DbPersistenceOperationsOutputPort dbOps) {
         return new ReserveHotelUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 

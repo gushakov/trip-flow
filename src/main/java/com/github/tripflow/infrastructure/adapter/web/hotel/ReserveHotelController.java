@@ -19,13 +19,13 @@ public class ReserveHotelController {
 
     @GetMapping("/bookHotel")
     @ResponseBody
-    public void bookHotel(@RequestParam String taskId){
+    public void bookHotel(@RequestParam String taskId) {
         log.debug("[GET][Book hotel] booking hotel, task ID: {}", taskId);
 
         useCase().proposeHotelsForSelectionByCustomer(taskId);
     }
 
-    private ReserveHotelInputPort useCase(){
+    private ReserveHotelInputPort useCase() {
         return applicationContext.getBean(ReserveHotelInputPort.class);
     }
 

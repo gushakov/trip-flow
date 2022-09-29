@@ -49,7 +49,6 @@ public class BookFlightController {
     }
 
 
-
     @NotNull
     private BookFlightInputPort useCase() {
         return applicationContext.getBean(BookFlightInputPort.class);

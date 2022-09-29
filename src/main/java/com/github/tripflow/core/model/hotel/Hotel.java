@@ -1,6 +1,5 @@
 package com.github.tripflow.core.model.hotel;
 
-import com.github.tripflow.core.model.Validator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

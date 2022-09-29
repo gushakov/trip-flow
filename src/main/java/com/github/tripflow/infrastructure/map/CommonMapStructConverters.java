@@ -31,23 +31,23 @@ public class CommonMapStructConverters {
         return Optional.ofNullable(id).map(TripId::of).orElse(null);
     }
 
-    public FlightNumber convertStringToFlightNumber(String number){
+    public FlightNumber convertStringToFlightNumber(String number) {
         return Optional.ofNullable(number).map(FlightNumber::of).orElse(null);
     }
 
-    public String convertFlightNumberToString(FlightNumber flightNumber){
+    public String convertFlightNumberToString(FlightNumber flightNumber) {
         return Optional.ofNullable(flightNumber).map(FlightNumber::getNumber).orElse(null);
     }
 
-    public Boolean convertTaskStateToBoolean(TaskState taskState){
+    public Boolean convertTaskStateToBoolean(TaskState taskState) {
         return taskState == TaskState.CREATED;
     }
 
-    public HotelId convertStringToHotelId(String id){
+    public HotelId convertStringToHotelId(String id) {
         return Optional.ofNullable(id).map(HotelId::of).orElse(null);
     }
 
-    public String convertHotelIdToString(HotelId hotelId){
+    public String convertHotelIdToString(HotelId hotelId) {
         return Optional.ofNullable(hotelId).map(HotelId::toString).orElse(null);
     }
 }

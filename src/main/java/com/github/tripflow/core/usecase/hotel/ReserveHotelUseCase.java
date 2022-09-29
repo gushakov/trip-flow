@@ -43,7 +43,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
             // check that we are in a consistent state: we must have a
             // flight registered with the trip
-            if (!tripTask.isFlightBooked() || !trip.hasFlightBooked()){
+            if (!tripTask.isFlightBooked() || !trip.hasFlightBooked()) {
                 throw new InconsistentWorkflowStateError("Trip with ID: %s does not yet have a flight registered."
                         .formatted(trip.getTripId()));
             }
