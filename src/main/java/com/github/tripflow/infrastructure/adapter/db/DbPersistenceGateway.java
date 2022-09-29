@@ -1,11 +1,12 @@
 package com.github.tripflow.infrastructure.adapter.db;
 
 import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
-import com.github.tripflow.infrastructure.adapter.db.map.TripDbMapper;
+import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
@@ -19,7 +20,9 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
-    private final TripDbMapper dbMapper;
+    private final HotelRepository hotelRepo;
+
+    private final TripFlowDbMapper dbMapper;
 
     @Override
     public Trip saveNewTrip(Trip trip) {
@@ -63,5 +66,10 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot load all flights", e);
         }
+    }
+
+    @Override
+    public List<Hotel> hotelsInCity(String city) {
+        return null;
     }
 }

@@ -3,7 +3,7 @@ package com.github.tripflow.infrastructure.adapter.db;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.infrastructure.adapter.db.map.MapStructTripDbMapperImpl;
+import com.github.tripflow.infrastructure.adapter.db.map.MapStructTripFlowDbMapperImpl;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ import java.util.List;
 @JdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ImportAutoConfiguration(JdbcRepositoriesAutoConfiguration.class)
-@Import({MapStructTripDbMapperImpl.class,
+@Import({MapStructTripFlowDbMapperImpl.class,
         CommonMapStructConverters.class,
         DbPersistenceGateway.class})
 public class DbPersistenceGatewayTestIT {

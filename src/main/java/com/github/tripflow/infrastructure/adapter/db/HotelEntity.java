@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class HotelEntity {
 
     @Column("hotel_id")
-    String id;
+    String hotelId;
 
     @Column("hotel_name")
     String name;
