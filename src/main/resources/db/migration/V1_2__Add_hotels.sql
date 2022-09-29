@@ -1,7 +1,7 @@
 CREATE TABLE public.hotel
 (
     hotel_id   varchar NOT NULL,
-    name       varchar NOT NULL,
+    hotel_name       varchar NOT NULL,
     city       varchar NOT NULL,
     price      int4    NOT NULL,
     image_file varchar NOT NULL,
@@ -9,5 +9,5 @@ CREATE TABLE public.hotel
 );
 
 INSERT INTO public.hotel
-    (hotel_id, name, city, price, image_file)
+    (hotel_id, hotel_name, city, price, image_file)
 VALUES ('MDR1', 'The Principal Madrid Hotel', 'Madrid', 325, 'ciudad-maderas-MXbM1NrRqtI-unsplash.jpg');

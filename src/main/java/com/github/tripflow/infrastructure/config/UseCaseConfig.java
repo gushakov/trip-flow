@@ -43,26 +43,26 @@ public class UseCaseConfig {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter,
                                                                SecurityOperationsOutputPort securityOps,
-                                                               TasksOperationsOutputPort taskOps){
-        return new BrowseActiveTripsUseCase(presenter, securityOps, taskOps);
+                                                               TasksOperationsOutputPort tasksOps){
+        return new BrowseActiveTripsUseCase(presenter, securityOps, tasksOps);
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort presenter,
                                                  SecurityOperationsOutputPort securityOps,
-                                                 TasksOperationsOutputPort taskOps,
+                                                 TasksOperationsOutputPort tasksOps,
                                                  DbPersistenceOperationsOutputPort dbOps){
-        return new BookFlightUseCase(presenter, securityOps, taskOps, dbOps);
+        return new BookFlightUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort presenter,
                                                      SecurityOperationsOutputPort securityOps,
-                                                     TasksOperationsOutputPort taskOps,
+                                                     TasksOperationsOutputPort tasksOps,
                                                      DbPersistenceOperationsOutputPort dbOps){
-        return new ReserveHotelUseCase(presenter, securityOps, taskOps, dbOps);
+        return new ReserveHotelUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 
 }
