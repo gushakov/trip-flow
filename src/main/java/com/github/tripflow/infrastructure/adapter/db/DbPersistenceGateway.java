@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.db;
 
 import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
@@ -70,6 +71,24 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     @Override
     public List<Hotel> hotelsInCity(String city) {
-        return null;
+
+        try {
+            return hotelRepo.findAllByCity(city).stream()
+                    .map(dbMapper::convert)
+                    .toList();
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot find hotels by city: %s"
+                    .formatted(city), e);
+        }
+    }
+
+    @Override
+    public Flight loadFlight(FlightNumber flightNumber) {
+        try {
+            return dbMapper.convert(jdbcAggregateTemplate.findById(flightNumber.getNumber(), FlightEntity.class));
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot load flight with number: %s"
+                    .formatted(flightNumber), e);
+        }
     }
 }

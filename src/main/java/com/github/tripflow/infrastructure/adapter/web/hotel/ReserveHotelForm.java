@@ -1,14 +1,21 @@
 package com.github.tripflow.infrastructure.adapter.web.hotel;
 
+import com.github.tripflow.core.model.hotel.Hotel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ReserveHotelForm {
 
+    String taskId;
+    Long tripId;
+    String city;
+    List<Hotel> hotels;
 
 }

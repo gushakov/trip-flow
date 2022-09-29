@@ -28,6 +28,10 @@ public class Trip {
         this.flightNumber = flightNumber;
     }
 
+    public boolean hasFlightBooked(){
+        return flightNumber != null;
+    }
+
     public Trip withFlightNumber(FlightNumber number) {
         return newTrip().flightNumber(number).build();
     }
