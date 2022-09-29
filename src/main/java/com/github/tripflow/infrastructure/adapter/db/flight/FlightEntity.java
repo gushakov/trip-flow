@@ -1,6 +1,7 @@
-package com.github.tripflow.infrastructure.adapter.db;
+package com.github.tripflow.infrastructure.adapter.db.flight;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -8,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("flight")
 public class FlightEntity {
 
+    @Id
     @Column("flight_number")
     String flightNumber;
 

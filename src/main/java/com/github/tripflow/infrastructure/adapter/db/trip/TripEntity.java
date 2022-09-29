@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.db;
+package com.github.tripflow.infrastructure.adapter.db.trip;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

@@ -18,10 +18,11 @@ an example application.
 
 ## What is running
 
+- TripFlow applicaiton: http://localhost:8080/trip
 - Camunda Self-Managed instance (with Hazelcast exporter): localhost, ports: 26500 (and others)
 - Zeebe Simple Monitor: http://localhost:8082/
 - Tasklist application: http://localhost:8081/
-- Elastic search
+- Elastic search: localhost, port 9200
 - Postgres database: localhost, port 5432, database: `tripflow`
 
 ## References

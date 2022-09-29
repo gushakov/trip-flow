@@ -11,6 +11,7 @@
     5.  Use Fontaswesome: https://fontawesome.com/docs/web/setup/host-yourself/webfonts
     6.  Include fonts for Fontawsome 6: https://stackoverflow.com/questions/24922833/font-awesome-icons-are-not-working-i-have-included-all-required-files
     7.  Bootstrap 5, Cards: https://getbootstrap.com/docs/5.0/components/card/
+    8.  Bootstrap 5, Layout: https://getbootstrap.com/docs/5.0/layout/grid/
 -->
 
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
@@ -21,7 +22,7 @@
     <div th:replace="fragments :: header"></div>
 
     <div class="row-cols-1 mt-3">
-       Hello <span th:text="${userName}" style="font-weight: bold;">user</span>.  Currently, you can do the following:
+       Hello <span class="tb" th:text="${userName}">user</span>.  Currently, you can do the following:
     </div>
 
     <div class="row-cols-1">

@@ -11,3 +11,7 @@ CREATE TABLE public.hotel
 INSERT INTO public.hotel
     (hotel_id, hotel_name, city, price, image_file)
 VALUES ('MDR1', 'The Principal Madrid Hotel', 'Madrid', 325, 'ciudad-maderas-MXbM1NrRqtI-unsplash.jpg');
+
+INSERT INTO public.hotel
+    (hotel_id, hotel_name, city, price, image_file)
+VALUES ('MDR2', 'Eurostars Madrid Tower', 'Madrid', 261, 'fernando-alvarez-rodriguez-M7GddPqJowg-unsplash.jpg');

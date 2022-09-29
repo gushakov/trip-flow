@@ -8,23 +8,35 @@
 
     <div th:replace="fragments :: header"></div>
 
-    show some hotels here
+    <!--/*@thymesVar id="reserveHotelForm" type="com.github.tripflow.infrastructure.adapter.web.hotel.ReserveHotelForm"*/-->
+    <th:block th:object="${reserveHotelForm}">
+        Here are some hotels in your destination city: <span class="tb" th:text="*{city}">Destination</span>
 
-    <div class="row-cols-2 mt-3">
+        <div class="row mt-3">
 
-        <div class="card" style="width: 18rem;">
-            <img src="/img/ciudad-maderas-MXbM1NrRqtI-unsplash.jpg" class="card-img-top" alt="Hotel">
-            <div class="card-body">
-                <h5 class="card-title">Some hotel</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    In semper enim odio, a mattis libero commodo a. Fusce non sodales mauris, non semper velit.</p>
+            <div class="col-3" th:each="hotel: *{hotels}">
 
-                <a href="#" class="btn btn-sm btn-success">Reserve</a>
+                <div class="card" style="width: 15rem; height: 21rem;">
+                    <img th:src="${#strings.concat(#servletContext.contextPath, '/img/', hotel.imageFile)}"
+                         class="card-img-top" alt="Hotel">
+                    <div class="card-body">
+                        <h6 class="card-title" th:text="${hotel.name}">Some hotel</h6>
+                        <p class="card-subtitle mb-2 text-muted" th:text="${#strings.concat(hotel.price, ' CHF')}">100
+                            CHF</p>
+                        <p class="card-text small">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+                        <a href="#" class="btn btn-sm btn-success">Reserve</a>
+                    </div>
+
+                </div>
             </div>
+
+
 
         </div>
 
-    </div>
+    </th:block>
+
 
 </div>
 

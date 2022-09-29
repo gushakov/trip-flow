@@ -7,7 +7,12 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
+import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntity;
+import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
+import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
+import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
+import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
@@ -21,9 +26,11 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
-    private final HotelRepository hotelRepo;
-
     private final TripFlowDbMapper dbMapper;
+
+    private final TripEntityRepository tripEntityRepo;
+    private final HotelEntityRepository hotelEntityRepo;
+    private final FlightEntityRepository flightEntityRepo;
 
     @Override
     public Trip saveNewTrip(Trip trip) {
@@ -50,7 +57,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public Trip loadTrip(TripId tripId) {
         try {
-            return dbMapper.convert(jdbcAggregateTemplate.findById(tripId.getId(), TripEntity.class));
+            return dbMapper.convert(tripEntityRepo.findById(tripId.getId())
+                    .orElseThrow(IllegalStateException::new));
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot load trip with ID: %s"
                     .formatted(tripId), e);
@@ -60,8 +68,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public List<Flight> loadAllFlights() {
         try {
-            Iterable<FlightEntity> allFlightsEntities = jdbcAggregateTemplate.findAll(FlightEntity.class);
-            return StreamUtils.toStream(allFlightsEntities.iterator())
+            return StreamUtils.toStream(flightEntityRepo.findAll().iterator())
                     .map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {
@@ -73,7 +80,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     public List<Hotel> hotelsInCity(String city) {
 
         try {
-            return hotelRepo.findAllByCity(city).stream()
+            return hotelEntityRepo.findAllByCity(city).stream()
                     .map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {
@@ -85,7 +92,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public Flight loadFlight(FlightNumber flightNumber) {
         try {
-            return dbMapper.convert(jdbcAggregateTemplate.findById(flightNumber.getNumber(), FlightEntity.class));
+            return dbMapper.convert(flightEntityRepo.findById(flightNumber.getNumber())
+                    .orElseThrow(IllegalStateException::new));
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot load flight with number: %s"
                     .formatted(flightNumber), e);
