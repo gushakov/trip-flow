@@ -1,6 +1,5 @@
 package com.github.tripflow.core.model.flight;
 
-import com.github.tripflow.core.model.Validator;
 import lombok.Value;
 
 import static com.github.tripflow.core.model.Validator.notNull;
@@ -10,7 +9,7 @@ public class FlightNumber {
 
     String number;
 
-    public static FlightNumber of(String number){
+    public static FlightNumber of(String number) {
         return new FlightNumber(number);
     }
 

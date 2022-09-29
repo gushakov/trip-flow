@@ -7,13 +7,15 @@ import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutput
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
+import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
 import com.github.tripflow.core.usecase.flight.BookFlightUseCase;
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
-import com.github.tripflow.infrastructure.adapter.web.flight.BookFlightPresenter;
+import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
+import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +54,15 @@ public class UseCaseConfig {
                                                  TasksOperationsOutputPort taskOps,
                                                  DbPersistenceOperationsOutputPort dbOps){
         return new BookFlightUseCase(presenter, securityOps, taskOps, dbOps);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort presenter,
+                                                     SecurityOperationsOutputPort securityOps,
+                                                     TasksOperationsOutputPort taskOps,
+                                                     DbPersistenceOperationsOutputPort dbOps){
+        return new ReserveHotelUseCase(presenter, securityOps, taskOps, dbOps);
     }
 
 }

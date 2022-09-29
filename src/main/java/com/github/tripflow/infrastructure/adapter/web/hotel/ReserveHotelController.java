@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.hotel;
 
+import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +21,12 @@ public class ReserveHotelController {
     @ResponseBody
     public void bookHotel(@RequestParam String taskId){
         log.debug("[GET][Book hotel] booking hotel, task ID: {}", taskId);
+
+        useCase().proposeHotelsForSelectionByCustomer(taskId);
+    }
+
+    private ReserveHotelInputPort useCase(){
+        return applicationContext.getBean(ReserveHotelInputPort.class);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.map;
 
 import com.github.tripflow.core.model.flight.FlightNumber;
+import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.TripId;
 import io.camunda.tasklist.dto.TaskState;
 import org.mapstruct.Mapper;
@@ -42,4 +43,11 @@ public class CommonMapStructConverters {
         return taskState == TaskState.CREATED;
     }
 
+    public HotelId convertStringToHotelId(String id){
+        return Optional.ofNullable(id).map(HotelId::of).orElse(null);
+    }
+
+    public String convertHotelIdToString(HotelId hotelId){
+        return Optional.ofNullable(hotelId).map(HotelId::toString).orElse(null);
+    }
 }
