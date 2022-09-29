@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="fragments :: head">
+    <title></title>
+</head>
+<body>
+<div class="container-fluid">
+
+    <div th:replace="fragments :: header"></div>
+
+    show some hotels here
+
+    <div class="row-cols-2 mt-3">
+
+        <div class="card" style="width: 18rem;">
+            <img src="/img/ciudad-maderas-MXbM1NrRqtI-unsplash.jpg" class="card-img-top" alt="Hotel">
+            <div class="card-body">
+                <h5 class="card-title">Some hotel</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    In semper enim odio, a mattis libero commodo a. Fusce non sodales mauris, non semper velit.</p>
+
+                <a href="#" class="btn btn-sm btn-success">Reserve</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="fragments :: footer"></th:block>
+</body>
+</html>

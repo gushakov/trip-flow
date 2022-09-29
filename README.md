@@ -33,11 +33,12 @@ code for more detailed references.
 2. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
 3. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
 
-## Credits for the sample data
+## Credits for the sample data and images
 
 To have somewhat realistic data samples for flights, hotels, car rentals, etc., the following resources (publicly available).
 
 1. [Google flights](https://www.google.com/travel/flights)
+2. [Unsplash images](https://unsplash.com/), please, also consult [Unsplash licence](https://unsplash.com/license)
 
 ## Notes
 
