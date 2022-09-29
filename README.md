@@ -36,9 +36,9 @@ code for more detailed references.
 
 ## Credits for the sample data and images
 
-To have somewhat realistic data samples for flights, hotels, car rentals, etc., the following resources (publicly available).
+To have somewhat realistic data samples for flights, hotels, etc., the following resources (publicly available).
 
-1. [Google flights](https://www.google.com/travel/flights)
+1. [Google Travel](https://www.google.com/travel)
 2. [Unsplash images](https://unsplash.com/), please, also consult [Unsplash licence](https://unsplash.com/license)
 
 ## Notes
