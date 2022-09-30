@@ -3,7 +3,6 @@ package com.github.tripflow.infrastructure.adapter.workflow.map;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
-import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import io.camunda.tasklist.dto.Task;
@@ -25,14 +24,13 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
     @Named("mapTripIdFromTaskVariable")
     protected TripId mapTripIdFromTaskVariable(Task workflowTask) {
-        Long tripId = workflowTask.getVariables().stream()
+        return workflowTask.getVariables().stream()
                 .filter(variable -> variable.getName().equals(Constants.TRIP_ID_PROCESS_VARIABLE))
                 .map(Variable::getValue)
                 .map(Long.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
-                        .formatted(Constants.TRIP_ID_PROCESS_VARIABLE, workflowTask.getId())));
-        return TripId.of(tripId);
+                .map(TripId::of)
+                .orElse(null);
     }
 
     @Named("mapActionFromTaskVariable")
@@ -42,8 +40,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(String.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
-                        .formatted(Constants.ACTION_VARIABLE, workflowTask.getId())));
+                .orElse(null);
     }
 
     @Named("mapFlightBookedFromTaskVariable")
@@ -63,11 +60,11 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(String.class::cast)
                 .findFirst()
-                .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
-                        .formatted(Constants.TRIP_STARTED_BY_VARIABLE, workflowTask.getId())));
+                .orElse(null);
     }
+
     @Named("mapHotelReservedFromTaskVariable")
-    protected boolean mapHotelReservedFromTaskVariable(Task workflowTask){
+    protected boolean mapHotelReservedFromTaskVariable(Task workflowTask) {
         return workflowTask.getVariables().stream()
                 .filter(variable -> variable.getName().equals(Constants.HOTEL_RESERVED_VARIABLE))
                 .map(Variable::getValue)

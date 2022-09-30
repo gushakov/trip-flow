@@ -9,10 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -21,7 +18,7 @@ public class BookFlightController {
 
     private final ApplicationContext applicationContext;
 
-    @RequestMapping("/bookFlight")
+    @GetMapping("/bookFlight")
     @ResponseBody
     public void bookFlight(@RequestParam String taskId) {
 
@@ -32,8 +29,7 @@ public class BookFlightController {
 
     }
 
-    @RequestMapping(value = "/selectFlightForTrip", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/selectFlightForTrip", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
     public void selectFlightForTrip(@RequestParam String taskId,
                                     @RequestParam Long tripId,
@@ -41,8 +37,7 @@ public class BookFlightController {
         useCase().registerSelectedFlightWithTrip(taskId, TripId.of(tripId), FlightNumber.of(flightNumber));
     }
 
-    @RequestMapping(value = "/confirmFlightBooking", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/confirmFlightBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
     public void confirmFlightBooking(@RequestParam String taskId) {
         useCase().confirmFlightBooking(taskId);

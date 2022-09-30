@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,7 +26,7 @@ public class HomeController {
 
     private final ApplicationContext applicationContext;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String emptyPathRedirect() {
         return "redirect:/";
     }
@@ -33,14 +34,13 @@ public class HomeController {
     /**
      * Entry point into the application (after the login).
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     @ResponseBody
     public void welcome() {
         useCase().welcomeUser();
     }
 
-    @RequestMapping(value = "/createNewTripBooking", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/createNewTripBooking", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
     public void createNewTripBooking() {
         useCase().startNewTripBooking();
