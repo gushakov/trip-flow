@@ -18,4 +18,10 @@ public class ReserveHotelForm {
     String city;
     List<Hotel> hotels;
 
+    String selectedHotelId;
+
+    public boolean isHotelSelected(){
+        return selectedHotelId != null;
+    }
+
 }

@@ -55,7 +55,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
         Trip trip;
         try {
             trip = dbOps.loadTrip(tripId);
-            dbOps.updateTrip(trip.withFlightNumber(flightNumber));
+            dbOps.updateTrip(trip.bookFlight(flightNumber));
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;

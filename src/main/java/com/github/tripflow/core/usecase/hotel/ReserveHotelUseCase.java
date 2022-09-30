@@ -41,8 +41,21 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
 
-            // check that we are in a consistent state: we must have a
-            // flight registered with the trip
+
+            /*
+                Discussion point:
+                ----------------
+
+                We should check that we are in the consistent state here: the workflow
+                state (the flight has been booked) corresponds to the equivalent state
+                of the "Trip" aggregate.
+
+                Is this the best place to enforce these kind of invariants, i.e. between
+                the state of the workflow and the state of the aggregates? We need to
+                duplicate this check in the step right before confirming the hotel's reservation,
+                as well.
+             */
+
             if (!tripTask.isFlightBooked() || !trip.hasFlightBooked()) {
                 throw new InconsistentWorkflowStateError("Trip with ID: %s does not yet have a flight registered."
                         .formatted(trip.getTripId()));

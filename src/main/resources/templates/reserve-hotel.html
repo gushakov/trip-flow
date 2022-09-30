@@ -16,7 +16,18 @@
 
             <div class="col-3" th:each="hotel: *{hotels}">
 
-                <div class="card" style="width: 15rem; height: 21rem;">
+                <div class="card" style="width: 15rem;">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col" style="text-align: end">
+                                <input type="radio" disabled="disabled" checked="checked">
+                            </div>
+                            <div class="col">
+                                <a href="#" class="btn btn-sm btn-success">Reserve</a>
+                            </div>
+                        </div>
+
+                    </div>
                     <img th:src="${#strings.concat(#servletContext.contextPath, '/img/', hotel.imageFile)}"
                          class="card-img-top" alt="Hotel">
                     <div class="card-body">
@@ -24,8 +35,6 @@
                         <p class="card-subtitle mb-2 text-muted" th:text="${#strings.concat(hotel.price, ' CHF')}">100
                             CHF</p>
                         <p class="card-text small">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-                        <a href="#" class="btn btn-sm btn-success">Reserve</a>
                     </div>
 
                 </div>
