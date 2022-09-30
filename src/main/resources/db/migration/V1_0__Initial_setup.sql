@@ -1,6 +1,6 @@
 CREATE TABLE public.flight
 (
-    flight_number          varchar NOT NULL,
+    flight_number         varchar NOT NULL,
     airline               varchar NOT NULL,
     origin_city           varchar NOT NULL,
     origin_iata_code      varchar NOT NULL,
@@ -30,5 +30,6 @@ CREATE TABLE public.trip
 (
     trip_id    bigint  NOT NULL,
     started_by varchar NOT NULL,
+    status     varchar NOT NULL,
     CONSTRAINT trip_pk PRIMARY KEY (trip_id)
 );

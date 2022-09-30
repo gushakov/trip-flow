@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Optional;
+
 import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
@@ -25,11 +27,14 @@ public class Trip {
 
     HotelId hotelId;
 
+    TripStatus status;
+
     @Builder
-    public Trip(TripId tripId, String startedBy, FlightNumber flightNumber, HotelId hotelId) {
+    public Trip(TripId tripId, String startedBy, FlightNumber flightNumber, HotelId hotelId, TripStatus status) {
         // these are never null
         this.tripId = notNull(tripId);
         this.startedBy = notNull(startedBy);
+        this.status = Optional.ofNullable(status).orElse(TripStatus.undefined);
 
         // these can be null
         this.flightNumber = flightNumber;

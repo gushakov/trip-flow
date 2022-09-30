@@ -41,18 +41,18 @@ public class TripTask {
     String action;
 
     /**
-     * Task is active if corresponding workflow task is "CREATED".
-     */
-    boolean active;
-
-    /**
      * Corresponds to the "Candidate groups" of the workflow task, "Assignment" section.
      */
     List<String> candidateGroups;
 
     /**
-     * Will be {@code true} if a flight booking has been complete.
+     * Will be {@code true} if a flight booking task has been completed.
      */
     boolean flightBooked;
+
+    /**
+     * Will be {@code true} if a hotel reservation task has been completed.
+     */
+    boolean hotelReserved;
 
 }

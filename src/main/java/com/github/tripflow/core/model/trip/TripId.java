@@ -17,6 +17,10 @@ public class TripId {
         this.id = notNull(id);
     }
 
+    public String getShortId(){
+        return "T" + toString().substring(12);
+    }
+
     @Override
     public String toString() {
         return id.toString();

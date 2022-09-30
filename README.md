@@ -46,3 +46,11 @@ To have somewhat realistic data samples for flights, hotels, etc., the following
 1. For user tasks, we should use "Candidate groups" to assign such and such task to a group of users (depending on their
 role in the application.). Then, when completing the task, we should first `claim` the task first (using `CamundaTaskListClient`)
 and, then, `complete` the task.
+2. When entering "Conditional expression" for a flow branch of an exclusive gateway in Camunda Modeler, be careful to put 
+a space between "=" and the beginning of the expression, like here: 
+```xml
+<bpmn:sequenceFlow id="Flow_09ivbqx" name="sufficient credit" sourceRef="Gateway_0svoha3" targetRef="Activity_0lzh8es">
+  <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= sufficientCredit</bpmn:conditionExpression>
+</bpmn:sequenceFlow>
+```
+Otherwise, you get XML parsing exception when deploying the BPMN to Camunda.

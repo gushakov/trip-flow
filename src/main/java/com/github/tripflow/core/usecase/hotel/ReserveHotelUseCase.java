@@ -4,7 +4,9 @@ import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.InconsistentWorkflowStateError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
+import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
@@ -14,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -75,5 +78,21 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
         presenter.presentHotelsInDestinationCityForSelectionByCustomer(taskId, trip.getTripId(), city, hotels);
 
+    }
+
+    @Override
+    @Transactional
+    public void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId) {
+
+        Trip trip;
+        try {
+            trip = dbOps.loadTrip(tripId);
+            dbOps.updateTrip(trip.reserveHotel(hotelId));
+        } catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
+
+        presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
     }
 }

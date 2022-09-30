@@ -38,7 +38,7 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     @Override
     public void presentResultOfRegisteringSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
         message("Successfully registered flight %s for trip with ID: %s"
-                .formatted(flightNumber, tripId));
+                .formatted(flightNumber, tripId.getShortId()));
         redirect("bookFlight", Map.of("taskId", taskId));
     }
 

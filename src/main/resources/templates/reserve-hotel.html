@@ -19,11 +19,22 @@
                 <div class="card" style="width: 15rem;">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col" style="text-align: end">
-                                <input type="radio" disabled="disabled" checked="checked">
-                            </div>
                             <div class="col">
-                                <a href="#" class="btn btn-sm btn-success">Reserve</a>
+                                <input type="radio" disabled="disabled"
+                                       th:checked="${#object.selectedHotelId == hotel.hotelId.id}">
+                            </div>
+                            <div class="col" style="text-align: end">
+                                <th:block th:if="${#object.selectedHotelId == hotel.hotelId.id}">
+                                    <span>Reserved</span>
+                                </th:block>
+                                <th:block th:if="${#object.selectedHotelId != hotel.hotelId.id}">
+                                    <a href="#" class="btn btn-sm btn-success">Reserve</a>
+
+                                    <form method="post" action="#" th:action="@{/selectHotelForTrip(taskId=*{taskId},tripId=*{tripId},hotelId=${hotel.hotelId.id})}">
+                                        <button class="btn btn-sm btn-success" onclick="submitForm(this)">Reserve</button>
+                                    </form>
+
+                                </th:block>
                             </div>
                         </div>
 
@@ -42,8 +53,13 @@
 
         </div>
 
-    </th:block>
+        <div th:if="*{hotelSelected}" class="row-cols-2 mt-2">
+            <form method="post" action="#" th:action="@{/confirmHotelReservation(taskId=*{taskId})}">
+                <button class="btn btn-sm btn-info" onclick="submitForm(this)">Confirm reservation</button>
+            </form>
+        </div>
 
+    </th:block>
 
 </div>
 

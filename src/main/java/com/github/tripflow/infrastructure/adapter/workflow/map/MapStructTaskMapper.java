@@ -16,11 +16,11 @@ import org.mapstruct.Named;
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
     @Mapping(target = "taskId", source = "id")
-    @Mapping(target = "active", source = "taskState")
     @Mapping(target = "tripStartedBy", source = "workflowTask", qualifiedByName = "mapTripStartedByFromTaskVariable")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
     @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripIdFromTaskVariable")
     @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
+    @Mapping(target = "hotelReserved", source = "workflowTask", qualifiedByName = "mapHotelReservedFromTaskVariable")
     protected abstract TripTask map(Task workflowTask);
 
     @Named("mapTripIdFromTaskVariable")
@@ -65,6 +65,15 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .findFirst()
                 .orElseThrow(() -> new TaskOperationError("No %s variable associated with the task: %s"
                         .formatted(Constants.TRIP_STARTED_BY_VARIABLE, workflowTask.getId())));
+    }
+    @Named("mapHotelReservedFromTaskVariable")
+    protected boolean mapHotelReservedFromTaskVariable(Task workflowTask){
+        return workflowTask.getVariables().stream()
+                .filter(variable -> variable.getName().equals(Constants.HOTEL_RESERVED_VARIABLE))
+                .map(Variable::getValue)
+                .map(Boolean.class::cast)
+                .findFirst()
+                .orElse(false);
     }
 
     @IgnoreForMapping

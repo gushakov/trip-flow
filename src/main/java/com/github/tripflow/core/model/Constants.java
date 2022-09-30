@@ -35,4 +35,9 @@ public class Constants {
      */
     public static final String FLIGHT_BOOKED_VARIABLE = "flightBooked";
 
+    /**
+     * Name of the process instance variable set when a hotel reservation has been completed.
+     */
+    public static final String HOTEL_RESERVED_VARIABLE = "hotelReserved";
+
 }

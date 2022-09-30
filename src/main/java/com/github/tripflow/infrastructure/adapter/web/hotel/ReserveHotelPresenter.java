@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.hotel;
 
 import com.github.tripflow.core.model.hotel.Hotel;
+import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
@@ -31,5 +32,12 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
                         .city(city)
                         .hotels(hotels)
                         .build()), "reserve-hotel");
+    }
+
+    @Override
+    public void presentResultOfRegisteringSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId) {
+        message("Successfully registered hotel %s for trip with ID: %s"
+                .formatted(hotelId, tripId.getShortId()));
+        redirect("reserveHotel", Map.of("taskId", taskId));
     }
 }

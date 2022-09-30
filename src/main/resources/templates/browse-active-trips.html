@@ -29,11 +29,11 @@
             <!--/*@thymesVar id="tripTasks" type="java.util.List<com.github.tripflow.core.model.trip.TripTask>"*/-->
             <tr th:each="task: ${tripTasks}">
 
-                <td th:text="${task.tripId}"></td>
+                <td th:text="${task.tripId.shortId}"></td>
 
                 <td>
                     <i th:if="${task.flightBooked}" class="fa fa-plane"></i>
-<!--                    <i class="fa fa-hotel"></i>-->
+                    <i th:if="${task.hotelReserved}" class="fa fa-hotel"></i>
                 </td>
 
                 <td th:text="${task.name}"></td>
