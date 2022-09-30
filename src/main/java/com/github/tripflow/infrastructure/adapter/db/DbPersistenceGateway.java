@@ -3,6 +3,7 @@ package com.github.tripflow.infrastructure.adapter.db;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.hotel.Hotel;
+import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
@@ -97,6 +98,18 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot load flight with number: %s"
                     .formatted(flightNumber), e);
+        }
+    }
+
+    @Override
+    public Hotel loadHotel(HotelId hotelId) {
+        try {
+            return dbMapper.convert(hotelEntityRepo.findById(hotelId.getId())
+                    .orElseThrow(IllegalStateException::new));
+        }
+        catch (Exception e){
+            throw new TripFlowDbPersistenceError("Cannot load hotel with ID: %s"
+                    .formatted(hotelId));
         }
     }
 }

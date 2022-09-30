@@ -62,8 +62,7 @@ public class Trip {
                 .tripId(tripId)
                 .startedBy(startedBy)
                 .flightNumber(flightNumber)
-                .hotelId(hotelId)
-                ;
+                .hotelId(hotelId);
 
     }
 }

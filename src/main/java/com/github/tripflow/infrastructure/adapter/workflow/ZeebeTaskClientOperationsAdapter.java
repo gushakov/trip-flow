@@ -81,8 +81,16 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public void completeTask(String taskId) {
+    public void completeFlightBookingTask(String taskId) {
+        completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true));
+    }
 
+    @Override
+    public void completeHotelReservationTask(String taskId) {
+        completeTask(taskId, Map.of(Constants.HOTEL_RESERVED_VARIABLE, true));
+    }
+
+    private void completeTask(String taskId, Map<String, Object> vars) {
         try {
 
             // need to claim the task for "demo" (Camunda administrator) user used by TaskList client
@@ -90,12 +98,11 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
 
             taskListClient.claim(taskId, taskListClientUserName);
 
-            // complete the task
+            // complete the task, setting variables
 
-            taskMapper.convert(taskListClient.completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true)));
+            taskMapper.convert(taskListClient.completeTask(taskId, vars));
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
-
     }
 }

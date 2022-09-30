@@ -83,7 +83,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
             Validator.assertThatFlightCanBeBooked(tripTask, trip);
 
             // complete the task
-            tasksOps.completeTask(taskId);
+            tasksOps.completeFlightBookingTask(taskId);
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);

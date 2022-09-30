@@ -43,4 +43,11 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
                 .formatted(hotelId, tripId.getShortId()));
         redirect("reserveHotel", Map.of("taskId", taskId));
     }
+
+    @Override
+    public void presentResultOfSuccessfulHotelReservation(String taskId) {
+        message("Successfully completed hotel reservation task N° %s"
+                .formatted(taskId));
+        redirect("browseActiveTrips");
+    }
 }

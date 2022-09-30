@@ -37,6 +37,12 @@ public class ReserveHotelController {
 
     }
 
+    @PostMapping(value = "/confirmHotelReservation", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseBody
+    public void confirmHotelReservation(@RequestParam String taskId){
+        useCase().confirmHotelReservation(taskId);
+    }
+
     private ReserveHotelInputPort useCase() {
         return applicationContext.getBean(ReserveHotelInputPort.class);
     }

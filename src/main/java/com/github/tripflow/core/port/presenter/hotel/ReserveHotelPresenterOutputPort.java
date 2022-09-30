@@ -12,4 +12,6 @@ public interface ReserveHotelPresenterOutputPort extends ErrorHandlingPresenterO
     void presentHotelsInDestinationCityForSelectionByCustomer(String taskId, Trip trip, String city, List<Hotel> hotels);
 
     void presentResultOfRegisteringSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId);
+
+    void presentResultOfSuccessfulHotelReservation(String taskId);
 }

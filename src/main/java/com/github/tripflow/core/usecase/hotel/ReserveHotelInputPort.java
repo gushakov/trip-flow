@@ -8,4 +8,6 @@ public interface ReserveHotelInputPort {
     void proposeHotelsForSelectionByCustomer(String taskId);
 
     void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId);
+
+    void confirmHotelReservation(String taskId);
 }

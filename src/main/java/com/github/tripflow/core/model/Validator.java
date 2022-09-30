@@ -1,5 +1,7 @@
 package com.github.tripflow.core.model;
 
+import com.github.tripflow.core.model.flight.Flight;
+import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripTask;
 
@@ -21,15 +23,11 @@ public class Validator {
 
     public static void assertThatFlightCanBeBooked(TripTask tripTask, Trip trip) {
 
-        // task must be for the right trip
-        if (!tripTask.getTripId().equals(trip.getTripId())){
-            throw new TripFlowValidationError("Task %s is not for the trip %s"
-                    .formatted(tripTask.getTripId(), trip.getTripId()));
-        }
+        assertTaskTripIdEquivalence(tripTask, trip);
 
-        // there should be no flight already booked
+        // there should not be any flight already booked
         if (tripTask.isFlightBooked()){
-            throw new TripFlowValidationError("A flight is already booked according to the task %s"
+            throw new TripFlowValidationError("A flight is already booked, task ID: %s"
                     .formatted(tripTask.getTaskId()));
         }
 
@@ -39,5 +37,36 @@ public class Validator {
                     .formatted(trip.getTripId()));
         }
 
+    }
+
+    public static void assertThatHotelCanBeReserved(TripTask tripTask, Trip trip, Flight flight, Hotel hotel) {
+
+        assertTaskTripIdEquivalence(tripTask, trip);
+
+        // there must be a flight booked
+        if (!tripTask.isFlightBooked()){
+            throw new TripFlowValidationError("A flight must be booked prior to any hotel reservation, task ID: %s"
+                    .formatted(tripTask.getTaskId()));
+        }
+
+        // there should not be any hotel already reserved
+        if (tripTask.isHotelReserved()){
+            throw new TripFlowValidationError("A hotel is already reserved, task ID: %s"
+                    .formatted(tripTask.getTaskId()));
+        }
+
+        // the destination city for the flight and the city of the hotel must match
+        if (!flight.getDestinationCity().equals(hotel.getCity())){
+            throw new TripFlowValidationError("Cannot reserve a hotel in city: %s, different from the flight destination city: %s"
+                    .formatted(hotel.getCity(), flight.getDestinationCity()));
+        }
+    }
+
+    private static void assertTaskTripIdEquivalence(TripTask tripTask, Trip trip) {
+        // task must be for the right trip
+        if (!tripTask.getTripId().equals(trip.getTripId())){
+            throw new TripFlowValidationError("Task %s is not for the trip %s"
+                    .formatted(tripTask.getTripId(), trip.getTripId()));
+        }
     }
 }

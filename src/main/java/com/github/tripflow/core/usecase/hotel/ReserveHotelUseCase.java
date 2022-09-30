@@ -2,6 +2,7 @@ package com.github.tripflow.core.usecase.hotel;
 
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.TripFlowValidationError;
+import com.github.tripflow.core.model.Validator;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
@@ -44,7 +45,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
 
-            // check flow-aggregate invariant
+            // check that trip has a flight selected
             if (!trip.hasFlightSelected()) {
                 throw new TripFlowValidationError("Trip %s does not have any flight selected"
                         .formatted(trip.getTripId()));
@@ -80,5 +81,35 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
         }
 
         presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
+    }
+
+    @Override
+    public void confirmHotelReservation(String taskId) {
+        try {
+
+            // get the task
+            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+
+            // get the trip
+            Trip trip = dbOps.loadTrip(tripTask.getTripId());
+
+            // get the flight
+            Flight flight = dbOps.loadFlight(trip.getFlightNumber());
+
+            // get the hotel
+            Hotel hotel = dbOps.loadHotel(trip.getHotelId());
+
+            // check flow-aggregate invariants
+            Validator.assertThatHotelCanBeReserved(tripTask, trip, flight, hotel);
+
+            // complete the task
+            tasksOps.completeHotelReservationTask(taskId);
+
+        } catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
+
+        presenter.presentResultOfSuccessfulHotelReservation(taskId);
     }
 }
