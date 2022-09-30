@@ -59,6 +59,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
         Long pik;
         String tripStartedBy;
+        Trip trip;
 
         // get the current user
 
@@ -82,7 +83,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
         // aggregate
 
         try {
-            Trip trip = Trip.builder()
+            trip = Trip.builder()
                     .tripId(TripId.of(pik))
                     .startedBy(tripStartedBy)
                     .build();
@@ -97,6 +98,6 @@ public class WelcomeUseCase implements WelcomeInputPort {
             return;
         }
 
-        presenter.presentResultOfStartingNewTripBooking(pik);
+        presenter.presentResultOfStartingNewTripBooking(trip.getTripId());
     }
 }

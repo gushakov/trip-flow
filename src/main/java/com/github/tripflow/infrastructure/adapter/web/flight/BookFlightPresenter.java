@@ -30,6 +30,7 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
                 BookFlightForm.builder()
                         .taskId(taskId)
                         .tripId(trip.getTripId().getId())
+                        .shortTripId(trip.getTripId().getShortId())
                         .flights(flights)
                         .selectedFlightNumber(flightNumber != null ? flightNumber.getNumber() : null)
                         .build()), "book-flight");

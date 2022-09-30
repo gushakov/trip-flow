@@ -12,12 +12,12 @@
     <th:block th:object="${bookFlightForm}">
 
         <div class="row-cols-1 mt-3">
-            Please select a flight for your trip N°: <span th:text="*{tripId}"/>
+            Please select a flight for your trip N°: <span class="tb" th:text="*{shortTripId}"/>
         </div>
 
         <div class="row-cols-2 mt-2">
 
-            <table>
+            <table class="flights">
                 <thead>
                 <tr>
                     <th></th>
@@ -48,6 +48,7 @@
                                 <button class="btn btn-sm btn-success" onclick="submitForm(this)">Select</button>
                             </form>
                         </th:block>
+                        <span th:if="${#object.selectedFlightNumber == flight.flightNumber.number}">Selected</span>
                     </td>
                 </tr>
                 </tbody>

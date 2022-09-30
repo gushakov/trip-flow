@@ -1,6 +1,7 @@
 package com.github.tripflow.core.usecase.flight;
 
 import com.github.tripflow.core.GenericTripFlowError;
+import com.github.tripflow.core.model.Validator;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.Trip;
@@ -68,8 +69,22 @@ public class BookFlightUseCase implements BookFlightInputPort {
     public void confirmFlightBooking(String taskId) {
 
         try {
+            // get the task
+            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+
+            // get the trip
+            Trip trip = dbOps.loadTrip(tripTask.getTripId());
+
+            /*
+                Checking the flow-aggregate invariant here: we proceed with the flow
+                only if the state of the flow (encapsulated with "tripTask") and the
+                state of the corresponding "trip" aggregate are coherent.
+             */
+            Validator.assertThatFlightCanBeBooked(tripTask, trip);
+
             // complete the task
             tasksOps.completeTask(taskId);
+
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;

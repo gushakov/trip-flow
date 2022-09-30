@@ -1,8 +1,8 @@
-thead.flights {
+.flights thead {
     background-color: paleturquoise
 }
 
-tbody.flights {
+.flights tbody {
     background-color: aliceblue
 }
 

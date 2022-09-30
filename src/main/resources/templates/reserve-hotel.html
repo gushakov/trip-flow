@@ -25,15 +25,12 @@
                             </div>
                             <div class="col" style="text-align: end">
                                 <th:block th:if="${#object.selectedHotelId == hotel.hotelId.id}">
-                                    <span>Reserved</span>
+                                    <span>Selected</span>
                                 </th:block>
                                 <th:block th:if="${#object.selectedHotelId != hotel.hotelId.id}">
-                                    <a href="#" class="btn btn-sm btn-success">Reserve</a>
-
                                     <form method="post" action="#" th:action="@{/selectHotelForTrip(taskId=*{taskId},tripId=*{tripId},hotelId=${hotel.hotelId.id})}">
                                         <button class="btn btn-sm btn-success" onclick="submitForm(this)">Reserve</button>
                                     </form>
-
                                 </th:block>
                             </div>
                         </div>

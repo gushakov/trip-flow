@@ -41,7 +41,7 @@ public class Trip {
         this.hotelId = hotelId;
     }
 
-    public boolean hasFlightBooked() {
+    public boolean hasFlightSelected() {
         return flightNumber != null;
     }
 
@@ -50,31 +50,10 @@ public class Trip {
     }
 
     public Trip reserveHotel(HotelId hotelId) {
-
-        // enforce aggregate invariant: we can only reserve hotel if
-        // a flight was booked already for the trip
-
-        if (!hasFlightBooked()){
-            throw new TripFlowValidationError("Cannot reserve hotel for the trip before a flight has been booked.");
-        }
-
-        /*
-            Discussion point:
-            ----------------
-
-            If we do not allow to reserve a hotel in the city different from the
-            destination city of the flight, where should we enforce this rule?
-            In the use case (reserveHotel)? Or in this method here? In the latter case,
-            we would have to have the destination city as the attribute of "Trip"
-            aggregate, and we would have to pass the city of the hotel as a parameter
-            to this method.
-
-         */
-
         return newTrip().hotelId(hotelId).build();
     }
 
-    public boolean hasHotelReserved(){
+    public boolean hasHotelSelected(){
         return hotelId != null;
     }
 

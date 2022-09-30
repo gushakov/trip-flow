@@ -1,7 +1,7 @@
 package com.github.tripflow.core.usecase.hotel;
 
 import com.github.tripflow.core.GenericTripFlowError;
-import com.github.tripflow.core.InconsistentWorkflowStateError;
+import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
@@ -44,23 +44,9 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
 
-
-            /*
-                Discussion point:
-                ----------------
-
-                We should check that we are in the consistent state here: the workflow
-                state (the flight has been booked) corresponds to the equivalent state
-                of the "Trip" aggregate.
-
-                Is this the best place to enforce these kind of invariants, i.e. between
-                the state of the workflow and the state of the aggregates? We need to
-                duplicate this check in the step right before confirming the hotel's reservation,
-                as well.
-             */
-
-            if (!tripTask.isFlightBooked() || !trip.hasFlightBooked()) {
-                throw new InconsistentWorkflowStateError("Trip with ID: %s does not yet have a flight registered."
+            // check flow-aggregate invariant
+            if (!trip.hasFlightSelected()) {
+                throw new TripFlowValidationError("Trip %s does not have any flight selected"
                         .formatted(trip.getTripId()));
             }
 
@@ -76,7 +62,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             return;
         }
 
-        presenter.presentHotelsInDestinationCityForSelectionByCustomer(taskId, trip.getTripId(), city, hotels);
+        presenter.presentHotelsInDestinationCityForSelectionByCustomer(taskId, trip, city, hotels);
 
     }
 

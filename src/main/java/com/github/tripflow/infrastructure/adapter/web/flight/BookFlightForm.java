@@ -15,6 +15,7 @@ public class BookFlightForm {
 
     String taskId;
     Long tripId;
+    String shortTripId;
     List<Flight> flights;
     String selectedFlightNumber;
 

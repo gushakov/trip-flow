@@ -2,6 +2,7 @@ package com.github.tripflow.infrastructure.adapter.web.hotel;
 
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
+import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
@@ -23,12 +24,14 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
     }
 
     @Override
-    public void presentHotelsInDestinationCityForSelectionByCustomer(String taskId, TripId tripId, String city, List<Hotel> hotels) {
+    public void presentHotelsInDestinationCityForSelectionByCustomer(String taskId, Trip trip, String city, List<Hotel> hotels) {
 
+        HotelId hotelId = trip.getHotelId();
         presentModelAndView(Map.of("reserveHotelForm",
                 ReserveHotelForm.builder()
                         .taskId(taskId)
-                        .tripId(tripId.getId())
+                        .tripId(trip.getTripId().getId())
+                        .selectedHotelId(hotelId != null ? hotelId.getId() : null)
                         .city(city)
                         .hotels(hotels)
                         .build()), "reserve-hotel");

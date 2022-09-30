@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.home;
 
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
@@ -40,10 +41,10 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     }
 
     @Override
-    public void presentResultOfStartingNewTripBooking(Long pik) {
+    public void presentResultOfStartingNewTripBooking(TripId tripId) {
         message(
                 "New process with ID %s just started. You may need to refresh this view."
-                        .formatted(pik));
+                        .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
     }
 }
