@@ -8,6 +8,7 @@ import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenter
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
+import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
@@ -16,6 +17,8 @@ import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
+import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
+import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,6 +66,15 @@ public class UseCaseConfig {
                                                      TasksOperationsOutputPort tasksOps,
                                                      DbPersistenceOperationsOutputPort dbOps) {
         return new ReserveHotelUseCase(presenter, securityOps, tasksOps, dbOps);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ViewSummaryInputPort viewSummaryUseCase(ViewSummaryPresenterOutputPort presenter,
+                                                   SecurityOperationsOutputPort securityOps,
+                                                   TasksOperationsOutputPort tasksOps,
+                                                   DbPersistenceOperationsOutputPort dbOps) {
+        return new ViewSummaryUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 
 }

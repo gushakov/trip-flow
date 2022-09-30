@@ -27,7 +27,7 @@ public class ReserveHotelController {
     }
 
     //selectHotelForTrip
-    @PostMapping(value = "/selectHotelForTrip", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/selectHotelForTrip")
     @ResponseBody
     public void selectHotelForTrip(@RequestParam String taskId,
                                    @RequestParam Long tripId,
@@ -37,7 +37,7 @@ public class ReserveHotelController {
 
     }
 
-    @PostMapping(value = "/confirmHotelReservation", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/confirmHotelReservation")
     @ResponseBody
     public void confirmHotelReservation(@RequestParam String taskId){
         useCase().confirmHotelReservation(taskId);

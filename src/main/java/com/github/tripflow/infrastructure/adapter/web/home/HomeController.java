@@ -40,7 +40,7 @@ public class HomeController {
         useCase().welcomeUser();
     }
 
-    @PostMapping(value = "/createNewTripBooking", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value = "/createNewTripBooking")
     @ResponseBody
     public void createNewTripBooking() {
         useCase().startNewTripBooking();

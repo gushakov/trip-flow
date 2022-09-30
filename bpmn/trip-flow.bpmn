@@ -30,10 +30,10 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_18lybuw" sourceRef="Activity_19a0muq" targetRef="Activity_1fc4aw0" />
     <bpmn:sequenceFlow id="Flow_1kni5rp" sourceRef="Activity_1fc4aw0" targetRef="Activity_09vtn98" />
-    <bpmn:userTask id="Activity_09vtn98" name="consult trip summary">
+    <bpmn:userTask id="Activity_09vtn98" name="view summary">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:input source="=&#34;consultTripSummary&#34;" target="action" />
+          <zeebe:input source="=&#34;viewSummary&#34;" target="action" />
         </zeebe:ioMapping>
         <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
       </bpmn:extensionElements>

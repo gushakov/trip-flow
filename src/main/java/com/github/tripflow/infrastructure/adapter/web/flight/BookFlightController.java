@@ -29,7 +29,7 @@ public class BookFlightController {
 
     }
 
-    @PostMapping(value = "/selectFlightForTrip", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/selectFlightForTrip")
     @ResponseBody
     public void selectFlightForTrip(@RequestParam String taskId,
                                     @RequestParam Long tripId,
@@ -37,7 +37,7 @@ public class BookFlightController {
         useCase().registerSelectedFlightWithTrip(taskId, TripId.of(tripId), FlightNumber.of(flightNumber));
     }
 
-    @PostMapping(value = "/confirmFlightBooking", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/confirmFlightBooking")
     @ResponseBody
     public void confirmFlightBooking(@RequestParam String taskId) {
         useCase().confirmFlightBooking(taskId);

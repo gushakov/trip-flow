@@ -10,11 +10,14 @@ import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.tasklist.auth.SimpleAuthentication;
 import io.camunda.tasklist.dto.TaskState;
 import io.camunda.tasklist.exception.TaskListException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
     References:
@@ -32,9 +35,13 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
 
     private final String taskListClientUserName;
 
-    public ZeebeTaskClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper) {
+    private final RetryTemplate retryTemplate;
+
+    public ZeebeTaskClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper,
+                                            @Qualifier("taskListClient") RetryTemplate retryTemplate) {
         this.taskMapper = taskMapper;
         this.taskListClientUserName = tripFlowProps.getTaskListClientUserName();
+        this.retryTemplate = retryTemplate;
 
         SimpleAuthentication auth = new SimpleAuthentication(tripFlowProps.getTaskListClientUserName(), tripFlowProps.getTaskListClientPassword());
 
@@ -57,9 +64,15 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     @Override
     public List<TripTask> listActiveTasksForAssigneeCandidateGroup(String assigneeRole) {
         try {
-            // can only get 1000 tasks at one time maximum
-            return taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
-                    .stream().map(taskMapper::convert).toList();
+
+            final AtomicInteger counter = new AtomicInteger(0);
+            // Fetch the list of tasks with retry until all tasks are retrieved
+            // with all variables. Note that we can only can get 1000 tasks
+            // maximum at once.
+            return retryTemplate.execute(retryContext -> taskListClient.getGroupTasks(assigneeRole,
+                            TaskState.CREATED, 100, true)
+                    .stream().map(taskMapper::convert).toList());
+
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
@@ -69,11 +82,14 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     public TripTask retrieveActiveTaskForAssigneeCandidateGroup(String taskId, String assigneeRole) {
 
         try {
-            return taskMapper.convert(taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
-                    .stream().filter(task -> task.getId().equals(taskId))
-                    .findAny()
-                    .orElseThrow(() -> new TaskOperationError("Cannot find active task with ID: %s, assigned to candidate group: %s"
-                            .formatted(taskId, assigneeRole))));
+            // fetch a task with matching task ID retrying if task variables are not available
+            return retryTemplate.execute(retryContext ->
+                    taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
+                            .stream().filter(task -> task.getId().equals(taskId))
+                            .findAny()
+                            .map(taskMapper::convert)
+                            .orElseThrow(() -> new TaskOperationError("Cannot find active task with ID: %s, assigned to candidate group: %s"
+                                    .formatted(taskId, assigneeRole))));
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

@@ -1,11 +1,14 @@
 package com.github.tripflow.infrastructure.config;
 
+import com.github.tripflow.core.port.operation.workflow.TaskVariableVariableNotPresentError;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.retry.support.RetryTemplateBuilder;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /*
@@ -34,5 +37,16 @@ public class AppConfig {
         return new LocalDispatcherServlet();
     }
 
+    // Spring RetryTemplate for TaskList client
+
+    @Bean
+    @Qualifier("taskListClient")
+    public RetryTemplate taskListClientRetryTemplate(){
+      return  new RetryTemplateBuilder()
+              .fixedBackoff(500L)
+              .retryOn(TaskVariableVariableNotPresentError.class)
+              .maxAttempts(10)
+              .build();
+    }
 
 }
