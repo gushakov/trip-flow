@@ -8,7 +8,6 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
-import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntity;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
@@ -106,8 +105,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         try {
             return dbMapper.convert(hotelEntityRepo.findById(hotelId.getId())
                     .orElseThrow(IllegalStateException::new));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot load hotel with ID: %s"
                     .formatted(hotelId));
         }

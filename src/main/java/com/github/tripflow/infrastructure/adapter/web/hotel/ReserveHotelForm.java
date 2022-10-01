@@ -20,7 +20,7 @@ public class ReserveHotelForm {
 
     String selectedHotelId;
 
-    public boolean isHotelSelected(){
+    public boolean isHotelSelected() {
         return selectedHotelId != null;
     }
 

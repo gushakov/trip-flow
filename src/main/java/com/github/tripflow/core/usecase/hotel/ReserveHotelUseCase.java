@@ -2,7 +2,6 @@ package com.github.tripflow.core.usecase.hotel;
 
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.TripFlowValidationError;
-import com.github.tripflow.core.model.Validator;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
@@ -46,7 +45,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             trip = dbOps.loadTrip(tripTask.getTripId());
 
             // check that trip has a flight selected
-            if (!trip.hasFlightSelected()) {
+            if (!trip.hasFlightBookingAssigned()) {
                 throw new TripFlowValidationError("Trip %s does not have any flight selected"
                         .formatted(trip.getTripId()));
             }
@@ -74,7 +73,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
         Trip trip;
         try {
             trip = dbOps.loadTrip(tripId);
-            dbOps.updateTrip(trip.reserveHotel(hotelId));
+            dbOps.updateTrip(trip.assignHotelReservation(hotelId));
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
@@ -83,6 +82,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
         presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
     }
 
+    @Transactional
     @Override
     public void confirmHotelReservation(String taskId) {
         try {
@@ -99,11 +99,20 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             // get the hotel
             Hotel hotel = dbOps.loadHotel(trip.getHotelId());
 
-            // check flow-aggregate invariants
-            Validator.assertThatHotelCanBeReserved(tripTask, trip, flight, hotel);
+            // We need to check some inter-aggregate invariants here.
 
-            // complete the task
-            tasksOps.completeHotelReservationTask(taskId);
+            // flight destination city must be the same as hotel city
+            if (!flight.getDestinationCity().equals(hotel.getCity())) {
+                throw new TripFlowValidationError("The destination city of the flight: %s not equal to the city of the hotel: %s"
+                        .formatted(flight.getDestinationCity(), hotel.getCity()));
+            }
+
+            // confirm hotel reservation and update Trip aggregate
+            Trip withConfirmedHotelReservation = trip.confirmHotelReservation(hotel.getHotelId());
+            dbOps.updateTrip(withConfirmedHotelReservation);
+
+            // complete the workflow task
+            tasksOps.completeTask(taskId);
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);

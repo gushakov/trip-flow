@@ -10,7 +10,5 @@ public interface TasksOperationsOutputPort {
 
     TripTask retrieveActiveTaskForAssigneeCandidateGroup(String taskId, String assigneeRole);
 
-    void completeFlightBookingTask(String taskId);
-
-    void completeHotelReservationTask(String taskId);
+    void completeTask(String taskId);
 }

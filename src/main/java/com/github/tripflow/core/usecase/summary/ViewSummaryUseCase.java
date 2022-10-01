@@ -10,7 +10,7 @@ import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutpu
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ViewSummaryUseCase implements ViewSummaryInputPort{
+public class ViewSummaryUseCase implements ViewSummaryInputPort {
 
     private final ViewSummaryPresenterOutputPort presenter;
     private final SecurityOperationsOutputPort securityOps;

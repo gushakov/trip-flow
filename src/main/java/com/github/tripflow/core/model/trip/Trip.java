@@ -34,33 +34,52 @@ public class Trip {
         // these are never null
         this.tripId = notNull(tripId);
         this.startedBy = notNull(startedBy);
-        this.status = Optional.ofNullable(status).orElse(TripStatus.undefined);
+        this.status = Optional.ofNullable(status).orElse(TripStatus.UNDEFINED);
 
         // these can be null
         this.flightNumber = flightNumber;
         this.hotelId = hotelId;
     }
 
-    public boolean hasFlightSelected() {
+    public boolean hasFlightBookingAssigned() {
         return flightNumber != null;
     }
 
-    public Trip bookFlight(FlightNumber number) {
+    public Trip assignFlightBooking(FlightNumber number) {
         return newTrip().flightNumber(number).build();
     }
 
-    public Trip reserveHotel(HotelId hotelId) {
+    public Trip assignHotelReservation(HotelId hotelId) {
         return newTrip().hotelId(hotelId).build();
     }
 
-    public boolean hasHotelSelected(){
+    public boolean hasHotelReservationAssigned() {
         return hotelId != null;
+    }
+
+    public Trip confirmFlightBooking() {
+        // a flight booking must be assigned
+        if (!hasFlightBookingAssigned()) {
+            throw new TripFlowValidationError("A flight booking must be assigned prior to confirmation, trip ID: %s"
+                    .formatted(tripId.getId()));
+        }
+        return newTrip().status(TripStatus.FLIGHT_BOOKED).build();
+    }
+
+    public Trip confirmHotelReservation(HotelId hotelId) {
+        // a hotel reservation must be assigned
+        if (!hasHotelReservationAssigned()) {
+            throw new TripFlowValidationError("A hotel reservation must be assigned prior to confiration, trip ID: %s"
+                    .formatted(tripId.getId()));
+        }
+        return newTrip().status(TripStatus.HOTEL_RESERVED).build();
     }
 
     private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)
                 .startedBy(startedBy)
+                .status(status)
                 .flightNumber(flightNumber)
                 .hotelId(hotelId);
 

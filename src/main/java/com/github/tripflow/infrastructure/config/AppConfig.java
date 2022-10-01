@@ -41,12 +41,12 @@ public class AppConfig {
 
     @Bean
     @Qualifier("taskListClient")
-    public RetryTemplate taskListClientRetryTemplate(){
-      return  new RetryTemplateBuilder()
-              .fixedBackoff(500L)
-              .retryOn(TaskVariableVariableNotPresentError.class)
-              .maxAttempts(10)
-              .build();
+    public RetryTemplate taskListClientRetryTemplate() {
+        return new RetryTemplateBuilder()
+                .fixedBackoff(500L)
+                .retryOn(TaskVariableVariableNotPresentError.class)
+                .maxAttempts(10)
+                .build();
     }
 
 }

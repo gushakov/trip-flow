@@ -1,6 +1,5 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
-import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
@@ -97,16 +96,7 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     }
 
     @Override
-    public void completeFlightBookingTask(String taskId) {
-        completeTask(taskId, Map.of(Constants.FLIGHT_BOOKED_VARIABLE, true));
-    }
-
-    @Override
-    public void completeHotelReservationTask(String taskId) {
-        completeTask(taskId, Map.of(Constants.HOTEL_RESERVED_VARIABLE, true));
-    }
-
-    private void completeTask(String taskId, Map<String, Object> vars) {
+    public void completeTask(String taskId) {
         try {
 
             // need to claim the task for "demo" (Camunda administrator) user used by TaskList client
@@ -114,9 +104,8 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
 
             taskListClient.claim(taskId, taskListClientUserName);
 
-            // complete the task, setting variables
-
-            taskMapper.convert(taskListClient.completeTask(taskId, vars));
+            // complete the task
+            taskListClient.completeTask(taskId, Map.of());
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

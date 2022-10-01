@@ -12,6 +12,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * MapStruct mapper from an instant of a workflow {@code Task}. Will map
+ * certain variables which are assumed to always be present in a scope
+ * of a user task.
+ */
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
 
@@ -19,8 +24,6 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
     @Mapping(target = "tripStartedBy", source = "workflowTask", qualifiedByName = "mapTripStartedByFromTaskVariable")
     @Mapping(target = "action", source = "workflowTask", qualifiedByName = "mapActionFromTaskVariable")
     @Mapping(target = "tripId", source = "workflowTask", qualifiedByName = "mapTripIdFromTaskVariable")
-    @Mapping(target = "flightBooked", source = "workflowTask", qualifiedByName = "mapFlightBookedFromTaskVariable")
-    @Mapping(target = "hotelReserved", source = "workflowTask", qualifiedByName = "mapHotelReservedFromTaskVariable")
     protected abstract TripTask map(Task workflowTask);
 
     @Named("mapTripIdFromTaskVariable")
@@ -52,26 +55,6 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(String.class::cast)
                 .findFirst()
                 .orElseThrow(TaskVariableVariableNotPresentError::new);
-    }
-
-    @Named("mapFlightBookedFromTaskVariable")
-    protected boolean mapFlightBookedFromTaskVariable(Task workflowTask) {
-        return workflowTask.getVariables().stream()
-                .filter(variable -> variable.getName().equals(Constants.FLIGHT_BOOKED_VARIABLE))
-                .map(Variable::getValue)
-                .map(Boolean.class::cast)
-                .findFirst()
-                .orElse(false);
-    }
-
-    @Named("mapHotelReservedFromTaskVariable")
-    protected boolean mapHotelReservedFromTaskVariable(Task workflowTask) {
-        return workflowTask.getVariables().stream()
-                .filter(variable -> variable.getName().equals(Constants.HOTEL_RESERVED_VARIABLE))
-                .map(Variable::getValue)
-                .map(Boolean.class::cast)
-                .findFirst()
-                .orElse(false);
     }
 
     @IgnoreForMapping

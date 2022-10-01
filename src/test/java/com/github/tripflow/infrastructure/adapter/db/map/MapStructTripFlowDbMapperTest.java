@@ -5,7 +5,6 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripStatus;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.map.CommonMapStructConvertersImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -26,7 +25,7 @@ public class MapStructTripFlowDbMapperTest {
                 .build();
 
         // status should be undefined
-        assertThat(trip.getStatus()).isEqualTo(TripStatus.undefined);
+        assertThat(trip.getStatus()).isEqualTo(TripStatus.UNDEFINED);
 
         TripEntity tripEntity = dbMapper.map(trip);
 

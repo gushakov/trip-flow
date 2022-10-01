@@ -6,9 +6,11 @@ import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Slf4j
@@ -31,7 +33,7 @@ public class ReserveHotelController {
     @ResponseBody
     public void selectHotelForTrip(@RequestParam String taskId,
                                    @RequestParam Long tripId,
-                                   @RequestParam String hotelId){
+                                   @RequestParam String hotelId) {
 
         useCase().registerSelectedHotelWithTrip(taskId, TripId.of(tripId), HotelId.of(hotelId));
 
@@ -39,7 +41,7 @@ public class ReserveHotelController {
 
     @PostMapping(value = "/confirmHotelReservation")
     @ResponseBody
-    public void confirmHotelReservation(@RequestParam String taskId){
+    public void confirmHotelReservation(@RequestParam String taskId) {
         useCase().confirmHotelReservation(taskId);
     }
 
