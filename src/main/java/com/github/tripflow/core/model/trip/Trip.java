@@ -75,6 +75,14 @@ public class Trip {
         return newTrip().status(TripStatus.HOTEL_RESERVED).build();
     }
 
+    public boolean isFlightBooked(){
+        return status == TripStatus.FLIGHT_BOOKED;
+    }
+
+    public boolean isHotelReserved(){
+        return status == TripStatus.HOTEL_RESERVED;
+    }
+
     private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)

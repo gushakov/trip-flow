@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.browse;
 
-import com.github.tripflow.core.model.trip.TripTask;
+import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -21,9 +21,9 @@ public class BrowseActiveTripsPresenter extends AbstractWebPresenter implements 
     }
 
     @Override
-    public void presentActiveTasksForTripsStartedByUser(List<TripTask> tasks) {
+    public void presentActiveTasksForTripsStartedByUser(List<TripEntry> tripEntries) {
 
-        presentModelAndView(Map.of("tripTasks", tasks), "browse-active-trips");
+        presentModelAndView(Map.of("tripEntries", tripEntries), "browse-active-trips");
 
     }
 }

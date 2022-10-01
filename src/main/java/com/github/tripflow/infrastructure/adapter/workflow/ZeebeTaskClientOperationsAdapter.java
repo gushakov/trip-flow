@@ -16,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /*
     References:
@@ -64,7 +63,6 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     public List<TripTask> listActiveTasksForAssigneeCandidateGroup(String assigneeRole) {
         try {
 
-            final AtomicInteger counter = new AtomicInteger(0);
             // Fetch the list of tasks with retry until all tasks are retrieved
             // with all variables. Note that we can only can get 1000 tasks
             // maximum at once.

@@ -26,19 +26,19 @@
             </tr>
             </thead>
             <tbody>
-            <!--/*@thymesVar id="tripTasks" type="java.util.List<com.github.tripflow.core.model.trip.TripTask>"*/-->
-            <tr th:each="task: ${tripTasks}">
+            <!--/*@thymesVar id="tripEntries" type="java.util.List<com.github.tripflow.core.model.trip.TripEntry>"*/-->
+            <tr th:each="entry: ${tripEntries}">
 
-                <td th:text="${task.tripId.shortId}"></td>
+                <td th:text="${entry.tripId.shortId}"></td>
 
                 <td>
-                    <i th:if="${task.flightBooked}" class="fa fa-plane"></i>
-                    <i th:if="${task.hotelReserved}" class="fa fa-hotel"></i>
+                    <i th:if="${entry.flightBooked}" class="fa fa-plane"></i>
+                    <i th:if="${entry.hotelReserved}" class="fa fa-hotel"></i>
                 </td>
 
-                <td th:text="${task.name}"></td>
+                <td th:text="${entry.taskName}"></td>
                 <td>
-                    <form method="post" action="#" th:action="@{/performTaskAction(action=${task.action},taskId=${task.taskId})}">
+                    <form method="post" action="#" th:action="@{/performTaskAction(action=${entry.taskAction},taskId=${entry.taskId})}">
                         <button class="btn btn-sm btn-success" onclick="submitForm(this)">Continue
                         </button>
                     </form>

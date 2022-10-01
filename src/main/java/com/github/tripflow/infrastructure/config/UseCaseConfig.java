@@ -46,8 +46,9 @@ public class UseCaseConfig {
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter,
                                                                SecurityOperationsOutputPort securityOps,
-                                                               TasksOperationsOutputPort tasksOps) {
-        return new BrowseActiveTripsUseCase(presenter, securityOps, tasksOps);
+                                                               TasksOperationsOutputPort tasksOps,
+                                                               DbPersistenceOperationsOutputPort dbOps) {
+        return new BrowseActiveTripsUseCase(presenter, securityOps, tasksOps, dbOps);
     }
 
     @Bean

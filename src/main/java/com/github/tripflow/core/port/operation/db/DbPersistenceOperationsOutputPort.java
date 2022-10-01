@@ -24,4 +24,6 @@ public interface DbPersistenceOperationsOutputPort {
     Flight loadFlight(FlightNumber flightNumber);
 
     Hotel loadHotel(HotelId hotelId);
+
+    List<Trip> findOpenTripsStartedByUser(String startedBy);
 }
