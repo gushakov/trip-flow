@@ -6,7 +6,6 @@ import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.model.trip.TripStatus;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
@@ -20,7 +19,6 @@ import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -116,8 +114,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public List<Trip> findOpenTripsStartedByUser(String startedBy) {
         try {
-            return tripEntityRepo.findAllByStartedByAndStatusNotIn(startedBy,
-                    Set.of(TripStatus.CANCELED.name(), TripStatus.CONFIRMED.name()))
+            return tripEntityRepo.findAllByStartedByAndTripCancelledIsFalseAndTripConfirmedIsFalse(startedBy)
                     .stream().map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {

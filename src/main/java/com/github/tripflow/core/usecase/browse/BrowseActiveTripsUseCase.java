@@ -27,7 +27,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Override
-    public void listActiveTasksForTripsStartedByUser() {
+    public void listEntriesForActiveTripsStartedByUser() {
 
         List<TripEntry> tripEntries;
         try {

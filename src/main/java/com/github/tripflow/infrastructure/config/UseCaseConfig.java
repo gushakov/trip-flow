@@ -2,6 +2,7 @@ package com.github.tripflow.infrastructure.config;
 
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.ContinueWorkflowPresenterOutputPort;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
@@ -19,6 +20,8 @@ import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
 import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
 import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
+import com.github.tripflow.core.usecase.workflow.ContinueWorkflowInputPort;
+import com.github.tripflow.core.usecase.workflow.ContinueWorkflowUseCase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,6 +79,14 @@ public class UseCaseConfig {
                                                    TasksOperationsOutputPort tasksOps,
                                                    DbPersistenceOperationsOutputPort dbOps) {
         return new ViewSummaryUseCase(presenter, securityOps, tasksOps, dbOps);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ContinueWorkflowInputPort continueWorkflowUseCase(ContinueWorkflowPresenterOutputPort presenter,
+                                                             SecurityOperationsOutputPort securityOps,
+                                                             TasksOperationsOutputPort tasksOps) {
+        return new ContinueWorkflowUseCase(presenter, securityOps, tasksOps);
     }
 
 }

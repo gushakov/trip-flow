@@ -1,6 +1,8 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
+import com.github.tripflow.core.port.operation.workflow.TaskNotInitializedError;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMapper;
@@ -16,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /*
     References:
@@ -107,5 +110,31 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public Optional<TripTask> retrieveNextActiveTaskForUser(TripId tripId, String assigneeRole, String tripStartedBy) {
+
+        try {
+            return retryTemplate.execute(retryContext ->
+            {
+                Optional<TripTask> tripTaskOpt = taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
+                        .stream()
+                        .map(taskMapper::convert)
+                        .filter(tripTask -> tripTask.getTripId().equals(tripId)
+                                && tripTask.getTripStartedBy().equals(tripStartedBy))
+                        .findAny();
+
+                if (retryContext.getRetryCount() < 10 && tripTaskOpt.isEmpty()){
+                    throw new TaskNotInitializedError();
+                }
+
+                return tripTaskOpt;
+            });
+
+        } catch (TaskListException e) {
+            throw new TaskOperationError(e.getMessage(), e);
+        }
+
     }
 }

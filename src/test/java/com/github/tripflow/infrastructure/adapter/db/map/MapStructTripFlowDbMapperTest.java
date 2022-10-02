@@ -2,7 +2,6 @@ package com.github.tripflow.infrastructure.adapter.db.map;
 
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.model.trip.TripStatus;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.map.CommonMapStructConvertersImpl;
 import org.junit.jupiter.api.Test;
@@ -24,16 +23,18 @@ public class MapStructTripFlowDbMapperTest {
                 .startedBy("customer1")
                 .build();
 
-        // status should be undefined
-        assertThat(trip.getStatus()).isEqualTo(TripStatus.UNDEFINED);
+        // flight booked and hotel reserved flags should start with "false"
+        assertThat(trip.isFlightBooked()).isFalse();
+        assertThat(trip.isHotelReserved()).isFalse();
 
         TripEntity tripEntity = dbMapper.map(trip);
 
         assertThat(tripEntity)
                 .extracting(TripEntity::getTripId,
                         TripEntity::getStartedBy,
-                        TripEntity::getStatus)
-                .containsExactly(1L, "customer1", "undefined");
+                        TripEntity::isFlightBooked,
+                        TripEntity::isHotelReserved)
+                .containsExactly(1L, "customer1", false, false);
 
     }
 }

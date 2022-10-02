@@ -12,9 +12,6 @@ public class TripEntity {
     @Id
     private Long tripId;
 
-    @Column("status")
-    private String status;
-
     @Column("started_by")
     private String startedBy;
 
@@ -23,5 +20,17 @@ public class TripEntity {
 
     @Column("hotel_id")
     private String hotelId;
+
+    @Column("flight_booked")
+    private boolean flightBooked;
+
+    @Column("hotel_reserved")
+    private boolean hotelReserved;
+
+    @Column("trip_cancelled")
+    private boolean tripCancelled;
+
+    @Column("trip_cancelled")
+    private boolean tripConfirmed;
 
 }

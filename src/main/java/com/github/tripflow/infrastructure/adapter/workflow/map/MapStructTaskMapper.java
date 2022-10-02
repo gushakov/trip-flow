@@ -3,7 +3,7 @@ package com.github.tripflow.infrastructure.adapter.workflow.map;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
-import com.github.tripflow.core.port.operation.workflow.TaskVariableVariableNotPresentError;
+import com.github.tripflow.core.port.operation.workflow.TaskNotInitializedError;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import io.camunda.tasklist.dto.Task;
@@ -34,7 +34,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Long.class::cast)
                 .findFirst()
                 .map(TripId::of)
-                .orElseThrow(TaskVariableVariableNotPresentError::new);
+                .orElseThrow(TaskNotInitializedError::new);
     }
 
     @Named("mapActionFromTaskVariable")
@@ -44,7 +44,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(String.class::cast)
                 .findFirst()
-                .orElseThrow(TaskVariableVariableNotPresentError::new);
+                .orElseThrow(TaskNotInitializedError::new);
     }
 
     @Named("mapTripStartedByFromTaskVariable")
@@ -54,7 +54,7 @@ public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
                 .map(Variable::getValue)
                 .map(String.class::cast)
                 .findFirst()
-                .orElseThrow(TaskVariableVariableNotPresentError::new);
+                .orElseThrow(TaskNotInitializedError::new);
     }
 
     @IgnoreForMapping

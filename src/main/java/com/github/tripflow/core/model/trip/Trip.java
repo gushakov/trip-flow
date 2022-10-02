@@ -9,8 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Optional;
-
 import static com.github.tripflow.core.model.Validator.notNull;
 
 @Getter
@@ -26,33 +24,56 @@ public class Trip {
     FlightNumber flightNumber;
 
     HotelId hotelId;
+    boolean flightBooked;
 
-    TripStatus status;
+    boolean hotelReserved;
+
+    boolean tripCancelled;
+
+    boolean tripConfirmed;
 
     @Builder
-    public Trip(TripId tripId, String startedBy, FlightNumber flightNumber, HotelId hotelId, TripStatus status) {
+    public Trip(TripId tripId, String startedBy,
+                FlightNumber flightNumber, HotelId hotelId,
+                boolean flightBooked, boolean hotelReserved,
+                boolean tripCancelled, boolean tripConfirmed) {
         // these are never null
         this.tripId = notNull(tripId);
         this.startedBy = notNull(startedBy);
-        this.status = Optional.ofNullable(status).orElse(TripStatus.UNDEFINED);
+
+        // there will be false by default
+        this.flightBooked = flightBooked;
+        this.hotelReserved = hotelReserved;
+        this.tripCancelled = tripCancelled;
+        this.tripConfirmed = tripConfirmed;
 
         // these can be null
         this.flightNumber = flightNumber;
         this.hotelId = hotelId;
     }
 
-    public boolean hasFlightBookingAssigned() {
-        return flightNumber != null;
-    }
-
     public Trip assignFlightBooking(FlightNumber number) {
         return newTrip().flightNumber(number).build();
+    }
+
+    /**
+     * Will indicate that a flight booking was assigned to the trip, but not necessarily
+     * confirmed yet.
+     * @return {@code true} if a flight was selected for the trip
+     */
+    public boolean hasFlightBookingAssigned() {
+        return flightNumber != null;
     }
 
     public Trip assignHotelReservation(HotelId hotelId) {
         return newTrip().hotelId(hotelId).build();
     }
 
+    /**
+     * Will indicate that a hotel reservation was assigned to the trip, but not necessarily
+     * confirmed yet.
+     * @returnco {@code true} if a hotel was selected for the trip
+     */
     public boolean hasHotelReservationAssigned() {
         return hotelId != null;
     }
@@ -63,7 +84,7 @@ public class Trip {
             throw new TripFlowValidationError("A flight booking must be assigned prior to confirmation, trip ID: %s"
                     .formatted(tripId.getId()));
         }
-        return newTrip().status(TripStatus.FLIGHT_BOOKED).build();
+        return newTrip().flightBooked(true).build();
     }
 
     public Trip confirmHotelReservation(HotelId hotelId) {
@@ -72,24 +93,19 @@ public class Trip {
             throw new TripFlowValidationError("A hotel reservation must be assigned prior to confiration, trip ID: %s"
                     .formatted(tripId.getId()));
         }
-        return newTrip().status(TripStatus.HOTEL_RESERVED).build();
-    }
-
-    public boolean isFlightBooked(){
-        return status == TripStatus.FLIGHT_BOOKED;
-    }
-
-    public boolean isHotelReserved(){
-        return status == TripStatus.HOTEL_RESERVED;
+        return newTrip().hotelReserved(true).build();
     }
 
     private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)
                 .startedBy(startedBy)
-                .status(status)
                 .flightNumber(flightNumber)
-                .hotelId(hotelId);
+                .hotelId(hotelId)
+                .flightBooked(flightBooked)
+                .hotelReserved(hotelReserved)
+                .tripCancelled(tripCancelled)
+                .tripConfirmed(tripConfirmed);
 
     }
 }

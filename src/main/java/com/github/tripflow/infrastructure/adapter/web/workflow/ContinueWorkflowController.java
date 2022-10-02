@@ -1,4 +1,4 @@
-package com.github.tripflow.infrastructure.adapter.web.task;
+package com.github.tripflow.infrastructure.adapter.web.workflow;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @Slf4j
-public class TaskController {
+public class ContinueWorkflowController {
 
     /**
      * Redirects request to the path provided {@code action} parameter. Propagates

@@ -10,26 +10,30 @@ CREATE TABLE public.flight
     CONSTRAINT flight_pk PRIMARY KEY (flight_number)
 );
 
-INSERT INTO public.flight
-(flight_number, airline, origin_city, origin_iata_code, destination_city, destination_iata_code, price)
-VALUES ('LX1712', 'SWISS', 'Zurich', 'ZRH', 'Naples', 'NAP', 301);
-
-INSERT INTO public.flight
-(flight_number, airline, origin_city, origin_iata_code, destination_city, destination_iata_code, price)
-VALUES ('U21343', 'SWISS', 'Geneva', 'GVA', 'Rome', 'FCO', 133);
-
-INSERT INTO public.flight
-(flight_number, airline, origin_city, origin_iata_code, destination_city, destination_iata_code, price)
-VALUES ('IB3403', 'Iberia', 'Paris', 'ORY', 'Madrid', 'MAD', 122);
-
-INSERT INTO public.flight
-(flight_number, airline, origin_city, origin_iata_code, destination_city, destination_iata_code, price)
-VALUES ('LX1622', 'SWISS', 'Zurich', 'ZRH', 'Milan', 'MXP', 193);
+CREATE TABLE public.hotel
+(
+    hotel_id   varchar NOT NULL,
+    hotel_name       varchar NOT NULL,
+    city       varchar NOT NULL,
+    price      int4    NOT NULL,
+    image_file varchar NOT NULL,
+    CONSTRAINT hotel_pk PRIMARY KEY (hotel_id)
+);
 
 CREATE TABLE public.trip
 (
-    trip_id    bigint  NOT NULL,
-    started_by varchar NOT NULL,
-    status     varchar NOT NULL,
+    trip_id        int8    NOT NULL,
+    started_by     varchar NOT NULL,
+    flight_number  varchar NULL,
+    hotel_id       varchar NULL,
+    flight_booked  boolean NOT NULL DEFAULT false,
+    hotel_reserved boolean NOT NULL DEFAULT false,
+    trip_cancelled boolean NOT NULL DEFAULT false,
+    trip_confirmed boolean NOT NULL DEFAULT false,
     CONSTRAINT trip_pk PRIMARY KEY (trip_id)
 );
+
+ALTER TABLE public.trip
+    ADD CONSTRAINT trip_flight_fk FOREIGN KEY (flight_number) REFERENCES public.flight (flight_number);
+ALTER TABLE public.trip
+    ADD CONSTRAINT trip_hotel_fk FOREIGN KEY (hotel_id) REFERENCES public.hotel (hotel_id);
