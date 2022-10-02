@@ -8,6 +8,7 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -67,10 +69,13 @@ public class BookFlightUseCase implements BookFlightInputPort {
     @Transactional
     @Override
     public void confirmFlightBooking(String taskId) {
-
+        Optional<TripTask> nextTripTaskOpt;
+        TripId tripId;
         try {
             // get the task
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            String assigneeRole = securityOps.tripFlowAssigneeRole();
+            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, assigneeRole);
+            tripId = tripTask.getTripId();
 
             // get the trip
             Trip trip = dbOps.loadTrip(tripTask.getTripId());
@@ -81,12 +86,20 @@ public class BookFlightUseCase implements BookFlightInputPort {
             // complete the task
             tasksOps.completeTask(taskId);
 
+            // advance to the next task
+            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripTask.getTripStartedBy());
+
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentSuccessfulResultOfCompletingFlightBooking(taskId);
+        if (nextTripTaskOpt.isPresent()){
+            presenter.presentSuccessfulResultOfCompletingFlightBookingWithNextActiveTask(nextTripTaskOpt.get());
+        }
+        else {
+            presenter.presentSuccessfulResultOfCompletingFlightBookingWithoutNextActiveTask(tripId);
+        }
     }
 
 }

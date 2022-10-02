@@ -2,7 +2,7 @@ package com.github.tripflow.infrastructure.adapter.workflow;
 
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
-import com.github.tripflow.core.port.operation.workflow.TaskNotInitializedError;
+import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMapper;
@@ -11,6 +11,7 @@ import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.tasklist.auth.SimpleAuthentication;
 import io.camunda.tasklist.dto.TaskState;
 import io.camunda.tasklist.exception.TaskListException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,10 @@ import java.util.Optional;
 
 
 @Service
-public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPort {
+@Slf4j
+public class ZeebeTaskListClientOperationsAdapter implements TasksOperationsOutputPort {
+
+    private final TripFlowProperties tripFlowProps;
 
     private final CamundaTaskListClient taskListClient;
     private final WorkflowTaskMapper taskMapper;
@@ -38,8 +42,9 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
 
     private final RetryTemplate retryTemplate;
 
-    public ZeebeTaskClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper,
-                                            @Qualifier("taskListClient") RetryTemplate retryTemplate) {
+    public ZeebeTaskListClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper,
+                                                @Qualifier("taskListClient") RetryTemplate retryTemplate) {
+        this.tripFlowProps = tripFlowProps;
         this.taskMapper = taskMapper;
         this.taskListClientUserName = tripFlowProps.getTaskListClientUserName();
         this.retryTemplate = retryTemplate;
@@ -116,8 +121,10 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
     public Optional<TripTask> retrieveNextActiveTaskForUser(TripId tripId, String assigneeRole, String tripStartedBy) {
 
         try {
-            return retryTemplate.execute(retryContext ->
-            {
+            return retryTemplate.execute(retryContext -> {
+                log.debug("[TaskList Client][Retry] Will try to fetch an active task for candidature group: {}, started by: {}," +
+                        " retry count: {}", assigneeRole, tripStartedBy, retryContext.getRetryCount());
+
                 Optional<TripTask> tripTaskOpt = taskListClient.getGroupTasks(assigneeRole, TaskState.CREATED, 100, true)
                         .stream()
                         .map(taskMapper::convert)
@@ -125,13 +132,20 @@ public class ZeebeTaskClientOperationsAdapter implements TasksOperationsOutputPo
                                 && tripTask.getTripStartedBy().equals(tripStartedBy))
                         .findAny();
 
-                if (retryContext.getRetryCount() < 10 && tripTaskOpt.isEmpty()){
-                    throw new TaskNotInitializedError();
+                // retry if no task could be retrieved from the workflow engine,
+                // and we have not yer exhausted the number of retries
+                if (tripTaskOpt.isEmpty() && retryContext.getRetryCount() < tripFlowProps.getTaskListClientMaxRetries()) {
+                    log.debug("[TaskList Client][Retry] Matching task was not found, will retry, retry count: {}",
+                            retryContext.getRetryCount());
+                    throw new TaskNotFoundError();
                 }
 
                 return tripTaskOpt;
             });
 
+
+        } catch (TaskNotFoundError e) {
+            return Optional.empty();
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

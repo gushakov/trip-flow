@@ -1,19 +1,19 @@
 package com.github.tripflow.core.usecase.home;
 
 import com.github.tripflow.core.GenericTripFlowError;
-import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
-import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
+import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
+import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class WelcomeUseCase implements WelcomeInputPort {
@@ -24,6 +24,8 @@ public class WelcomeUseCase implements WelcomeInputPort {
     private final WorkflowOperationsOutputPort workflowOps;
 
     private final DbPersistenceOperationsOutputPort dbOps;
+
+    private final TasksOperationsOutputPort tasksOps;
 
     /**
      * Welcome user by presenting a list of available operations
@@ -56,47 +58,52 @@ public class WelcomeUseCase implements WelcomeInputPort {
     @Override
     public void startNewTripBooking() {
 
-        Long pik;
+        Long pik = null;
+        String assigneeRole;
         String tripStartedBy;
         Trip trip;
-
-        // get the current user
-
+        Optional<TripTask> nextTripTaskOpt;
         try {
+            // get the current user's username and TripFlow assignee role
+
             tripStartedBy = securityOps.loggedInUserName();
-        } catch (TripFlowSecurityError e) {
-            presenter.presentError(e);
-            return;
-        }
+            assigneeRole = securityOps.tripFlowAssigneeRole();
 
-        // start a new instance of the TripFlow process
+            // start a new instance of the TripFlow process
 
-        try {
             pik = workflowOps.startNewTripBookingProcess(tripStartedBy);
-        } catch (WorkflowClientOperationError e) {
-            presenter.presentErrorStartingNewWorkflowInstance(e);
-            return;
-        }
 
-        // if the process has started OK, proceed to create and persist a new instance of Trip
-        // aggregate
+            // if the process has started OK, proceed to create and persist a new instance of Trip
+            // aggregate
 
-        try {
             trip = Trip.builder()
                     .tripId(TripId.of(pik))
                     .startedBy(tripStartedBy)
                     .build();
             dbOps.saveNewTrip(trip);
-        } catch (TripFlowValidationError | TripFlowDbPersistenceError e) {
+
+            // wait for the workflow engine to start next user task
+            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripStartedBy);
+
+        } catch (GenericTripFlowError e) {
 
             // to be consistent, we need to cancel the created workflow
             // if there were problems creating, validating, or persisting
             // the corresponding aggregate
-            workflowOps.cancelTripBookingProcess(pik);
+            if (pik != null) {
+                workflowOps.cancelTripBookingProcess(pik);
+            }
+
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentResultOfStartingNewTripBooking(trip.getTripId());
+        if (nextTripTaskOpt.isPresent()) {
+            // go directly to the next active task for the user
+            presenter.presentResultOfStartingNewTripBookingWithNextActiveTask(nextTripTaskOpt.get());
+        } else {
+            // it's OK, we'll present an (incomplete) list of tasks and let the user refresh
+            presenter.presentResultOfStartingNewTripBookingWithoutNextActiveTask(trip.getTripId());
+        }
     }
 }

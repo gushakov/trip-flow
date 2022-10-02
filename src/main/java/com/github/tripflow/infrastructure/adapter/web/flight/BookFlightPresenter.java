@@ -4,6 +4,7 @@ import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -44,8 +45,16 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     }
 
     @Override
-    public void presentSuccessfulResultOfCompletingFlightBooking(String taskId) {
-        message("Successfully completed flight booking task with ID: %s".formatted(taskId));
+    public void presentSuccessfulResultOfCompletingFlightBookingWithoutNextActiveTask(TripId tripId) {
+        message("Successfully completed booking the flight for trip %s. You may need to refresh this view."
+                .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
+    }
+
+    @Override
+    public void presentSuccessfulResultOfCompletingFlightBookingWithNextActiveTask(TripTask tripTask) {
+        message("Finished booking the flight for trip %s. Next task: %s."
+                .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
+        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
     }
 }

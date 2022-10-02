@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.config;
 
-import com.github.tripflow.core.port.operation.workflow.TaskNotInitializedError;
+import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -41,11 +41,11 @@ public class AppConfig {
 
     @Bean
     @Qualifier("taskListClient")
-    public RetryTemplate taskListClientRetryTemplate() {
+    public RetryTemplate taskListClientRetryTemplate(TripFlowProperties tripFlowProps) {
         return new RetryTemplateBuilder()
                 .fixedBackoff(500L)
-                .retryOn(TaskNotInitializedError.class)
-                .maxAttempts(10)
+                .retryOn(TaskNotFoundError.class)
+                .maxAttempts(tripFlowProps.getTaskListClientMaxRetries())
                 .build();
     }
 

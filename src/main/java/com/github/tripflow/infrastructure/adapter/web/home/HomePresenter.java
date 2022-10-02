@@ -1,7 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.home;
 
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -36,15 +36,16 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     }
 
     @Override
-    public void presentErrorStartingNewWorkflowInstance(WorkflowClientOperationError e) {
-        redirectError(e.getMessage());
+    public void presentResultOfStartingNewTripBookingWithoutNextActiveTask(TripId tripId) {
+        message("New process with ID: %s just started. You may need to refresh this view."
+                .formatted(tripId.getShortId()));
+        redirect("browseActiveTrips");
     }
 
     @Override
-    public void presentResultOfStartingNewTripBooking(TripId tripId) {
-        message(
-                "New process with ID %s just started. You may need to refresh this view."
-                        .formatted(tripId.getShortId()));
-        redirect("browseActiveTrips");
+    public void presentResultOfStartingNewTripBookingWithNextActiveTask(TripTask tripTask) {
+        message("New process with ID: %s just started. Next task: %s."
+                .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
+        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
     }
 }

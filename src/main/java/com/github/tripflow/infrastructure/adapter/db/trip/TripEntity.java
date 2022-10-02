@@ -30,7 +30,7 @@ public class TripEntity {
     @Column("trip_cancelled")
     private boolean tripCancelled;
 
-    @Column("trip_cancelled")
+    @Column("trip_confirmed")
     private boolean tripConfirmed;
 
 }

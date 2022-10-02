@@ -44,3 +44,4 @@ tripflow:
   task-list-host: localhost
   task-list-port: 8081
   task-list-scheme: http
+  task-list-client-max-retries: 20
