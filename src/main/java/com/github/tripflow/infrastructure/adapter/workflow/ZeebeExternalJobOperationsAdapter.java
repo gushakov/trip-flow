@@ -4,6 +4,7 @@ import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationError;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
+import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,17 @@ import java.util.Map;
  * @see ActivatedJob
  */
 @RequiredArgsConstructor
-public class ZeebeExternalJobOperationsAdapter implements ExternalJobOperationsOutputPort {
+public class ZeebeExternalJobOperationsAdapter extends AbstractErrorHandler implements ExternalJobOperationsOutputPort {
 
     private final JobClient jobClient;
     private final ActivatedJob job;
 
     @Override
     public void throwError(TripFlowBpmnError error) {
+
+        // log error and roll back transaction
+        logErrorAndRollback(error);
+
         jobClient.newThrowErrorCommand(job)
                 .errorCode(error.getBpmnCode())
                 .errorMessage(error.getMessage())

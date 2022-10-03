@@ -9,6 +9,8 @@ import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputP
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
+import javax.transaction.Transactional;
+
 @RequiredArgsConstructor
 public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
@@ -16,6 +18,7 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
     private final DbPersistenceOperationsOutputPort dbOps;
 
+    @Transactional
     @Override
     public void confirmTrip(TripId tripId) {
         try {
@@ -27,6 +30,7 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
         }
     }
 
+    @Transactional
     @Override
     public void cancelTrip(TripId tripId) {
         try {
