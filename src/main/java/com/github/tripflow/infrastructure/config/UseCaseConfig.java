@@ -1,7 +1,9 @@
 package com.github.tripflow.infrastructure.config;
 
+import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
@@ -11,6 +13,8 @@ import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutput
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
+import com.github.tripflow.core.usecase.creditcheck.CheckCreditInputPort;
+import com.github.tripflow.core.usecase.creditcheck.CheckCreditUseCase;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
 import com.github.tripflow.core.usecase.flight.BookFlightUseCase;
 import com.github.tripflow.core.usecase.home.WelcomeInputPort;
@@ -77,6 +81,19 @@ public class UseCaseConfig {
                                                    TasksOperationsOutputPort tasksOps,
                                                    DbPersistenceOperationsOutputPort dbOps) {
         return new ViewSummaryUseCase(presenter, securityOps, tasksOps, dbOps);
+    }
+
+    // the concrete implementation of ExternalJobOperationsOutputPort will be provided
+    // by the job handling adapter during the lookup of the use case from the application
+    // context
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public CheckCreditInputPort checkCreditUseCase(ExternalJobOperationsOutputPort externalJobOps,
+                                                   SecurityOperationsOutputPort securityOps,
+                                                   ConfigurationOperationsOutputPort configOps,
+                                                   DbPersistenceOperationsOutputPort dbOps){
+        return new CheckCreditUseCase(externalJobOps, securityOps, configOps, dbOps);
     }
 
 }

@@ -4,4 +4,6 @@ public interface ViewSummaryInputPort {
 
     void viewTripSummary(String taskId);
 
+    void proceedWithPayment(String taskId);
+
 }

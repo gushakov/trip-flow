@@ -13,6 +13,8 @@ import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPor
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class ViewSummaryUseCase implements ViewSummaryInputPort {
 
@@ -57,6 +59,30 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
         // construct summary object for the trip and present it
         presenter.presentTripSummary(summarizeTrip(taskId, trip, flight, hotel));
 
+    }
+
+    @Override
+    public void proceedWithPayment(String taskId) {
+
+        Optional<TripTask> nextTripTaskOpt;
+
+        try {
+            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+
+            // advance to the next task
+            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(tripTask.getTripId(), securityOps.tripFlowAssigneeRole(),
+                    tripTask.getTripStartedBy());
+        } catch (GenericTripFlowError e) {
+            presenter.presentError(e);
+            return;
+        }
+
+        if (nextTripTaskOpt.isPresent()){
+            presenter.presentResultOfProceedingWithPaymentWithNextActiveTask(nextTripTaskOpt.get());
+        }
+        else {
+            presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(taskId);
+        }
     }
 
     private TripSummary summarizeTrip(String taskId, Trip trip, Flight flight, Hotel hotel) {

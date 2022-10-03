@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPort {
+public class ZeebeClientLifecycleOperationsAdapter implements WorkflowOperationsOutputPort {
 
     private final ZeebeClientLifecycle zeebeClient;
 

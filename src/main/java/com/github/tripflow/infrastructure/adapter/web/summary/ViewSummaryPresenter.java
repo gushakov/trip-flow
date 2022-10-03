@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.summary;
 
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.TripSummary;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
@@ -22,5 +23,15 @@ public class ViewSummaryPresenter extends AbstractWebPresenter implements ViewSu
     @Override
     public void presentTripSummary(TripSummary tripSummary) {
         presentModelAndView(Map.of("tripSummary", tripSummary), "view-summary");
+    }
+
+    @Override
+    public void presentResultOfProceedingWithPaymentWithNextActiveTask(TripTask tripTask) {
+
+    }
+
+    @Override
+    public void presentResultOfProceedingWithPaymentWithoutNextActiveTask(String taskId) {
+
     }
 }

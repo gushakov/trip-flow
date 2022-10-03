@@ -30,4 +30,9 @@ public class Constants {
      */
     public static final String ACTION_VARIABLE = "action";
 
+    /**
+     * Name of the variable set during the credit check job.
+     */
+    public static final String SUFFICIENT_CREDIT_VARIABLE = "sufficientCredit";
+
 }
