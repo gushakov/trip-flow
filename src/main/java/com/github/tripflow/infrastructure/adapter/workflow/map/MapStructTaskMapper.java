@@ -13,9 +13,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 /**
- * MapStruct mapper from an instant of a workflow {@code Task}. Will map
- * certain variables which are assumed to always be present in a scope
- * of a user task.
+ * MapStruct mapper which will convert an instance of a workflow {@linkplain Task}
+ * into our {@linkplain TripTask} aggregate instance. This mapper will map certain
+ * variables which are assumed to always be present in a scope of a user task.
+ *
+ * @see Task#getVariables()
+ * @see TaskNotFoundError
  */
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
