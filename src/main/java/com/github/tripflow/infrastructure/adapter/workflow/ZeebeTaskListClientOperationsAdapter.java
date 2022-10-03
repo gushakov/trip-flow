@@ -1,7 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;

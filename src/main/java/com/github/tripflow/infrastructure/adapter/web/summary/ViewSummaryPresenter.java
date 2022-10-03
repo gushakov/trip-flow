@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.summary;
 
-import com.github.tripflow.core.model.summary.TripSummary;
+import com.github.tripflow.core.model.trip.TripSummary;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;

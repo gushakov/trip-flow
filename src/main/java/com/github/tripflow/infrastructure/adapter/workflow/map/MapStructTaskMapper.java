@@ -1,8 +1,8 @@
 package com.github.tripflow.infrastructure.adapter.workflow.map;
 
 import com.github.tripflow.core.model.Constants;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;

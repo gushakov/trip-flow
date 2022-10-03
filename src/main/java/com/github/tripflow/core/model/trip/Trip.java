@@ -11,6 +11,12 @@ import lombok.experimental.FieldDefaults;
 
 import static com.github.tripflow.core.model.Validator.notNull;
 
+/**
+ * Main aggregate representing trip planning. By design, the ID
+ * of each {@code Trip} is the value of the key of the corresponding
+ * process instance.
+ */
+
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -62,8 +68,8 @@ public class Trip {
      *
      * @return {@code true} if a flight was selected for the trip
      */
-    public boolean hasFlightBookingAssigned() {
-        return flightNumber != null;
+    public boolean doesNotHAneFlightBookingAssigned() {
+        return flightNumber == null;
     }
 
     public Trip assignHotelReservation(HotelId hotelId) {
@@ -74,7 +80,7 @@ public class Trip {
      * Will indicate that a hotel reservation was assigned to the trip, but not necessarily
      * confirmed yet.
      *
-     * @returnco {@code true} if a hotel was selected for the trip
+     * @return {@code true} if a hotel was selected for the trip
      */
     public boolean hasHotelReservationAssigned() {
         return hotelId != null;
@@ -82,17 +88,17 @@ public class Trip {
 
     public Trip confirmFlightBooking() {
         // a flight booking must be assigned
-        if (!hasFlightBookingAssigned()) {
+        if (doesNotHAneFlightBookingAssigned()) {
             throw new TripFlowValidationError("A flight booking must be assigned prior to confirmation, trip ID: %s"
                     .formatted(tripId.getId()));
         }
         return newTrip().flightBooked(true).build();
     }
 
-    public Trip confirmHotelReservation(HotelId hotelId) {
+    public Trip confirmHotelReservation() {
         // a hotel reservation must be assigned
         if (!hasHotelReservationAssigned()) {
-            throw new TripFlowValidationError("A hotel reservation must be assigned prior to confiration, trip ID: %s"
+            throw new TripFlowValidationError("A hotel reservation must be assigned prior to confirmation, trip ID: %s"
                     .formatted(tripId.getId()));
         }
         return newTrip().hotelReserved(true).build();
@@ -108,6 +114,5 @@ public class Trip {
                 .hotelReserved(hotelReserved)
                 .tripCancelled(tripCancelled)
                 .tripConfirmed(tripConfirmed);
-
     }
 }

@@ -1,7 +1,6 @@
-package com.github.tripflow.core.model.summary;
+package com.github.tripflow.core.model.trip;
 
 import com.github.tripflow.core.model.flight.FlightNumber;
-import com.github.tripflow.core.model.trip.TripId;
 import lombok.Builder;
 import lombok.Value;
 
