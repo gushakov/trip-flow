@@ -15,6 +15,6 @@ public class TripFlowProperties {
     private String taskListClientUserName = "demo";
     private String taskListClientPassword = "demo";
 
-    private int taskListClientMaxRetries = 10;
+    private int taskListClientMaxRetries = 20;
 
 }
