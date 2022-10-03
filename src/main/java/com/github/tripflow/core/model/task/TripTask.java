@@ -11,7 +11,7 @@ import static com.github.tripflow.core.model.Validator.notNull;
 /**
  * Aggregate which represents a user task in TripFlow process.
  * Allows access to the variables of the task which are modeled
- * in the BPMN. Note, the task variables are not available for
+ * in the BPMN. Note, the task variables may not be available for
  * a lapse of time between state transitions of the workflow.
  */
 @Getter
@@ -20,7 +20,7 @@ import static com.github.tripflow.core.model.Validator.notNull;
 public class TripTask {
 
     /**
-     * ID of the task in the workflow, corresponds to the key of the job.
+     * ID of the task in the workflow, corresponds to the key of the corresponding job.
      */
     @EqualsAndHashCode.Include
     String taskId;

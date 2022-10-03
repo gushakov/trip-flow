@@ -62,13 +62,7 @@ public class Trip {
         return newTrip().flightNumber(number).build();
     }
 
-    /**
-     * Will indicate that a flight booking was assigned to the trip, but not necessarily
-     * confirmed yet.
-     *
-     * @return {@code true} if a flight was selected for the trip
-     */
-    public boolean doesNotHAneFlightBookingAssigned() {
+    public boolean doesNotHaveFlightBookingAssigned() {
         return flightNumber == null;
     }
 
@@ -76,19 +70,13 @@ public class Trip {
         return newTrip().hotelId(hotelId).build();
     }
 
-    /**
-     * Will indicate that a hotel reservation was assigned to the trip, but not necessarily
-     * confirmed yet.
-     *
-     * @return {@code true} if a hotel was selected for the trip
-     */
     public boolean hasHotelReservationAssigned() {
         return hotelId != null;
     }
 
     public Trip confirmFlightBooking() {
         // a flight booking must be assigned
-        if (doesNotHAneFlightBookingAssigned()) {
+        if (doesNotHaveFlightBookingAssigned()) {
             throw new TripFlowValidationError("A flight booking must be assigned prior to confirmation, trip ID: %s"
                     .formatted(tripId.getId()));
         }

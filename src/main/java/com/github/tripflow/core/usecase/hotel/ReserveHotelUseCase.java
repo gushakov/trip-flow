@@ -46,7 +46,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             trip = dbOps.loadTrip(tripTask.getTripId());
 
             // check that trip has a flight selected
-            if (trip.doesNotHAneFlightBookingAssigned()) {
+            if (trip.doesNotHaveFlightBookingAssigned()) {
                 throw new TripFlowValidationError("Trip %s does not have any flight selected"
                         .formatted(trip.getTripId()));
             }
