@@ -45,14 +45,14 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     }
 
     @Override
-    public void presentSuccessfulResultOfCompletingFlightBookingWithoutNextActiveTask(TripId tripId) {
+    public void presentResultOfConfirmingFlightWithoutNextActiveTask(TripId tripId) {
         message("Successfully booked the flight for trip %s. You may need to refresh this view."
                 .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
     }
 
     @Override
-    public void presentSuccessfulResultOfCompletingFlightBookingWithNextActiveTask(TripTask tripTask) {
+    public void presentResultOfConfirmingFlightWithNextActiveTask(TripTask tripTask) {
         message("Successfully booked the flight for trip %s. Next task: %s."
                 .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
         redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));

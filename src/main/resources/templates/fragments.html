@@ -16,9 +16,14 @@
     <div class="row-cols-1 mt-5 rounded" style="background-color: lightgoldenrodyellow; text-align: center;">
 
         <div class="row">
-            <a href="/trip">Home</a>
+            <div class="col" style="text-align: end">
+                <a href="#" th:href="@{/}">Home</a>
+            </div>
+            <div class="col" style="text-align: left">
+                <a href="#" th:href="@{/logout}">Logout</a>
+            </div>
         </div>
-        <h2>Trip booking workflow</h2>
+        <h2>Trip planning workflow</h2>
 
         Example of using Camunda Platform 8 with Clean Architecture
     </div>
@@ -32,7 +37,7 @@
     <hr/>
     <div class="row">
         <div class="col-12" style="text-align: center;">
-            <a href="/trip">Home</a>
+            <a href="#" th:href="@{/}">Home</a>
         </div>
     </div>
 </th:block>

@@ -6,7 +6,6 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;

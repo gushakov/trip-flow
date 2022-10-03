@@ -8,7 +8,6 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
@@ -94,11 +93,10 @@ public class BookFlightUseCase implements BookFlightInputPort {
             return;
         }
 
-        if (nextTripTaskOpt.isPresent()){
-            presenter.presentSuccessfulResultOfCompletingFlightBookingWithNextActiveTask(nextTripTaskOpt.get());
-        }
-        else {
-            presenter.presentSuccessfulResultOfCompletingFlightBookingWithoutNextActiveTask(tripId);
+        if (nextTripTaskOpt.isPresent()) {
+            presenter.presentResultOfConfirmingFlightWithNextActiveTask(nextTripTaskOpt.get());
+        } else {
+            presenter.presentResultOfConfirmingFlightWithoutNextActiveTask(tripId);
         }
     }
 

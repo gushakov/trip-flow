@@ -14,7 +14,7 @@ public interface BookFlightPresenterOutputPort extends ErrorHandlingPresenterOut
 
     void presentResultOfRegisteringSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber);
 
-    void presentSuccessfulResultOfCompletingFlightBookingWithoutNextActiveTask(TripId tripId);
+    void presentResultOfConfirmingFlightWithoutNextActiveTask(TripId tripId);
 
-    void presentSuccessfulResultOfCompletingFlightBookingWithNextActiveTask(TripTask tripTask);
+    void presentResultOfConfirmingFlightWithNextActiveTask(TripTask tripTask);
 }

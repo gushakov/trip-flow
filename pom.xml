@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>trip-flow</name>
     <description><![CDATA[
-    Trip booking workflow with Camunda and Spring Boot.
+    Trip planning workflow with Camunda and Spring Boot.
     ]]></description>
     <properties>
         <java.version>17</java.version>

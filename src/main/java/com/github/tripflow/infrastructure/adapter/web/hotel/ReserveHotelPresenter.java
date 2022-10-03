@@ -4,6 +4,7 @@ import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
+import com.github.tripflow.core.model.trip.TripTask;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -45,9 +46,16 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
     }
 
     @Override
-    public void presentResultOfSuccessfulHotelReservation(String taskId) {
-        message("Successfully completed hotel reservation task N° %s"
-                .formatted(taskId));
+    public void presentResultOfConfirmingHotelReservationWithoutNextActiveTask(String tripId) {
+        message("Successfully reserved hotel for the trip %s. You may need to refresh this view."
+                .formatted(tripId));
         redirect("browseActiveTrips");
+    }
+
+    @Override
+    public void presentResultOfConfirmingHotelReservationWithNextActiveTask(TripTask tripTask) {
+        message("Successfully reserved hotel for the trip %s. Next task: %s."
+                .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
+        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
     }
 }

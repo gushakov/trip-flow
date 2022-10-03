@@ -8,22 +8,53 @@
 
     <div th:replace="fragments :: header"></div>
 
-    <!--/*@thymesVar id="trip" type="com.github.tripflow.core.model.trip.Trip"*/-->
-    <th:block th:object="${trip}">
+    <!--/*@thymesVar id="tripSummary" type="com.github.tripflow.core.model.summary.TripSummary"*/-->
+    <th:block th:object="${tripSummary}">
 
         <div class="row-cols-1 mt-3">
             Please review details of the trip <span class="tb" th:text="*{tripId.shortId}"></span>:
         </div>
 
         <div class="row-cols-2 mt-2">
-
             <div class="row">
                 <div class="col tb">Trip ID</div>
-                <div class="col" th:text="*{tripId}"></div>
+                <div class="col" th:text="*{tripId.shortId}"></div>
             </div>
-
+            <div class="row">
+                <div class="col tb">Fight</div>
+                <div class="col" th:text="*{flightNumber}"></div>
+            </div>
+            <div class="row">
+                <div class="col tb">From</div>
+                <div class="col" th:text="*{flightOrigin}"></div>
+            </div>
+            <div class="row">
+                <div class="col tb">To</div>
+                <div class="col" th:text="*{flightDestination}"></div>
+            </div>
+            <div class="row">
+                <div class="col tb">Flight price</div>
+                <div class="col" th:text="${#strings.concat(#object.flightPrice, ' CHF')}"></div>
+            </div>
+            <div class="row">
+                <div class="col tb">Hotel</div>
+                <div class="col" th:text="*{hotelName}"></div>
+            </div>
+            <div class="row">
+                <div class="col tb">Hotel price</div>
+                <div class="col" th:text="${#strings.concat(#object.hotelPrice, ' CHF')}"></div>
+            </div>
+            <div class="row mt-2 border-top">
+                <div class="col tb">Total price</div>
+                <div class="col tb" th:text="${#strings.concat(#object.totalPrice, ' CHF')}"></div>
+            </div>
         </div>
 
+        <div class="row-cols-2 mt-2">
+            <form method="post" action="#" th:action="@{/proceedWithPayment(taskId=*{taskId})}">
+                <button class="btn btn-sm btn-info" onclick="submitForm(this)">Proceed with payment</button>
+            </form>
+        </div>
 
     </th:block>
 

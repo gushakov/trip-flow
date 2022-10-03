@@ -26,7 +26,7 @@
             </tr>
             </thead>
             <tbody>
-            <!--/*@thymesVar id="tripEntries" type="java.util.List<com.github.tripflow.core.model.trip.TripEntry>"*/-->
+            <!--/*@thymesVar id="tripEntries" type="java.util.List<com.github.tripflow.core.model.browse.TripEntry>"*/-->
             <tr th:each="entry: ${tripEntries}">
 
                 <td th:text="${entry.tripId.shortId}"></td>

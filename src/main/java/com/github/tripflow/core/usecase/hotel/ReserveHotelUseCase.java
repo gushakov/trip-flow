@@ -18,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -85,10 +86,14 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     @Transactional
     @Override
     public void confirmHotelReservation(String taskId) {
+        Optional<TripTask> nextTripTaskOpt;
+        TripId tripId;
         try {
 
             // get the task
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            String assigneeRole = securityOps.tripFlowAssigneeRole();
+            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, assigneeRole);
+            tripId = tripTask.getTripId();
 
             // get the trip
             Trip trip = dbOps.loadTrip(tripTask.getTripId());
@@ -114,11 +119,19 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             // complete the workflow task
             tasksOps.completeTask(taskId);
 
+            // advance to the next task
+            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripTask.getTripStartedBy());
+
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentResultOfSuccessfulHotelReservation(taskId);
+        if (nextTripTaskOpt.isPresent()){
+            presenter.presentResultOfConfirmingHotelReservationWithNextActiveTask(nextTripTaskOpt.get());
+        }
+        else {
+            presenter.presentResultOfConfirmingHotelReservationWithoutNextActiveTask(taskId);
+        }
     }
 }

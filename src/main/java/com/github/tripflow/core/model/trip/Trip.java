@@ -59,6 +59,7 @@ public class Trip {
     /**
      * Will indicate that a flight booking was assigned to the trip, but not necessarily
      * confirmed yet.
+     *
      * @return {@code true} if a flight was selected for the trip
      */
     public boolean hasFlightBookingAssigned() {
@@ -72,6 +73,7 @@ public class Trip {
     /**
      * Will indicate that a hotel reservation was assigned to the trip, but not necessarily
      * confirmed yet.
+     *
      * @returnco {@code true} if a hotel was selected for the trip
      */
     public boolean hasHotelReservationAssigned() {

@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web.summary;
 
-import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.summary.TripSummary;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
@@ -20,7 +20,7 @@ public class ViewSummaryPresenter extends AbstractWebPresenter implements ViewSu
     }
 
     @Override
-    public void presentTripSummary(Trip trip) {
-        presentModelAndView(Map.of("trip", trip), "view-summary");
+    public void presentTripSummary(TripSummary tripSummary) {
+        presentModelAndView(Map.of("tripSummary", tripSummary), "view-summary");
     }
 }
