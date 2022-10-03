@@ -47,6 +47,7 @@ public class UseCaseConfig {
 
     @Autowired
     private BookFlightPresenterOutputPort bookFlightPresenter;
+
     @Autowired
     private ReserveHotelPresenterOutputPort reserveHotelPresenter;
 
@@ -58,7 +59,6 @@ public class UseCaseConfig {
 
     @Autowired
     private WorkflowOperationsOutputPort workflowOps;
-
 
     @Autowired
     private DbPersistenceOperationsOutputPort dbOps;
