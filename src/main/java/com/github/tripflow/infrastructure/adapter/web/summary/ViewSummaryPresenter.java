@@ -27,21 +27,11 @@ public class ViewSummaryPresenter extends AbstractWebPresenter implements ViewSu
 
     @Override
     public void presentResultOfProceedingWithPaymentWithNextActiveTask(TripTask tripTask) {
-        System.out.println(">>>>");
-        System.out.println(">>>>");
-        System.out.println(">>>>");
-        System.out.println(">>>>");
-        System.out.println(">>>>");
-        System.out.println(">>>>" + tripTask);
+        // TODO: to implement
     }
 
     @Override
     public void presentResultOfProceedingWithPaymentWithoutNextActiveTask(String taskId) {
-        System.out.println("==>>");
-        System.out.println("==>>");
-        System.out.println("==>>");
-        System.out.println("==>>");
-        System.out.println("==>>");
-        System.out.println("==>>" + taskId);
+        // TODO: to implement
     }
 }
