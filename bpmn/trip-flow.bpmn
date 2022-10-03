@@ -16,7 +16,7 @@
       <bpmn:outgoing>Flow_18lybuw</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="Event_0rr0lae">
-      <bpmn:incoming>Flow_00eovwy</bpmn:incoming>
+      <bpmn:incoming>Flow_1yp2wnr</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="Activity_1fc4aw0" name="reseve hotel">
       <bpmn:extensionElements>
@@ -79,13 +79,43 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1q16u4y" sourceRef="Activity_0lzh8es" targetRef="Gateway_1c42itm" />
     <bpmn:sequenceFlow id="Flow_0vjiy3g" sourceRef="Activity_0v08rln" targetRef="Gateway_1c42itm" />
-    <bpmn:sequenceFlow id="Flow_00eovwy" sourceRef="Gateway_1c42itm" targetRef="Event_0rr0lae" />
+    <bpmn:sequenceFlow id="Flow_00eovwy" sourceRef="Gateway_1c42itm" targetRef="Activity_0vdhkej" />
+    <bpmn:sequenceFlow id="Flow_1yp2wnr" sourceRef="Activity_0vdhkej" targetRef="Event_0rr0lae" />
+    <bpmn:userTask id="Activity_0vdhkej" name="view outcome">
+      <bpmn:extensionElements>
+        <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;viewOutcome&#34;" target="action" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00eovwy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yp2wnr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:subProcess id="Activity_1v4tnlw" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_1is3b4f">
+        <bpmn:outgoing>Flow_03od2kb</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_127dbtd" errorRef="Error_0w0knwb" />
+      </bpmn:startEvent>
+      <bpmn:endEvent id="Event_14eessi">
+        <bpmn:incoming>Flow_0tqwxys</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0tqwxys" sourceRef="Activity_19vw72h" targetRef="Event_14eessi" />
+      <bpmn:sequenceFlow id="Flow_03od2kb" sourceRef="Event_1is3b4f" targetRef="Activity_19vw72h" />
+      <bpmn:userTask id="Activity_19vw72h" name="view error">
+        <bpmn:extensionElements>
+          <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_03od2kb</bpmn:incoming>
+        <bpmn:outgoing>Flow_0tqwxys</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
   </bpmn:process>
+  <bpmn:error id="Error_0w0knwb" name="Error_264r4uo" errorCode="ExternalJobError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TripFlow">
       <bpmndi:BPMNEdge id="Flow_00eovwy_di" bpmnElement="Flow_00eovwy">
         <di:waypoint x="1265" y="187" />
-        <di:waypoint x="1352" y="187" />
+        <di:waypoint x="1320" y="187" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vjiy3g_di" bpmnElement="Flow_0vjiy3g">
         <di:waypoint x="1190" y="300" />
@@ -133,14 +163,15 @@
         <di:waypoint x="215" y="187" />
         <di:waypoint x="270" y="187" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yp2wnr_di" bpmnElement="Flow_1yp2wnr">
+        <di:waypoint x="1420" y="187" />
+        <di:waypoint x="1482" y="187" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0kd20r4_di" bpmnElement="Activity_19a0muq">
         <dc:Bounds x="270" y="147" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0rr0lae_di" bpmnElement="Event_0rr0lae">
-        <dc:Bounds x="1352" y="169" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1icuft6_di" bpmnElement="Activity_1fc4aw0">
         <dc:Bounds x="450" y="147" width="100" height="80" />
@@ -168,6 +199,33 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1c42itm_di" bpmnElement="Gateway_1c42itm" isMarkerVisible="true">
         <dc:Bounds x="1215" y="162" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rr0lae_di" bpmnElement="Event_0rr0lae">
+        <dc:Bounds x="1482" y="169" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bntkru_di" bpmnElement="Activity_0vdhkej">
+        <dc:Bounds x="1320" y="147" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bsxcbg_di" bpmnElement="Activity_1v4tnlw" isExpanded="true">
+        <dc:Bounds x="1270" y="340" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0tqwxys_di" bpmnElement="Flow_0tqwxys">
+        <di:waypoint x="1490" y="440" />
+        <di:waypoint x="1542" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03od2kb_di" bpmnElement="Flow_03od2kb">
+        <di:waypoint x="1346" y="440" />
+        <di:waypoint x="1390" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0kaa6gj_di" bpmnElement="Event_1is3b4f">
+        <dc:Bounds x="1310" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14eessi_di" bpmnElement="Event_14eessi">
+        <dc:Bounds x="1542" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wmgn4j_di" bpmnElement="Activity_19vw72h">
+        <dc:Bounds x="1390" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

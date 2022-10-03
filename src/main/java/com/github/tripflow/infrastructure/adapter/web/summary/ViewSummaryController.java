@@ -25,7 +25,7 @@ public class ViewSummaryController {
 
     @PostMapping(value = "/proceedWithPayment")
     @ResponseBody
-    public void proceedWithPayment(@RequestParam String taskId){
+    public void proceedWithPayment(@RequestParam String taskId) {
         useCase().proceedWithPayment(taskId);
     }
 

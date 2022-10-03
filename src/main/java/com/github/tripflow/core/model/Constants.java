@@ -35,4 +35,9 @@ public class Constants {
      */
     public static final String SUFFICIENT_CREDIT_VARIABLE = "sufficientCredit";
 
+
+    /**
+     * Code for a BPMN modeled error thrown from an external job.
+     */
+    public static final String EXTERNAL_JOB_ERROR_CODE = "ExternalJobError";
 }

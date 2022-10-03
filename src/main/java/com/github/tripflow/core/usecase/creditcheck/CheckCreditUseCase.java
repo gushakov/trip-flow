@@ -1,5 +1,8 @@
 package com.github.tripflow.core.usecase.creditcheck;
 
+import com.github.tripflow.core.GenericTripFlowError;
+import com.github.tripflow.core.TripFlowBpmnError;
+import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
@@ -26,42 +29,46 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
     @Override
     public void checkCreditLimit(TripId tripId) {
 
-        String loggedInUserName = securityOps.loggedInUserName();
+        try {
+            String loggedInUserName = securityOps.loggedInUserName();
 
-        // check that the current user is actually a customer
-        if (!securityOps.isCustomer()){
-            throw new TripFlowSecurityError("User %s does not have a \"customer\" role"
-                    .formatted(loggedInUserName));
+            // check that the current user is actually a customer
+            if (!securityOps.isCustomer()) {
+                throw new TripFlowSecurityError("User %s does not have a \"customer\" role"
+                        .formatted(loggedInUserName));
+            }
+
+            // get the credit limit for the current user
+
+            int creditLimit = configOps.obtainCreditLimitForCustomer(loggedInUserName);
+
+            // load the trip, flight, hotel and check invariants
+            Trip trip = dbOps.loadTrip(tripId);
+
+            // a flight must be booked
+            if (!trip.isFlightBooked()) {
+                throw new TripFlowValidationError("Trip must have a flight booked prior to credit check, trip ID: %s"
+                        .formatted(tripId));
+            }
+            Flight flight = dbOps.loadFlight(trip.getFlightNumber());
+
+            // a hotel must be reserved
+            if (!trip.isHotelReserved()) {
+                throw new TripFlowValidationError("Trip must have a hotel reserved prior to credit check, trip ID: %s"
+                        .formatted(tripId));
+            }
+            Hotel hotel = dbOps.loadHotel(trip.getHotelId());
+
+            // calculate the total price for the trip
+            int totalPrice = flight.getPrice() + hotel.getPrice();
+
+            // check if the customer has a sufficient credit, completing the task
+            // with the appropriate variable value
+
+            externalJobOps.completeCreditCheck(totalPrice <= creditLimit);
+        } catch (GenericTripFlowError e) {
+            externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
-
-        // get the credit limit for the current user
-
-        int creditLimit = configOps.obtainCreditLimitForCustomer(loggedInUserName);
-
-        // load the trip, flight, hotel and check invariants
-        Trip trip = dbOps.loadTrip(tripId);
-
-        // a flight must be booked
-        if (!trip.isFlightBooked()){
-            throw new TripFlowValidationError("Trip must have a flight booked prior to credit check, trip ID: %s"
-                    .formatted(tripId));
-        }
-        Flight flight = dbOps.loadFlight(trip.getFlightNumber());
-
-        // a hotel must be reserved
-        if (!trip.isHotelReserved()){
-            throw new TripFlowValidationError("Trip must have a hotel reserved prior to credit check, trip ID: %s"
-                    .formatted(tripId));
-        }
-        Hotel hotel = dbOps.loadHotel(trip.getHotelId());
-
-        // calculate the total price for the trip
-        int totalPrice = flight.getPrice() + hotel.getPrice();
-
-        // check if the customer has a sufficient credit, completing the task
-        // with the appropriate variable value
-
-        externalJobOps.completeCreditCheck(totalPrice <= creditLimit);
 
     }
 }

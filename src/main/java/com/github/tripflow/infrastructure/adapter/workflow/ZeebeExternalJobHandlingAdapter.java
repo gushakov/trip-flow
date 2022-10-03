@@ -10,6 +10,7 @@ package com.github.tripflow.infrastructure.adapter.workflow;
 
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.trip.TripId;
+import com.github.tripflow.core.usecase.confirmation.ConfirmTripInputPort;
 import com.github.tripflow.core.usecase.creditcheck.CheckCreditInputPort;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
@@ -29,13 +30,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ZeebeWorkerJobHandlingAdapter {
+public class ZeebeExternalJobHandlingAdapter {
 
     private final ApplicationContext applicationContext;
 
     /*
         The "type" argument, must match the definition of an existing service task in the BPMN.
-        Notice that we are not setting "autoComplete" to "true". This way it's the use case which
+        Notice that we are not setting "autoComplete" to "true". This way, it is the use case which
         will decide whether to complete the job or throw any exceptions.
      */
 
@@ -47,11 +48,36 @@ public class ZeebeWorkerJobHandlingAdapter {
         // get "tripId" process instance variable
         TripId tripId = TripId.of((Long) job.getVariablesAsMap().get(Constants.TRIP_ID_PROCESS_VARIABLE));
 
-        useCase(jobClient, job).checkCreditLimit(tripId);
+        checkCreditUseCase(jobClient, job).checkCreditLimit(tripId);
     }
 
-    private CheckCreditInputPort useCase(JobClient jobClient, ActivatedJob job) {
+    @ZeebeWorker(type = "confirmTrip", forceFetchAllVariables = true)
+    public void confirmTrip(final JobClient jobClient, final ActivatedJob job) {
+        log.debug("[Zeebe Worker][External Job] Executing external job: confirmTrip for BPMN process instance with ID: {}",
+                job.getProcessInstanceKey());
+
+        // get "tripId" process instance variable
+        TripId tripId = TripId.of((Long) job.getVariablesAsMap().get(Constants.TRIP_ID_PROCESS_VARIABLE));
+
+        confirmTripUseCase(jobClient, job).confirmTrip(tripId);
+    }
+
+    @ZeebeWorker(type = "cancelTrip", forceFetchAllVariables = true)
+    public void cancelTrip(final JobClient jobClient, final ActivatedJob job) {
+        log.debug("[Zeebe Worker][External Job] Executing external job: cancelTrip for BPMN process instance with ID: {}",
+                job.getProcessInstanceKey());
+
+        // get "tripId" process instance variable
+        TripId tripId = TripId.of((Long) job.getVariablesAsMap().get(Constants.TRIP_ID_PROCESS_VARIABLE));
+
+        confirmTripUseCase(jobClient, job).cancelTrip(tripId);
+    }
+
+    private CheckCreditInputPort checkCreditUseCase(JobClient jobClient, ActivatedJob job) {
         return applicationContext.getBean(CheckCreditInputPort.class, new ZeebeExternalJobOperationsAdapter(jobClient, job));
+    }
+    private ConfirmTripInputPort confirmTripUseCase(JobClient jobClient, ActivatedJob job) {
+        return applicationContext.getBean(ConfirmTripInputPort.class, new ZeebeExternalJobOperationsAdapter(jobClient, job));
     }
 
 }

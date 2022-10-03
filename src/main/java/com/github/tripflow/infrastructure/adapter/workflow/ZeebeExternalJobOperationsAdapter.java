@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationError;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
@@ -14,7 +15,7 @@ import java.util.Map;
  * perform any operations related to the {@link ActivatedJob} (external service)
  * instance provided during construction time.
  *
- * @see ZeebeWorkerJobHandlingAdapter
+ * @see ZeebeExternalJobHandlingAdapter
  * @see JobClient
  * @see ActivatedJob
  */
@@ -23,6 +24,14 @@ public class ZeebeExternalJobOperationsAdapter implements ExternalJobOperationsO
 
     private final JobClient jobClient;
     private final ActivatedJob job;
+
+    @Override
+    public void throwError(TripFlowBpmnError error) {
+        jobClient.newThrowErrorCommand(job)
+                .errorCode(error.getBpmnCode())
+                .errorMessage(error.getMessage())
+                .send();
+    }
 
     @Override
     public void completeCreditCheck(boolean sufficientCredit) {

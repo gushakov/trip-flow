@@ -13,6 +13,8 @@ import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutput
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
+import com.github.tripflow.core.usecase.confirmation.ConfirmTripInputPort;
+import com.github.tripflow.core.usecase.confirmation.ConfirmTripUseCase;
 import com.github.tripflow.core.usecase.creditcheck.CheckCreditInputPort;
 import com.github.tripflow.core.usecase.creditcheck.CheckCreditUseCase;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
@@ -23,6 +25,7 @@ import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
 import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
 import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,70 +33,88 @@ import org.springframework.context.annotation.Scope;
 
 /**
  * Configuration for all use case beans. Each use case is a prototype scoped
- * bean which wires presenters and output ports (operations) needed to perform
+ * bean which wires presenters and other output ports needed to perform
  * the logic of the use case.
  */
 @Configuration
 public class UseCaseConfig {
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WelcomeInputPort welcomeUseCase(WelcomePresenterOutputPort presenter,
-                                           SecurityOperationsOutputPort securityOps,
-                                           WorkflowOperationsOutputPort workflowOps,
-                                           DbPersistenceOperationsOutputPort dbOps,
-                                           TasksOperationsOutputPort tasksOps) {
+    @Autowired
+    private WelcomePresenterOutputPort welcomePresenter;
 
-        return new WelcomeUseCase(presenter, securityOps, workflowOps, dbOps, tasksOps);
+    @Autowired
+    private BrowseActiveTripsPresenterOutputPort browseActiveTripsPresenter;
+
+    @Autowired
+    private BookFlightPresenterOutputPort bookFlightPresenter;
+    @Autowired
+    private ReserveHotelPresenterOutputPort reserveHotelPresenter;
+
+    @Autowired
+    private ViewSummaryPresenterOutputPort viewSummaryPresenter;
+
+    @Autowired
+    private SecurityOperationsOutputPort securityOps;
+
+    @Autowired
+    private WorkflowOperationsOutputPort workflowOps;
+
+
+    @Autowired
+    private DbPersistenceOperationsOutputPort dbOps;
+
+    @Autowired
+    private TasksOperationsOutputPort tasksOps;
+
+    @Autowired
+    private ConfigurationOperationsOutputPort configOps;
+
+    @Bean(autowireCandidate = false)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public WelcomeInputPort welcomeUseCase() {
+        return new WelcomeUseCase(welcomePresenter, securityOps, workflowOps, dbOps, tasksOps);
     }
 
-    @Bean
+    @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort presenter,
-                                                               SecurityOperationsOutputPort securityOps,
-                                                               TasksOperationsOutputPort tasksOps,
-                                                               DbPersistenceOperationsOutputPort dbOps) {
-        return new BrowseActiveTripsUseCase(presenter, securityOps, tasksOps, dbOps);
+    public BrowseActiveTripsInputPort browseActiveTripsUseCase() {
+        return new BrowseActiveTripsUseCase(browseActiveTripsPresenter, securityOps, tasksOps, dbOps);
     }
 
-    @Bean
+    @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort presenter,
-                                                 SecurityOperationsOutputPort securityOps,
-                                                 TasksOperationsOutputPort tasksOps,
-                                                 DbPersistenceOperationsOutputPort dbOps) {
-        return new BookFlightUseCase(presenter, securityOps, tasksOps, dbOps);
+    public BookFlightInputPort bookFlightUseCase() {
+        return new BookFlightUseCase(bookFlightPresenter, securityOps, tasksOps, dbOps);
     }
 
-    @Bean
+    @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort presenter,
-                                                     SecurityOperationsOutputPort securityOps,
-                                                     TasksOperationsOutputPort tasksOps,
-                                                     DbPersistenceOperationsOutputPort dbOps) {
-        return new ReserveHotelUseCase(presenter, securityOps, tasksOps, dbOps);
+    public ReserveHotelInputPort reserveHotelUseCase() {
+        return new ReserveHotelUseCase(reserveHotelPresenter, securityOps, tasksOps, dbOps);
     }
 
-    @Bean
+    @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ViewSummaryInputPort viewSummaryUseCase(ViewSummaryPresenterOutputPort presenter,
-                                                   SecurityOperationsOutputPort securityOps,
-                                                   TasksOperationsOutputPort tasksOps,
-                                                   DbPersistenceOperationsOutputPort dbOps) {
-        return new ViewSummaryUseCase(presenter, securityOps, tasksOps, dbOps);
+    public ViewSummaryInputPort viewSummaryUseCase() {
+        return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, tasksOps, dbOps);
     }
 
-    // the concrete implementation of ExternalJobOperationsOutputPort will be provided
-    // by the job handling adapter during the lookup of the use case from the application
-    // context
+    /*
+        Note: the concrete implementation of ExternalJobOperationsOutputPort will be provided
+        by the job handling adapter during the lookup of the use case from the application
+        context.
+     */
 
-    @Bean
+    @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public CheckCreditInputPort checkCreditUseCase(ExternalJobOperationsOutputPort externalJobOps,
-                                                   SecurityOperationsOutputPort securityOps,
-                                                   ConfigurationOperationsOutputPort configOps,
-                                                   DbPersistenceOperationsOutputPort dbOps){
+    public CheckCreditInputPort checkCreditUseCase(ExternalJobOperationsOutputPort externalJobOps) {
         return new CheckCreditUseCase(externalJobOps, securityOps, configOps, dbOps);
+    }
+
+    @Bean(autowireCandidate = false)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ConfirmTripInputPort confirmTripUseCase(ExternalJobOperationsOutputPort externalJobOps) {
+        return new ConfirmTripUseCase(externalJobOps, dbOps);
     }
 
 }

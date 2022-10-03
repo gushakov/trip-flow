@@ -69,6 +69,9 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
         try {
             TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
 
+            // complete view summary task
+            tasksOps.completeTask(taskId);
+
             // advance to the next task
             nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(tripTask.getTripId(), securityOps.tripFlowAssigneeRole(),
                     tripTask.getTripStartedBy());
@@ -77,10 +80,9 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
             return;
         }
 
-        if (nextTripTaskOpt.isPresent()){
+        if (nextTripTaskOpt.isPresent()) {
             presenter.presentResultOfProceedingWithPaymentWithNextActiveTask(nextTripTaskOpt.get());
-        }
-        else {
+        } else {
             presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(taskId);
         }
     }

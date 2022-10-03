@@ -92,6 +92,26 @@ public class Trip {
         return newTrip().hotelReserved(true).build();
     }
 
+    public Trip confirmTrip(){
+        if (!isFlightBooked() || !isHotelReserved()){
+            throw new TripFlowValidationError("Flight must be booked and trip must be reserved before trip can be confirmed, trip ID: %s"
+                    .formatted(tripId.getId()));
+        }
+
+        return newTrip()
+                .tripConfirmed(true)
+                .tripCancelled(false)
+                .build();
+    }
+
+    public Trip cancelTrip(){
+        // trip can be canceled from any state
+        return newTrip()
+                .tripConfirmed(false)
+                .tripCancelled(true)
+                .build();
+    }
+
     private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)
