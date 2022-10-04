@@ -6,7 +6,6 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,6 @@ public class WelcomeUseCase implements WelcomeInputPort {
     private final WorkflowOperationsOutputPort workflowOps;
 
     private final DbPersistenceOperationsOutputPort dbOps;
-
-    private final TasksOperationsOutputPort tasksOps;
 
     /**
      * Welcome user by presenting a list of available operations
@@ -58,7 +55,6 @@ public class WelcomeUseCase implements WelcomeInputPort {
     public void startNewTripBooking() {
 
         Long pik = null;
-        String assigneeRole;
         String tripStartedBy;
         Trip trip;
         Optional<TripTask> nextTripTaskOpt;
@@ -66,7 +62,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
             // get the current user's username and TripFlow assignee role
 
             tripStartedBy = securityOps.loggedInUserName();
-            assigneeRole = securityOps.tripFlowAssigneeRole();
+            securityOps.assertCustomerPermission(tripStartedBy);
 
             // start a new instance of the TripFlow process
 
@@ -75,14 +71,15 @@ public class WelcomeUseCase implements WelcomeInputPort {
             // if the process has started OK, proceed to create and persist a new instance of Trip
             // aggregate
 
+            TripId tripId = TripId.of(pik);
             trip = Trip.builder()
-                    .tripId(TripId.of(pik))
+                    .tripId(tripId)
                     .startedBy(tripStartedBy)
                     .build();
             dbOps.saveNewTrip(trip);
 
-            // wait for the workflow engine to start next user task
-            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripStartedBy);
+            // wait for the workflow engine to activate some user task
+            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(tripId, tripStartedBy);
 
         } catch (GenericTripFlowError e) {
 

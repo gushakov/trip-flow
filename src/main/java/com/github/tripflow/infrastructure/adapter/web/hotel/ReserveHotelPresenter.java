@@ -25,7 +25,7 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
     }
 
     @Override
-    public void presentHotelsInDestinationCityForSelectionByCustomer(String taskId, Trip trip, String city, List<Hotel> hotels) {
+    public void presentHotelsInDestinationCityForSelectionByCustomer(Long taskId, Trip trip, String city, List<Hotel> hotels) {
 
         HotelId hotelId = trip.getHotelId();
         presentModelAndView(Map.of("reserveHotelForm",
@@ -46,9 +46,9 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
     }
 
     @Override
-    public void presentResultOfConfirmingHotelReservationWithoutNextActiveTask(String tripId) {
+    public void presentResultOfConfirmingHotelReservationWithoutNextActiveTask(TripId tripId) {
         message("Successfully reserved hotel for the trip %s. You may need to refresh this view."
-                .formatted(tripId));
+                .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
     }
 

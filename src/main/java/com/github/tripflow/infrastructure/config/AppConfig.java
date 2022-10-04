@@ -42,11 +42,12 @@ public class AppConfig {
         return new LocalDispatcherServlet();
     }
 
-    // Spring RetryTemplate for TaskList client
+    // Spring RetryTemplate which will be used to retry fetching activated
+    // user tasks from the database
 
     @Bean
-    @Qualifier("taskListClient")
-    public RetryTemplate taskListClientRetryTemplate(TripFlowProperties tripFlowProps) {
+    @Qualifier("userTask")
+    public RetryTemplate userTaskNotFoundRetryingTemplate(TripFlowProperties tripFlowProps) {
         return new RetryTemplateBuilder()
                 .fixedBackoff(500L)
                 .retryOn(TaskNotFoundError.class)

@@ -25,7 +25,7 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     }
 
     @Override
-    public void presentFlightsForSelectionByCustomer(String taskId, Trip trip, List<Flight> flights) {
+    public void presentFlightsForSelectionByCustomer(Long taskId, Trip trip, List<Flight> flights) {
         FlightNumber flightNumber = trip.getFlightNumber();
         presentModelAndView(Map.of("bookFlightForm",
                 BookFlightForm.builder()

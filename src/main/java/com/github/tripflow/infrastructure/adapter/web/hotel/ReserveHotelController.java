@@ -25,7 +25,7 @@ public class ReserveHotelController {
     public void reserveHotel(@RequestParam String taskId) {
         log.debug("[GET][Reserve hotel] reserving hotel, task ID: {}", taskId);
 
-        useCase().proposeHotelsForSelectionByCustomer(taskId);
+        useCase().proposeHotelsForSelectionByCustomer(Long.valueOf(taskId));
     }
 
     //selectHotelForTrip
@@ -42,7 +42,7 @@ public class ReserveHotelController {
     @PostMapping(value = "/confirmHotelReservation")
     @ResponseBody
     public void confirmHotelReservation(@RequestParam String taskId) {
-        useCase().confirmHotelReservation(taskId);
+        useCase().confirmHotelReservation(Long.valueOf(taskId));
     }
 
     private ReserveHotelInputPort useCase() {

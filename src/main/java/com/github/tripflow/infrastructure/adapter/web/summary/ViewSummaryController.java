@@ -20,13 +20,13 @@ public class ViewSummaryController {
     @GetMapping("/viewSummary")
     @ResponseBody
     public void viewSummary(@RequestParam String taskId) {
-        useCase().viewTripSummary(taskId);
+        useCase().viewTripSummary(Long.valueOf(taskId));
     }
 
     @PostMapping(value = "/proceedWithPayment")
     @ResponseBody
     public void proceedWithPayment(@RequestParam String taskId) {
-        useCase().proceedWithPayment(taskId);
+        useCase().proceedWithPayment(Long.valueOf(taskId));
     }
 
     private ViewSummaryInputPort useCase() {

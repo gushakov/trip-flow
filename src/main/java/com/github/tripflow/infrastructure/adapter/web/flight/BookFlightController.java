@@ -27,7 +27,7 @@ public class BookFlightController {
         log.debug("[GET][Book flight] booking flight, task ID: {}", taskId);
 
         BookFlightInputPort useCase = useCase();
-        useCase.proposeFlightsForSelectionByCustomer(taskId);
+        useCase.proposeFlightsForSelectionByCustomer(Long.valueOf(taskId));
 
     }
 
@@ -42,7 +42,7 @@ public class BookFlightController {
     @PostMapping(value = "/confirmFlightBooking")
     @ResponseBody
     public void confirmFlightBooking(@RequestParam String taskId) {
-        useCase().confirmFlightBooking(taskId);
+        useCase().confirmFlightBooking(Long.valueOf(taskId));
     }
 
 

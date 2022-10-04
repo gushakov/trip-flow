@@ -1,8 +1,10 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.api.command.ClientException;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.response.SetVariablesResponse;
@@ -17,11 +19,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ZeebeWorkflowOperationsAdapter implements WorkflowOperationsOutputPort {
+public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implements WorkflowOperationsOutputPort {
 
     private final ZeebeClientLifecycle zeebeClientLifecycle;
 
     private final JobClient jobClient;
+
     @Override
     public Long startNewTripBookingProcess(String tripStartedBy) {
         ProcessInstanceEvent start;
@@ -64,6 +67,47 @@ public class ZeebeWorkflowOperationsAdapter implements WorkflowOperationsOutputP
             log.debug("[Zeebe Client] Canceled process instance {}", pik);
         } catch (ClientException e) {
             throw new WorkflowClientOperationError(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void throwBpmnError(Long jobKey, TripFlowBpmnError error) {
+        // log error and roll back transaction
+        logErrorAndRollback(error);
+
+        try {
+            jobClient.newThrowErrorCommand(jobKey)
+                    .errorCode(error.getBpmnCode())
+                    .errorMessage(error.getMessage())
+                    .send();
+        } catch (Exception e) {
+            throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
+                    .formatted(jobKey), e);
+        }
+    }
+
+    @Override
+    public void completeCreditCheck(Long jobKey, boolean sufficientCredit) {
+
+        try {
+            jobClient.newCompleteCommand(jobKey)
+                    .variables(Map.of(Constants.SUFFICIENT_CREDIT_VARIABLE, sufficientCredit))
+                    .send();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
+                    .formatted(jobKey), e);
+        }
+
+    }
+
+    @Override
+    public void completeTask(Long jobKey) {
+        try {
+            jobClient.newCompleteCommand(jobKey).send();
+        } catch (Exception e) {
+            throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
+                    .formatted(jobKey), e);
         }
     }
 }

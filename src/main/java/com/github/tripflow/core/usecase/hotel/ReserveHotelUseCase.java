@@ -10,7 +10,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +27,12 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     ReserveHotelPresenterOutputPort presenter;
 
     private SecurityOperationsOutputPort securityOps;
-    TasksOperationsOutputPort tasksOps;
-
     DbPersistenceOperationsOutputPort dbOps;
 
+    WorkflowOperationsOutputPort workflowOps;
+
     @Override
-    public void proposeHotelsForSelectionByCustomer(String taskId) {
+    public void proposeHotelsForSelectionByCustomer(Long taskId) {
 
         TripTask tripTask;
         Trip trip;
@@ -40,7 +40,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
         String city;
         try {
             // get the task from the workflow engine
-            tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            tripTask = dbOps.loadTripTask(taskId);
 
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
@@ -85,16 +85,18 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
     @Transactional
     @Override
-    public void confirmHotelReservation(String taskId) {
+    public void confirmHotelReservation(Long taskId) {
         Optional<TripTask> nextTripTaskOpt;
+        TripId tripId;
         try {
 
             // get the task
             String assigneeRole = securityOps.tripFlowAssigneeRole();
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, assigneeRole);
+            TripTask tripTask = dbOps.loadTripTask(taskId);
 
             // get the trip
-            Trip trip = dbOps.loadTrip(tripTask.getTripId());
+            tripId = tripTask.getTripId();
+            Trip trip = dbOps.loadTrip(tripId);
 
             // get the flight
             Flight flight = dbOps.loadFlight(trip.getFlightNumber());
@@ -115,10 +117,10 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             dbOps.updateTrip(withConfirmedHotelReservation);
 
             // complete the workflow task
-            tasksOps.completeTask(taskId);
+            workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripTask.getTripStartedBy());
+            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(trip.getTripId(), tripTask.getTripStartedBy());
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
@@ -128,7 +130,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
         if (nextTripTaskOpt.isPresent()) {
             presenter.presentResultOfConfirmingHotelReservationWithNextActiveTask(nextTripTaskOpt.get());
         } else {
-            presenter.presentResultOfConfirmingHotelReservationWithoutNextActiveTask(taskId);
+            presenter.presentResultOfConfirmingHotelReservationWithoutNextActiveTask(tripId);
         }
     }
 }

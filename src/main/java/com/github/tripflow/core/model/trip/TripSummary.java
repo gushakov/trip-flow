@@ -11,7 +11,7 @@ import lombok.Value;
 @Builder
 public class TripSummary {
 
-    String taskId;
+    Long taskId;
     TripId tripId;
 
     FlightNumber flightNumber;

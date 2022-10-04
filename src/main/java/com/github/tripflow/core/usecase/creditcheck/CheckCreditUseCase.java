@@ -13,13 +13,13 @@ import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOut
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
-import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CheckCreditUseCase implements CheckCreditInputPort {
 
-    private final ExternalJobOperationsOutputPort externalJobOps;
+    private final WorkflowOperationsOutputPort workflowOps;
 
     private final SecurityOperationsOutputPort securityOps;
 
@@ -28,22 +28,19 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Override
-    public void checkCreditLimit() {
+    public void checkCreditLimit(Long taskId) {
 
         try {
 
             // get task for the active job
-            TripTask tripTask = externalJobOps.activeTripTask();
+            TripTask tripTask = dbOps.loadTripTask(taskId);
             TripId tripId = tripTask.getTripId();
 
             // get the username of the user who started the trip
             String tripStartedBy = tripTask.getTripStartedBy();
 
             // check that the user who started the trip is a customer
-            if (!securityOps.isUserCustomer(tripStartedBy)) {
-                throw new TripFlowSecurityError("User %s does not have a \"customer\" role"
-                        .formatted(tripStartedBy));
-            }
+            securityOps.assertCustomerPermission(tripStartedBy);
 
             // get the credit limit for the customer
             int creditLimit = configOps.obtainCreditLimitForCustomer(tripStartedBy);
@@ -71,10 +68,9 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
             // check if the customer has a sufficient credit, completing the task
             // with the appropriate variable value
 
-            externalJobOps.completeCreditCheck(totalPrice <= creditLimit);
+            workflowOps.completeCreditCheck(taskId,totalPrice <= creditLimit);
         } catch (GenericTripFlowError e) {
-            e.printStackTrace();
-            externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
+            workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
 
     }

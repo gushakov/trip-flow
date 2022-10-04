@@ -9,7 +9,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripSummary;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
@@ -20,17 +20,17 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
 
     private final ViewSummaryPresenterOutputPort presenter;
     private final SecurityOperationsOutputPort securityOps;
-    private final TasksOperationsOutputPort tasksOps;
-
     private final DbPersistenceOperationsOutputPort dbOps;
 
+    private final WorkflowOperationsOutputPort workflowOps;
+
     @Override
-    public void viewTripSummary(String taskId) {
+    public void viewTripSummary(Long taskId) {
         Trip trip;
         Flight flight;
         Hotel hotel;
         try {
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            TripTask tripTask = dbOps.loadTripTask(taskId);
 
             trip = dbOps.loadTrip(tripTask.getTripId());
 
@@ -62,19 +62,18 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
     }
 
     @Override
-    public void proceedWithPayment(String taskId) {
+    public void proceedWithPayment(Long taskId) {
 
         Optional<TripTask> nextTripTaskOpt;
         TripTask tripTask;
         try {
-            tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            tripTask = dbOps.loadTripTask(taskId);
 
             // complete view summary task
-            tasksOps.completeTask(taskId);
+            workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(tripTask.getTripId(), securityOps.tripFlowAssigneeRole(),
-                    tripTask.getTripStartedBy());
+            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(tripTask.getTripId(), tripTask.getTripStartedBy());
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
@@ -87,7 +86,7 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
         }
     }
 
-    private TripSummary summarizeTrip(String taskId, Trip trip, Flight flight, Hotel hotel) {
+    private TripSummary summarizeTrip(Long taskId, Trip trip, Flight flight, Hotel hotel) {
 
         // Calculate total price for the trip. This is one of the reasons why
         // "TripSummary" is not a DTO constructed in the presenter: we may

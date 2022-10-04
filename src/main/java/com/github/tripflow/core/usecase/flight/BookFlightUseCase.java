@@ -8,7 +8,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +24,18 @@ public class BookFlightUseCase implements BookFlightInputPort {
     private final BookFlightPresenterOutputPort presenter;
 
     private final SecurityOperationsOutputPort securityOps;
-    private final TasksOperationsOutputPort tasksOps;
     private final DbPersistenceOperationsOutputPort dbOps;
 
+    private final WorkflowOperationsOutputPort workflowOps;
+
     @Override
-    public void proposeFlightsForSelectionByCustomer(String taskId) {
+    public void proposeFlightsForSelectionByCustomer(Long taskId) {
         List<Flight> flights;
         TripTask tripTask;
         Trip trip;
         try {
             // get the task from the workflow engine
-            tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            tripTask = dbOps.loadTripTask(taskId);
 
             // load the trip
             trip = dbOps.loadTrip(tripTask.getTripId());
@@ -67,13 +68,13 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
     @Transactional
     @Override
-    public void confirmFlightBooking(String taskId) {
+    public void confirmFlightBooking(Long taskId) {
         Optional<TripTask> nextTripTaskOpt;
         TripId tripId;
         try {
             // get the task
             String assigneeRole = securityOps.tripFlowAssigneeRole();
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, assigneeRole);
+            TripTask tripTask = dbOps.loadTripTask(taskId);
             tripId = tripTask.getTripId();
 
             // get the trip
@@ -83,10 +84,10 @@ public class BookFlightUseCase implements BookFlightInputPort {
             dbOps.updateTrip(tripWithConfirmedFlightBooking);
 
             // complete the task
-            tasksOps.completeTask(taskId);
+            workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = tasksOps.retrieveNextActiveTaskForUser(trip.getTripId(), assigneeRole, tripTask.getTripStartedBy());
+            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(trip.getTripId(), tripTask.getTripStartedBy());
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);

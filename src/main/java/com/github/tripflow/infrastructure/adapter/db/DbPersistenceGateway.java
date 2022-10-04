@@ -9,6 +9,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
+import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
@@ -16,25 +17,45 @@ import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntityReposito
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
     private final TripFlowDbMapper dbMapper;
 
+    private final RetryTemplate retryTemplate;
+
     private final TripTaskEntityRepository taskEntityRepo;
 
     private final TripEntityRepository tripEntityRepo;
     private final HotelEntityRepository hotelEntityRepo;
     private final FlightEntityRepository flightEntityRepo;
+
+    public DbPersistenceGateway(JdbcAggregateTemplate jdbcAggregateTemplate,
+                                TripFlowDbMapper dbMapper,
+                                @Qualifier("userTask")
+                                RetryTemplate retryTemplate,
+                                TripTaskEntityRepository taskEntityRepo,
+                                TripEntityRepository tripEntityRepo,
+                                HotelEntityRepository hotelEntityRepo,
+                                FlightEntityRepository flightEntityRepo) {
+        this.jdbcAggregateTemplate = jdbcAggregateTemplate;
+        this.dbMapper = dbMapper;
+        this.retryTemplate = retryTemplate;
+        this.taskEntityRepo = taskEntityRepo;
+        this.tripEntityRepo = tripEntityRepo;
+        this.hotelEntityRepo = hotelEntityRepo;
+        this.flightEntityRepo = flightEntityRepo;
+    }
 
     @Override
     public Trip saveNewTrip(Trip trip) {
@@ -130,5 +151,42 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public void saveTripTask(TripTask tripTask) {
         jdbcAggregateTemplate.save(tripTask);
+    }
+
+    @Override
+    public TripTask loadTripTask(Long taskId) {
+        try {
+            return dbMapper.convert(taskEntityRepo.findById(taskId).orElseThrow());
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot find trip task with ID: %s"
+                    .formatted(taskId), e);
+        }
+    }
+
+    @Override
+    public Optional<TripTask> findAnyActivatedTaskForTripStartedByUser(TripId tripId, String tripStartedBy) {
+        try {
+            return retryTemplate.execute(retryContext ->
+                    taskEntityRepo.findAllByTripId(tripId.getId())
+                            .stream()
+                            .map(dbMapper::convert)
+                            .findAny());
+        } catch (TaskNotFoundError e) {
+            // will happen if retry limit has been exceeded
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<TripTask> listAnyActivatedTripTasksStartedByUser(String tripStartedBy) {
+        try {
+            return taskEntityRepo.findAllByTripStartedBy(tripStartedBy)
+                    .stream()
+                    .map(dbMapper::convert)
+                    .toList();
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Error when searching for any activated trip tasks started by: %s"
+                    .formatted(tripStartedBy), e);
+        }
     }
 }

@@ -42,11 +42,14 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
     }
 
     @Override
-    public boolean isUserCustomer(String username) {
-        return userDetailsService.loadUserByUsername(username).getAuthorities()
+    public void assertCustomerPermission(String username) {
+        if (userDetailsService.loadUserByUsername(username).getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals(Constants.ROLE_TRIPFLOW_CUSTOMER));
+                .noneMatch(role -> role.equals(Constants.ROLE_TRIPFLOW_CUSTOMER))) {
+            throw new TripFlowSecurityError("User %s does not have a \"customer\" role"
+                    .formatted(username));
+        }
     }
 
     @NotNull

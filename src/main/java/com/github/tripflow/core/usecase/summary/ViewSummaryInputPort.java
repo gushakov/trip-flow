@@ -2,8 +2,8 @@ package com.github.tripflow.core.usecase.summary;
 
 public interface ViewSummaryInputPort {
 
-    void viewTripSummary(String taskId);
+    void viewTripSummary(Long taskId);
 
-    void proceedWithPayment(String taskId);
+    void proceedWithPayment(Long taskId);
 
 }

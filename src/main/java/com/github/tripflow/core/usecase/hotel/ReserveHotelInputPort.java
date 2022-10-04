@@ -5,9 +5,9 @@ import com.github.tripflow.core.model.trip.TripId;
 
 public interface ReserveHotelInputPort {
 
-    void proposeHotelsForSelectionByCustomer(String taskId);
+    void proposeHotelsForSelectionByCustomer(Long taskId);
 
     void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId);
 
-    void confirmHotelReservation(String taskId);
+    void confirmHotelReservation(Long taskId);
 }

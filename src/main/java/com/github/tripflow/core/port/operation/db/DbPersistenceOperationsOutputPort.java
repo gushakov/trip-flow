@@ -9,6 +9,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DbPersistenceOperationsOutputPort {
 
@@ -29,4 +30,10 @@ public interface DbPersistenceOperationsOutputPort {
     List<Trip> findOpenTripsStartedByUser(String startedBy);
 
     void saveTripTask(TripTask tripTask);
+
+    TripTask loadTripTask(Long taskId);
+
+    Optional<TripTask> findAnyActivatedTaskForTripStartedByUser(TripId tripId, String tripStartedBy);
+
+    List<TripTask> listAnyActivatedTripTasksStartedByUser(String tripStartedBy);
 }

@@ -6,7 +6,6 @@ import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
@@ -22,8 +21,6 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
 
     private final SecurityOperationsOutputPort securityOps;
 
-    private final TasksOperationsOutputPort tasksOps;
-
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Override
@@ -33,9 +30,10 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
         try {
             // get all active tasks for trips started by the user
             String loggedInUserName = securityOps.loggedInUserName();
-            Map<TripId, TripTask> tasks = tasksOps.listActiveTasksForAssigneeCandidateGroup(securityOps.tripFlowAssigneeRole())
+            securityOps.assertCustomerPermission(loggedInUserName);
+
+            Map<TripId, TripTask> tasks = dbOps.listAnyActivatedTripTasksStartedByUser(securityOps.tripFlowAssigneeRole())
                     .stream()
-                    .filter(tripTask -> tripTask.getTripStartedBy().equals(loggedInUserName))
                     .collect(Collectors.toUnmodifiableMap(TripTask::getTripId, Function.identity()));
 
             // create a list of entries with information about trips to be presented

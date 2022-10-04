@@ -3,8 +3,6 @@ package com.github.tripflow.infrastructure.config;
 import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
@@ -53,57 +51,48 @@ public class UseCaseConfig {
     private DbPersistenceOperationsOutputPort dbOps;
 
     @Autowired
-    private TasksOperationsOutputPort tasksOps;
-
-    @Autowired
     private ConfigurationOperationsOutputPort configOps;
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public WelcomeInputPort welcomeUseCase(WelcomePresenterOutputPort welcomePresenter) {
-        return new WelcomeUseCase(welcomePresenter, securityOps, workflowOps, dbOps, tasksOps);
+        return new WelcomeUseCase(welcomePresenter, securityOps, workflowOps, dbOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort browseActiveTripsPresenter) {
-        return new BrowseActiveTripsUseCase(browseActiveTripsPresenter, securityOps, tasksOps, dbOps);
+        return new BrowseActiveTripsUseCase(browseActiveTripsPresenter, securityOps, dbOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort bookFlightPresenter) {
-        return new BookFlightUseCase(bookFlightPresenter, securityOps, tasksOps, dbOps);
+        return new BookFlightUseCase(bookFlightPresenter, securityOps, dbOps, workflowOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort reserveHotelPresenter) {
-        return new ReserveHotelUseCase(reserveHotelPresenter, securityOps, tasksOps, dbOps);
+        return new ReserveHotelUseCase(reserveHotelPresenter, securityOps, dbOps, workflowOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ViewSummaryInputPort viewSummaryUseCase(ViewSummaryPresenterOutputPort viewSummaryPresenter) {
-        return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, tasksOps, dbOps);
-    }
-
-    /*
-        Note: the concrete implementation of ExternalJobOperationsOutputPort will be provided
-        by the job handling adapter during the lookup of the use case from the application
-        context.
-     */
-
-    @Bean(autowireCandidate = false)
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public CheckCreditInputPort checkCreditUseCase(ExternalJobOperationsOutputPort externalJobOps) {
-        return new CheckCreditUseCase(externalJobOps, securityOps, configOps, dbOps);
+        return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, dbOps, workflowOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ConfirmTripInputPort confirmTripUseCase(ExternalJobOperationsOutputPort externalJobOps) {
-        return new ConfirmTripUseCase(externalJobOps, dbOps);
+    public CheckCreditInputPort checkCreditUseCase() {
+        return new CheckCreditUseCase(workflowOps, securityOps, configOps, dbOps);
+    }
+
+    @Bean(autowireCandidate = false)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ConfirmTripInputPort confirmTripUseCase() {
+        return new ConfirmTripUseCase(workflowOps, dbOps);
     }
 
 }

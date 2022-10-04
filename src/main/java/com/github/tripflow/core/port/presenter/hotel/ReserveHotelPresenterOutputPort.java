@@ -10,11 +10,11 @@ import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
 import java.util.List;
 
 public interface ReserveHotelPresenterOutputPort extends ErrorHandlingPresenterOutputPort {
-    void presentHotelsInDestinationCityForSelectionByCustomer(String taskId, Trip trip, String city, List<Hotel> hotels);
+    void presentHotelsInDestinationCityForSelectionByCustomer(Long taskId, Trip trip, String city, List<Hotel> hotels);
 
     void presentResultOfRegisteringSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId);
 
-    void presentResultOfConfirmingHotelReservationWithoutNextActiveTask(String tripId);
+    void presentResultOfConfirmingHotelReservationWithoutNextActiveTask(TripId tripId);
 
     void presentResultOfConfirmingHotelReservationWithNextActiveTask(TripTask tripTask);
 }

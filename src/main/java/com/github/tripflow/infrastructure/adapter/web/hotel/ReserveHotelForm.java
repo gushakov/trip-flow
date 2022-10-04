@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class ReserveHotelForm {
 
-    String taskId;
+    Long taskId;
     Long tripId;
     String city;
     List<Hotel> hotels;

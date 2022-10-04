@@ -5,9 +5,9 @@ import com.github.tripflow.core.model.trip.TripId;
 
 public interface BookFlightInputPort {
 
-    void proposeFlightsForSelectionByCustomer(String taskId);
+    void proposeFlightsForSelectionByCustomer(Long taskId);
 
     void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber);
 
-    void confirmFlightBooking(String taskId);
+    void confirmFlightBooking(Long taskId);
 }

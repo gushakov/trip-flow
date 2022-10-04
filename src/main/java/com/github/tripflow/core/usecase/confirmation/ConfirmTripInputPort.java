@@ -1,7 +1,7 @@
 package com.github.tripflow.core.usecase.confirmation;
 
 public interface ConfirmTripInputPort {
-    void confirmTrip();
+    void confirmTrip(Long taskId);
 
-    void refuseTrip();
+    void refuseTrip(Long taskId);
 }

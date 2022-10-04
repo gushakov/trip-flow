@@ -2,8 +2,8 @@ package com.github.tripflow.core.usecase.task;
 
 import com.github.tripflow.core.model.task.TripTask;
 
-public interface HandleUserTaskInputPort {
+public interface RegisterUserTaskInputPort {
 
-    void handleUserTask(TripTask userTask);
+    void registerActivatedUserTask(TripTask userTask);
 
 }

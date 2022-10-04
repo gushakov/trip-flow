@@ -7,7 +7,7 @@ import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
+import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
@@ -15,16 +15,16 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
-    private final ExternalJobOperationsOutputPort externalJobOps;
+    private final WorkflowOperationsOutputPort workflowOps;
 
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Transactional
     @Override
-    public void confirmTrip() {
+    public void confirmTrip(Long taskId) {
         try {
             // get the task for the job
-            TripTask tripTask = externalJobOps.activeTripTask();
+            TripTask tripTask = dbOps.loadTripTask(taskId);
             TripId tripId = tripTask.getTripId();
 
             // load the trip
@@ -35,18 +35,18 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
             dbOps.updateTrip(confirmedTrip);
 
             // complete the task
-            externalJobOps.completeTask();
+            workflowOps.completeTask(taskId);
         } catch (GenericTripFlowError e) {
-            externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
+            workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
     }
 
     @Transactional
     @Override
-    public void refuseTrip() {
+    public void refuseTrip(Long taskId) {
         try {
             // get the task for the job
-            TripTask tripTask = externalJobOps.activeTripTask();
+            TripTask tripTask = dbOps.loadTripTask(taskId);
             TripId tripId = tripTask.getTripId();
 
             // load the trip
@@ -58,7 +58,7 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
             // complete the task
         } catch (GenericTripFlowError e) {
-            externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
+            workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
     }
 }

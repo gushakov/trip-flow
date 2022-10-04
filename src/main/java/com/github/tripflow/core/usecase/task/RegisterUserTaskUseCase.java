@@ -8,14 +8,15 @@ import lombok.RequiredArgsConstructor;
 import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
-public class HandleUserTaskUseCase extends AbstractErrorHandler implements HandleUserTaskInputPort {
+public class RegisterUserTaskUseCase extends AbstractErrorHandler implements RegisterUserTaskInputPort {
 
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Transactional
     @Override
-    public void handleUserTask(TripTask userTask) {
+    public void registerActivatedUserTask(TripTask userTask) {
         try {
+            // just save user task in the database
             dbOps.saveTripTask(userTask);
         } catch (Exception e) {
             logErrorAndRollback(e);
