@@ -4,6 +4,7 @@ import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 
@@ -26,4 +27,6 @@ public interface DbPersistenceOperationsOutputPort {
     Hotel loadHotel(HotelId hotelId);
 
     List<Trip> findOpenTripsStartedByUser(String startedBy);
+
+    void saveTripTask(TripTask tripTask);
 }

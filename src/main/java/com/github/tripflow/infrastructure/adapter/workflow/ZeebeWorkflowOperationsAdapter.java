@@ -6,6 +6,7 @@ import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutput
 import io.camunda.zeebe.client.api.command.ClientException;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.response.SetVariablesResponse;
+import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.lifecycle.ZeebeClientLifecycle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,23 +14,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-/**
- * @deprecated
- */
-//@Service
+@Service
 @RequiredArgsConstructor
 @Slf4j
-@Deprecated
-public class ZeebeClientLifecycleOperationsAdapter implements WorkflowOperationsOutputPort {
+public class ZeebeWorkflowOperationsAdapter implements WorkflowOperationsOutputPort {
 
-    private final ZeebeClientLifecycle zeebeClient;
+    private final ZeebeClientLifecycle zeebeClientLifecycle;
 
-
+    private final JobClient jobClient;
     @Override
     public Long startNewTripBookingProcess(String tripStartedBy) {
         ProcessInstanceEvent start;
         try {
-            start = zeebeClient
+            start = zeebeClientLifecycle
                     .newCreateInstanceCommand()
                     .bpmnProcessId(Constants.TRIPFLOW_PROCESS_ID)
                     .latestVersion()
@@ -42,7 +39,7 @@ public class ZeebeClientLifecycleOperationsAdapter implements WorkflowOperations
 
             // store process instance key (trip ID) and the username of the customer who started
             // the trip as the flow variables
-            SetVariablesResponse variableStatus = zeebeClient.newSetVariablesCommand(pik)
+            SetVariablesResponse variableStatus = zeebeClientLifecycle.newSetVariablesCommand(pik)
                     .variables(Map.of(Constants.TRIP_ID_PROCESS_VARIABLE, pik,
                             Constants.TRIP_STARTED_BY_VARIABLE, tripStartedBy))
                     .send()
@@ -60,9 +57,8 @@ public class ZeebeClientLifecycleOperationsAdapter implements WorkflowOperations
 
     @Override
     public void cancelTripBookingProcess(Long pik) {
-
         try {
-            zeebeClient.newCancelInstanceCommand(pik)
+            zeebeClientLifecycle.newCancelInstanceCommand(pik)
                     .send()
                     .join();
             log.debug("[Zeebe Client] Canceled process instance {}", pik);

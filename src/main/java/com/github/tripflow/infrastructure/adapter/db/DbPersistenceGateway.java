@@ -4,6 +4,7 @@ import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
@@ -11,6 +12,7 @@ import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
+import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
@@ -27,6 +29,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
     private final TripFlowDbMapper dbMapper;
+
+    private final TripTaskEntityRepository taskEntityRepo;
 
     private final TripEntityRepository tripEntityRepo;
     private final HotelEntityRepository hotelEntityRepo;
@@ -121,5 +125,10 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
             throw new TripFlowDbPersistenceError("Cannot find open trips started by %s"
                     .formatted(startedBy), e);
         }
+    }
+
+    @Override
+    public void saveTripTask(TripTask tripTask) {
+        jdbcAggregateTemplate.save(tripTask);
     }
 }
