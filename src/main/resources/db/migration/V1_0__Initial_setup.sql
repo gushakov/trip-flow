@@ -1,3 +1,14 @@
+CREATE TABLE public.activated_jobs
+(
+    job_key         int8    NOT NULL,
+    "name"          varchar NOT NULL,
+    "type"          varchar NOT NULL,
+    trip_id         int8    NOT NULL,
+    trip_started_by varchar NOT NULL,
+    "action"        varchar NOT NULL,
+    CONSTRAINT activated_jobs_pk PRIMARY KEY (job_key)
+);
+
 CREATE TABLE public.flight
 (
     flight_number         varchar NOT NULL,
@@ -13,7 +24,7 @@ CREATE TABLE public.flight
 CREATE TABLE public.hotel
 (
     hotel_id   varchar NOT NULL,
-    hotel_name       varchar NOT NULL,
+    hotel_name varchar NOT NULL,
     city       varchar NOT NULL,
     price      int4    NOT NULL,
     image_file varchar NOT NULL,
@@ -28,7 +39,7 @@ CREATE TABLE public.trip
     hotel_id       varchar NULL,
     flight_booked  boolean NOT NULL DEFAULT false,
     hotel_reserved boolean NOT NULL DEFAULT false,
-    trip_refused boolean NOT NULL DEFAULT false,
+    trip_refused   boolean NOT NULL DEFAULT false,
     trip_confirmed boolean NOT NULL DEFAULT false,
     CONSTRAINT trip_pk PRIMARY KEY (trip_id)
 );

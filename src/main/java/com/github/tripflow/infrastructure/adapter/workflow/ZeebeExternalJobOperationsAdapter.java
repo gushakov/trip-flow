@@ -65,6 +65,7 @@ public class ZeebeExternalJobOperationsAdapter extends AbstractErrorHandler impl
                     .variables(Map.of(Constants.SUFFICIENT_CREDIT_VARIABLE, sufficientCredit))
                     .send();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ExternalJobOperationError("Cannot complete service task, job ID: %s"
                     .formatted(job.getElementId()), e);
         }

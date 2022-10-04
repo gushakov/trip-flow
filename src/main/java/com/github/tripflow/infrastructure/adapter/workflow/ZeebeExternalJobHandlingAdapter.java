@@ -49,6 +49,20 @@ public class ZeebeExternalJobHandlingAdapter {
         checkCreditUseCase(jobClient, job).checkCreditLimit();
     }
 
+    @ZeebeWorker(type = "io.camunda.zeebe:userTask", name = "",  forceFetchAllVariables = true)
+    public void handleJobBookFlight(final JobClient jobClient, final ActivatedJob job) {
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>");
+        System.out.println(">>>>>>>>>>"+job);
+    }
+
+
     @ZeebeWorker(type = "confirmTrip", forceFetchAllVariables = true)
     public void confirmTrip(final JobClient jobClient, final ActivatedJob job) {
         log.debug("[Zeebe Worker][External Job] Executing external job: {} for BPMN process instance with ID: {}",

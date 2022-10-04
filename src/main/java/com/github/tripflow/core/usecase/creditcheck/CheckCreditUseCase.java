@@ -73,6 +73,7 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
 
             externalJobOps.completeCreditCheck(totalPrice <= creditLimit);
         } catch (GenericTripFlowError e) {
+            e.printStackTrace();
             externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
 
