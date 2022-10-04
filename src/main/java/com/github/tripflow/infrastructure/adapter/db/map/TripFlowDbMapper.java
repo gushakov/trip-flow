@@ -11,9 +11,11 @@ import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 
 public interface TripFlowDbMapper {
 
-    TripEntity convert(Trip trip);
+    TripTaskEntity convert(TripTask tripTask);
 
     TripTask convert(TripTaskEntity tripTaskEntity);
+
+    TripEntity convert(Trip trip);
 
     Trip convert(TripEntity tripEntity);
 

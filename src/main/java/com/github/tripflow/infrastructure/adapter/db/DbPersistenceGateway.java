@@ -148,7 +148,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     @Override
     public void saveTripTask(TripTask tripTask) {
-        jdbcAggregateTemplate.save(tripTask);
+        jdbcAggregateTemplate.save(dbMapper.convert(tripTask));
     }
 
     @Override
@@ -186,7 +186,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
             return List.of();
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError(("Error when searching for all tasks of the trip with ID: %s," +
-                    " , started by %s, and assigned to the candidate group: %s")
+                    " started by %s, and assigned to the candidate group: %s")
                     .formatted(tripId, tripStartedBy, candidateGroups), e);
         }
     }

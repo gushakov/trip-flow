@@ -4,9 +4,9 @@ import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GenericPresenter extends AbstractErrorHandler implements ErrorHandlingPresenterOutputPort {
+public class ErrorLoggingPresenter extends AbstractErrorHandler implements ErrorHandlingPresenterOutputPort {
     @Override
     public void presentError(Exception e) {
-        logErrorAndRollback(e);
+        logError(e);
     }
 }

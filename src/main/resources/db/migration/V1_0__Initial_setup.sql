@@ -42,11 +42,10 @@ CREATE TABLE public.trip_task
 (
     task_id            int8    NOT NULL,
     "name"             varchar NOT NULL,
-    "type"             varchar NOT NULL,
     trip_id            int8    NOT NULL,
     trip_started_by    varchar NOT NULL,
     "action"           varchar NOT NULL,
-    candidature_groups varchar NOT NULL,
+    candidate_groups varchar NOT NULL,
     CONSTRAINT trip_task_pk PRIMARY KEY (task_id)
 );
 

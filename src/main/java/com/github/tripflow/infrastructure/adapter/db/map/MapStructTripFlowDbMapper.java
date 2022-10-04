@@ -16,9 +16,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
 
-    protected abstract TripEntity map(Trip trip);
+    protected abstract TripTaskEntity map(TripTask tripTask);
 
     protected abstract TripTask map(TripTaskEntity tripTaskEntity);
+
+    protected abstract TripEntity map(Trip trip);
 
     protected abstract Trip map(TripEntity tripEntity);
 
@@ -28,13 +30,20 @@ public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
 
     @IgnoreForMapping
     @Override
-    public TripEntity convert(Trip trip) {
-        return map(trip);
+    public TripTaskEntity convert(TripTask tripTask) {
+        return null;
     }
 
+    @IgnoreForMapping
     @Override
     public TripTask convert(TripTaskEntity tripTaskEntity) {
         return map(tripTaskEntity);
+    }
+
+    @IgnoreForMapping
+    @Override
+    public TripEntity convert(Trip trip) {
+        return map(trip);
     }
 
     @IgnoreForMapping

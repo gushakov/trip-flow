@@ -25,7 +25,7 @@ import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
 import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
 import com.github.tripflow.core.usecase.task.RegisterUserTaskInputPort;
 import com.github.tripflow.core.usecase.task.RegisterUserTaskUseCase;
-import com.github.tripflow.infrastructure.error.GenericPresenter;
+import com.github.tripflow.infrastructure.error.ErrorLoggingPresenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Scope;
 public class UseCaseConfig {
 
     @Autowired
-    private GenericPresenter genericPresenter;
+    private ErrorLoggingPresenter genericPresenter;
 
     @Autowired
     private SecurityOperationsOutputPort securityOps;

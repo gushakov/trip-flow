@@ -21,19 +21,26 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 @Slf4j
 public abstract class AbstractErrorHandler {
 
-
-    protected void logErrorAndRollback(Exception e) {
-
+    protected void logError(Exception e) {
         // if we are here it usually means that we may have an unforeseen
         // error which we should probably log for debugging purposes
         log.error(e.getMessage(), e);
+    }
 
+    protected void rollback() {
         // we need to roll back any active transaction
         try {
             TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
         } catch (NoTransactionException nte) {
             // do nothing if not running in a transactional context
         }
+    }
+
+    protected void logErrorAndRollback(Exception e) {
+
+        logError(e);
+
+        rollback();
 
     }
 
