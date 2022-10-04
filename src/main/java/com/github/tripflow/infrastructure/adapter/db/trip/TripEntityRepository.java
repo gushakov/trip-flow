@@ -13,6 +13,6 @@ import java.util.List;
 
 public interface TripEntityRepository extends CrudRepository<TripEntity, Long> {
 
-    List<TripEntity> findAllByStartedByAndTripCancelledIsFalseAndTripConfirmedIsFalse(String startedBy);
+    List<TripEntity> findAllByStartedByAndTripRefusedIsFalseAndTripConfirmedIsFalse(String startedBy);
 
 }

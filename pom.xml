@@ -34,7 +34,7 @@
             <version>${camunda.platform.version}</version>
         </dependency>
 
-        <!-- Needed to communicate with Tasklist application via GraphQL -->
+        <!-- Needed to communicate with TaskList application via GraphQL -->
         <dependency>
             <groupId>io.camunda</groupId>
             <artifactId>camunda-tasklist-client-java</artifactId>

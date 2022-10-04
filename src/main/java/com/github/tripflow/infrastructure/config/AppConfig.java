@@ -2,6 +2,8 @@ package com.github.tripflow.infrastructure.config;
 
 import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -20,6 +22,9 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
 public class AppConfig {
+
+    @Autowired
+    private JobClient jobClient;
 
     /*
         We need to register our custom override of DispatcherServlet

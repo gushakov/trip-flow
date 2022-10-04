@@ -114,7 +114,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     @Override
     public List<Trip> findOpenTripsStartedByUser(String startedBy) {
         try {
-            return tripEntityRepo.findAllByStartedByAndTripCancelledIsFalseAndTripConfirmedIsFalse(startedBy)
+            return tripEntityRepo.findAllByStartedByAndTripRefusedIsFalseAndTripConfirmedIsFalse(startedBy)
                     .stream().map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {

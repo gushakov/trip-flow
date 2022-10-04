@@ -43,7 +43,8 @@ public class TripTask {
     String name;
 
     /**
-     * Action to be executed for the user task. Will be {@code null} for "service tasks".
+     * Action to be executed for the user task. Will correspond to the BPMN "type" for
+     * a service task.
      */
     String action;
 
@@ -52,8 +53,6 @@ public class TripTask {
         this.tripId = notNull(tripId);
         this.tripStartedBy = notNull(tripStartedBy);
         this.name = notNull(name);
-
-        // these can be null
-        this.action = action;
+        this.action = notNull(action);
     }
 }
