@@ -23,6 +23,9 @@ import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
 import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
 import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
+import com.github.tripflow.core.usecase.task.RegisterUserTaskInputPort;
+import com.github.tripflow.core.usecase.task.RegisterUserTaskUseCase;
+import com.github.tripflow.infrastructure.error.GenericPresenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -31,15 +34,14 @@ import org.springframework.context.annotation.Scope;
 
 /**
  * Configuration for all use case beans. Each use case is a prototype scoped
- * bean which wires presenters and other output ports needed to perform
+ * bean which wires presenters and/or other output ports needed to perform
  * the logic of the use case.
  */
 @Configuration
 public class UseCaseConfig {
 
-    // These are singletons (application scope), can be autowired during
-    // initialization phase. Presenters need to be specified as parameters
-    // to bean creator methods since they are scoped to the request.
+    @Autowired
+    private GenericPresenter genericPresenter;
 
     @Autowired
     private SecurityOperationsOutputPort securityOps;
@@ -52,6 +54,16 @@ public class UseCaseConfig {
 
     @Autowired
     private ConfigurationOperationsOutputPort configOps;
+
+    // special use case for registering user tasks
+
+    @Bean(autowireCandidate = false)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public RegisterUserTaskInputPort registerUserTaskUseCase() {
+        return new RegisterUserTaskUseCase(genericPresenter, dbOps);
+    }
+
+    // web use cases
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -82,6 +94,8 @@ public class UseCaseConfig {
     public ViewSummaryInputPort viewSummaryUseCase(ViewSummaryPresenterOutputPort viewSummaryPresenter) {
         return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, dbOps, workflowOps);
     }
+
+    // workflow use cases
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
