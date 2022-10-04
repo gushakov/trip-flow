@@ -54,3 +54,5 @@ a space between "=" and the beginning of the expression, like here:
 </bpmn:sequenceFlow>
 ```
 Otherwise, you get XML parsing exception when deploying the BPMN to Camunda.
+3. When executing a use case for a service task, we cannot access a logged-in user since we are not in the
+web authenticated context anymore. User related data should be accessed using `tripStartedBy` process variable.

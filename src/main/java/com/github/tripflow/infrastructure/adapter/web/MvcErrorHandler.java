@@ -4,7 +4,7 @@ package com.github.tripflow.infrastructure.adapter.web;
     References:
     ----------
 
-    1. This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
+    1.  This class is copied from cargo-clean project: https://github.com/gushakov/cargo-clean
     2.  Error handling in Spring MVC: https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
  */
 
