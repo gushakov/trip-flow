@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import static com.github.tripflow.core.model.Validator.notNull;
 
 /**
- * Aggregate which represents a user task in TripFlow process.
+ * Aggregate which represents a user or a service task in TripFlow process.
  * Allows access to the variables of the task which are modeled
  * in the BPMN. Note, the task variables may not be available for
  * a lapse of time between state transitions of the workflow.
@@ -37,12 +37,13 @@ public class TripTask {
     String tripStartedBy;
 
     /**
-     * User-friendly task name.
+     * User-friendly task name. Corresponds to the BPMN "name" of a user task,
+     * or to the BPMN "type" of a service task.
      */
     String name;
 
     /**
-     * Action to be executed for the task.
+     * Action to be executed for the task. Could be {@code null} for "service tasks".
      */
     String action;
 
@@ -51,6 +52,6 @@ public class TripTask {
         this.tripId = notNull(tripId);
         this.tripStartedBy = notNull(tripStartedBy);
         this.name = notNull(name);
-        this.action = notNull(action);
+        this.action = action;
     }
 }

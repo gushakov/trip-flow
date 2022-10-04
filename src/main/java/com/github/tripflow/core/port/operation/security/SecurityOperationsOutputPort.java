@@ -8,7 +8,9 @@ public interface SecurityOperationsOutputPort {
 
     String tripFlowAssigneeRole();
 
-    default boolean isCustomer() {
+    boolean isUserCustomer(String username);
+
+    default boolean isLoggedInUserCustomer() {
         return tripFlowAssigneeRole().equals(Constants.ROLE_TRIPFLOW_CUSTOMER);
     }
 

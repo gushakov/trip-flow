@@ -21,7 +21,7 @@ import org.mapstruct.Named;
  * @see TaskNotFoundError
  */
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
-public abstract class MapStructTaskMapper implements WorkflowTaskMapper {
+public abstract class MapStructUserTaskMapper implements UserTaskMapper {
 
     @Mapping(target = "taskId", source = "id")
     @Mapping(target = "tripStartedBy", source = "workflowTask", qualifiedByName = "mapTripStartedByFromTaskVariable")

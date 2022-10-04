@@ -92,8 +92,8 @@ public class Trip {
         return newTrip().hotelReserved(true).build();
     }
 
-    public Trip confirmTrip(){
-        if (!isFlightBooked() || !isHotelReserved()){
+    public Trip confirmTrip() {
+        if (!isFlightBooked() || !isHotelReserved()) {
             throw new TripFlowValidationError("Flight must be booked and trip must be reserved before trip can be confirmed, trip ID: %s"
                     .formatted(tripId.getId()));
         }
@@ -104,7 +104,7 @@ public class Trip {
                 .build();
     }
 
-    public Trip cancelTrip(){
+    public Trip cancelTrip() {
         // trip can be canceled from any state
         return newTrip()
                 .tripConfirmed(false)

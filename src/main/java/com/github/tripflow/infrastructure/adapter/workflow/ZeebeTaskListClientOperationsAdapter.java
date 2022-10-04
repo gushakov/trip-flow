@@ -5,7 +5,7 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
 import com.github.tripflow.core.port.operation.workflow.TaskOperationError;
 import com.github.tripflow.core.port.operation.workflow.TasksOperationsOutputPort;
-import com.github.tripflow.infrastructure.adapter.workflow.map.WorkflowTaskMapper;
+import com.github.tripflow.infrastructure.adapter.workflow.map.UserTaskMapper;
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.tasklist.auth.SimpleAuthentication;
@@ -36,13 +36,13 @@ public class ZeebeTaskListClientOperationsAdapter implements TasksOperationsOutp
     private final TripFlowProperties tripFlowProps;
 
     private final CamundaTaskListClient taskListClient;
-    private final WorkflowTaskMapper taskMapper;
+    private final UserTaskMapper taskMapper;
 
     private final String taskListClientUserName;
 
     private final RetryTemplate retryTemplate;
 
-    public ZeebeTaskListClientOperationsAdapter(TripFlowProperties tripFlowProps, WorkflowTaskMapper taskMapper,
+    public ZeebeTaskListClientOperationsAdapter(TripFlowProperties tripFlowProps, UserTaskMapper taskMapper,
                                                 @Qualifier("taskListClient") RetryTemplate retryTemplate) {
         this.tripFlowProps = tripFlowProps;
         this.taskMapper = taskMapper;
@@ -78,6 +78,8 @@ public class ZeebeTaskListClientOperationsAdapter implements TasksOperationsOutp
                             TaskState.CREATED, 100, true)
                     .stream().map(taskMapper::convert).toList());
 
+        } catch (TaskNotFoundError e) {
+            return List.of();
         } catch (TaskListException e) {
             throw new TaskOperationError(e.getMessage(), e);
         }

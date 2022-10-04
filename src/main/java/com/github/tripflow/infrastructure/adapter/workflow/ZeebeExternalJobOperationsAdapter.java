@@ -2,8 +2,10 @@ package com.github.tripflow.infrastructure.adapter.workflow;
 
 import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationError;
 import com.github.tripflow.core.port.operation.workflow.ExternalJobOperationsOutputPort;
+import com.github.tripflow.infrastructure.adapter.workflow.map.JobTaskMapper;
 import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
@@ -13,8 +15,8 @@ import java.util.Map;
 
 /**
  * Secondary adapter implementing {@link ExternalJobOperationsOutputPort} used to
- * perform any operations related to the {@link ActivatedJob} (external service)
- * instance provided during construction time.
+ * perform any operations related to the {@link ActivatedJob} instance provided
+ * during construction time.
  *
  * @see ZeebeExternalJobHandlingAdapter
  * @see JobClient
@@ -26,16 +28,33 @@ public class ZeebeExternalJobOperationsAdapter extends AbstractErrorHandler impl
     private final JobClient jobClient;
     private final ActivatedJob job;
 
+    private final JobTaskMapper jobTaskMapper;
+
+    @Override
+    public TripTask activeTripTask() {
+        try {
+            return jobTaskMapper.convert(job);
+        } catch (Exception e) {
+            throw new ExternalJobOperationError("Cannot complete service task, job ID: %s"
+                    .formatted(job.getElementId()), e);
+        }
+    }
+
     @Override
     public void throwError(TripFlowBpmnError error) {
 
         // log error and roll back transaction
         logErrorAndRollback(error);
 
-        jobClient.newThrowErrorCommand(job)
-                .errorCode(error.getBpmnCode())
-                .errorMessage(error.getMessage())
-                .send();
+        try {
+            jobClient.newThrowErrorCommand(job)
+                    .errorCode(error.getBpmnCode())
+                    .errorMessage(error.getMessage())
+                    .send();
+        } catch (Exception e) {
+            throw new ExternalJobOperationError("Cannot complete service task, job ID: %s"
+                    .formatted(job.getElementId()), e);
+        }
     }
 
     @Override
@@ -46,7 +65,8 @@ public class ZeebeExternalJobOperationsAdapter extends AbstractErrorHandler impl
                     .variables(Map.of(Constants.SUFFICIENT_CREDIT_VARIABLE, sufficientCredit))
                     .send();
         } catch (Exception e) {
-            throw new ExternalJobOperationError("Cannot complete external job: check credit", e);
+            throw new ExternalJobOperationError("Cannot complete service task, job ID: %s"
+                    .formatted(job.getElementId()), e);
         }
 
     }

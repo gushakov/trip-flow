@@ -3,6 +3,7 @@ package com.github.tripflow.core.usecase.confirmation;
 import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
@@ -20,8 +21,10 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
     @Transactional
     @Override
-    public void confirmTrip(TripId tripId) {
+    public void confirmTrip() {
         try {
+            TripTask tripTask = externalJobOps.activeTripTask();
+            TripId tripId = tripTask.getTripId();
             Trip trip = dbOps.loadTrip(tripId);
             Trip confirmedTrip = trip.confirmTrip();
             dbOps.updateTrip(confirmedTrip);
@@ -32,8 +35,10 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
     @Transactional
     @Override
-    public void cancelTrip(TripId tripId) {
+    public void cancelTrip() {
         try {
+            TripTask tripTask = externalJobOps.activeTripTask();
+            TripId tripId = tripTask.getTripId();
             Trip trip = dbOps.loadTrip(tripId);
             Trip canceledTrip = trip.cancelTrip();
             dbOps.updateTrip(canceledTrip);

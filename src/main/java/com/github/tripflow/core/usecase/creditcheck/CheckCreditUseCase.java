@@ -6,6 +6,7 @@ import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
+import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
@@ -27,20 +28,25 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
     private final DbPersistenceOperationsOutputPort dbOps;
 
     @Override
-    public void checkCreditLimit(TripId tripId) {
+    public void checkCreditLimit() {
 
         try {
-            String loggedInUserName = securityOps.loggedInUserName();
 
-            // check that the current user is actually a customer
-            if (!securityOps.isCustomer()) {
+            // get task for the active job
+            TripTask tripTask = externalJobOps.activeTripTask();
+            TripId tripId = tripTask.getTripId();
+
+            // get the username of the user who started the trip
+            String tripStartedBy = tripTask.getTripStartedBy();
+
+            // check that the user who started the trip is a customer
+            if (!securityOps.isUserCustomer(tripStartedBy)) {
                 throw new TripFlowSecurityError("User %s does not have a \"customer\" role"
-                        .formatted(loggedInUserName));
+                        .formatted(tripStartedBy));
             }
 
-            // get the credit limit for the current user
-
-            int creditLimit = configOps.obtainCreditLimitForCustomer(loggedInUserName);
+            // get the credit limit for the customer
+            int creditLimit = configOps.obtainCreditLimitForCustomer(tripStartedBy);
 
             // load the trip, flight, hotel and check invariants
             Trip trip = dbOps.loadTrip(tripId);

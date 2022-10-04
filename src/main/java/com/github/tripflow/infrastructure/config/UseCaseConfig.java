@@ -39,20 +39,9 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class UseCaseConfig {
 
-    @Autowired
-    private WelcomePresenterOutputPort welcomePresenter;
-
-    @Autowired
-    private BrowseActiveTripsPresenterOutputPort browseActiveTripsPresenter;
-
-    @Autowired
-    private BookFlightPresenterOutputPort bookFlightPresenter;
-
-    @Autowired
-    private ReserveHotelPresenterOutputPort reserveHotelPresenter;
-
-    @Autowired
-    private ViewSummaryPresenterOutputPort viewSummaryPresenter;
+    // These are singletons (application scope), can be autowired during
+    // initialization phase. Presenters need to be specified as parameters
+    // to bean creator methods since they are scoped to the request.
 
     @Autowired
     private SecurityOperationsOutputPort securityOps;
@@ -71,31 +60,31 @@ public class UseCaseConfig {
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public WelcomeInputPort welcomeUseCase() {
+    public WelcomeInputPort welcomeUseCase(WelcomePresenterOutputPort welcomePresenter) {
         return new WelcomeUseCase(welcomePresenter, securityOps, workflowOps, dbOps, tasksOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public BrowseActiveTripsInputPort browseActiveTripsUseCase() {
+    public BrowseActiveTripsInputPort browseActiveTripsUseCase(BrowseActiveTripsPresenterOutputPort browseActiveTripsPresenter) {
         return new BrowseActiveTripsUseCase(browseActiveTripsPresenter, securityOps, tasksOps, dbOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public BookFlightInputPort bookFlightUseCase() {
+    public BookFlightInputPort bookFlightUseCase(BookFlightPresenterOutputPort bookFlightPresenter) {
         return new BookFlightUseCase(bookFlightPresenter, securityOps, tasksOps, dbOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ReserveHotelInputPort reserveHotelUseCase() {
+    public ReserveHotelInputPort reserveHotelUseCase(ReserveHotelPresenterOutputPort reserveHotelPresenter) {
         return new ReserveHotelUseCase(reserveHotelPresenter, securityOps, tasksOps, dbOps);
     }
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ViewSummaryInputPort viewSummaryUseCase() {
+    public ViewSummaryInputPort viewSummaryUseCase(ViewSummaryPresenterOutputPort viewSummaryPresenter) {
         return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, tasksOps, dbOps);
     }
 

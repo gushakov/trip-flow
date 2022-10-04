@@ -1,6 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.summary;
 
 import com.github.tripflow.core.model.task.TripTask;
+import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripSummary;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
@@ -26,12 +27,16 @@ public class ViewSummaryPresenter extends AbstractWebPresenter implements ViewSu
     }
 
     @Override
-    public void presentResultOfProceedingWithPaymentWithNextActiveTask(TripTask tripTask) {
-        // TODO: to implement
+    public void presentResultOfProceedingWithPaymentWithoutNextActiveTask(TripId tripId) {
+        message("Request for confirmation of the trip %s has been submitted. You may need to refresh this view."
+                .formatted(tripId.getShortId()));
+        redirect("browseActiveTrips");
     }
 
     @Override
-    public void presentResultOfProceedingWithPaymentWithoutNextActiveTask(String taskId) {
-        // TODO: to implement
+    public void presentResultOfProceedingWithPaymentWithNextActiveTask(TripTask tripTask) {
+        message("Request for confirmation of the trip %s has been processed. Next task: %s."
+                .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
+        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
     }
 }

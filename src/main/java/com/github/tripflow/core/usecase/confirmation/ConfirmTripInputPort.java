@@ -1,9 +1,7 @@
 package com.github.tripflow.core.usecase.confirmation;
 
-import com.github.tripflow.core.model.trip.TripId;
-
 public interface ConfirmTripInputPort {
-    void confirmTrip(TripId tripId);
+    void confirmTrip();
 
-    void cancelTrip(TripId tripId);
+    void cancelTrip();
 }

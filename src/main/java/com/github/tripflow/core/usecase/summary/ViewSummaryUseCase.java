@@ -65,9 +65,9 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
     public void proceedWithPayment(String taskId) {
 
         Optional<TripTask> nextTripTaskOpt;
-
+        TripTask tripTask;
         try {
-            TripTask tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
+            tripTask = tasksOps.retrieveActiveTaskForAssigneeCandidateGroup(taskId, securityOps.tripFlowAssigneeRole());
 
             // complete view summary task
             tasksOps.completeTask(taskId);
@@ -83,7 +83,7 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
         if (nextTripTaskOpt.isPresent()) {
             presenter.presentResultOfProceedingWithPaymentWithNextActiveTask(nextTripTaskOpt.get());
         } else {
-            presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(taskId);
+            presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(tripTask.getTripId());
         }
     }
 

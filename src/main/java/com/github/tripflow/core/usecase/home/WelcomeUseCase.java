@@ -39,7 +39,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
         try {
             userName = securityOps.loggedInUserName();
-            isCustomer = securityOps.isCustomer();
+            isCustomer = securityOps.isLoggedInUserCustomer();
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
