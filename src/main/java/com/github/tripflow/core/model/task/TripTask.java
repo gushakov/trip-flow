@@ -49,12 +49,18 @@ public class TripTask {
      */
     String action;
 
+    /**
+     * Candidate groups (roles) assigned to the task.
+     */
+    String candidateGroups;
+
     @Builder
-    public TripTask(Long taskId, TripId tripId, String tripStartedBy, String name, String action) {
+    public TripTask(Long taskId, TripId tripId, String tripStartedBy, String name, String action, String candidateGroups) {
         this.taskId = notNull(taskId);
         this.tripId = notNull(tripId);
         this.tripStartedBy = notNull(tripStartedBy);
         this.name = notNull(name);
         this.action = notNull(action);
+        this.candidateGroups = notNull(candidateGroups);
     }
 }

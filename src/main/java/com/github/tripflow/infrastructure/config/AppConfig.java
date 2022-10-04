@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.config;
 
-import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
+import com.github.tripflow.core.port.operation.workflow.TripTaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class AppConfig {
     public RetryTemplate userTaskNotFoundRetryingTemplate(TripFlowProperties tripFlowProps) {
         return new RetryTemplateBuilder()
                 .fixedBackoff(500L)
-                .retryOn(TaskNotFoundError.class)
+                .retryOn(TripTaskNotFoundError.class)
                 .maxAttempts(tripFlowProps.getTaskListClientMaxRetries())
                 .build();
     }

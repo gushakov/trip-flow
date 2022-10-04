@@ -1,5 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.workflow;
 
+import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.usecase.task.RegisterUserTaskInputPort;
 import com.github.tripflow.infrastructure.adapter.workflow.map.JobTaskMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
@@ -17,7 +18,7 @@ public class ZeebeJobHandlingAdapter {
 
     private final JobTaskMapper jobTaskMapper;
 
-    @ZeebeWorker(type = "io.camunda.zeebe:userTask", forceFetchAllVariables = true)
+    @ZeebeWorker(type = Constants.USER_TASK_TYPE, forceFetchAllVariables = true)
     public void handleUserTask(final JobClient jobClient, final ActivatedJob job) {
         useCase().registerActivatedUserTask(jobTaskMapper.convert(job));
     }

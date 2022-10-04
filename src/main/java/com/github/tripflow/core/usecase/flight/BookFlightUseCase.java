@@ -73,7 +73,8 @@ public class BookFlightUseCase implements BookFlightInputPort {
         TripId tripId;
         try {
             // get the task
-            String assigneeRole = securityOps.tripFlowAssigneeRole();
+            String candidateGroups = securityOps.tripFlowAssigneeRole();
+            String assigneeRole = candidateGroups;
             TripTask tripTask = dbOps.loadTripTask(taskId);
             tripId = tripTask.getTripId();
 
@@ -87,7 +88,9 @@ public class BookFlightUseCase implements BookFlightInputPort {
             workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(trip.getTripId(), tripTask.getTripStartedBy());
+            nextTripTaskOpt = dbOps.findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(trip.getTripId(),
+                    candidateGroups, tripTask.getTripStartedBy())
+                    .stream().findAny();
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);

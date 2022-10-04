@@ -42,4 +42,14 @@ public class Constants {
      * Code for a BPMN modeled error thrown from an external job.
      */
     public static final String EXTERNAL_JOB_ERROR_CODE = "ExternalJobError";
+
+    /**
+     * Service task type.
+     */
+    public static final String USER_TASK_TYPE = "io.camunda.zeebe:userTask";
+
+    /**
+     * Custom header for job, containing "Candidate groups" assigned to activated job.
+     */
+    public static final String CANDIDATE_GROUPS_HEADER = "io.camunda.zeebe:candidateGroups";
 }

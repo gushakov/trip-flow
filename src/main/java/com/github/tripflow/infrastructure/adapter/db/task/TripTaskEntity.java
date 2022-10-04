@@ -24,4 +24,7 @@ public class TripTaskEntity {
 
     @Column("trip_started_by")
     private String tripStartedBy;
+
+    @Column("candidate_groups")
+    private String candidateGroups;
 }

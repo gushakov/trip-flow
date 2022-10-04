@@ -77,8 +77,12 @@ public class WelcomeUseCase implements WelcomeInputPort {
                     .build();
             dbOps.saveNewTrip(trip);
 
+            String candidateGroups = securityOps.tripFlowAssigneeRole();
+
             // wait for the workflow engine to activate some user task
-            nextTripTaskOpt = dbOps.findAnyActivatedTaskForTripStartedByUser(tripId, tripStartedBy);
+            nextTripTaskOpt = dbOps.findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(tripId,
+                            candidateGroups, tripStartedBy)
+                    .stream().findAny();
 
         } catch (GenericTripFlowError e) {
 

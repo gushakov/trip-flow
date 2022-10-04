@@ -1,18 +1,13 @@
 package com.github.tripflow.core.usecase.browse;
 
 import com.github.tripflow.core.GenericTripFlowError;
-import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.TripEntry;
-import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
@@ -32,26 +27,19 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
             String loggedInUserName = securityOps.loggedInUserName();
             securityOps.assertCustomerPermission(loggedInUserName);
 
-            Map<TripId, TripTask> tasks = dbOps.listAnyActivatedTripTasksStartedByUser(loggedInUserName)
-                    .stream()
-                    .collect(Collectors.toUnmodifiableMap(TripTask::getTripId, Function.identity()));
+            String candidateGroups = securityOps.tripFlowAssigneeRole();
 
-            // create a list of entries with information about trips to be presented
-            tripEntries = dbOps.findOpenTripsStartedByUser(loggedInUserName)
+            tripEntries = dbOps.findAnyTaskAssignedToCandidateGroupsAndWhereTripStartedByUser(candidateGroups,
+                            loggedInUserName)
                     .stream()
-                    .filter(trip -> tasks.containsKey(trip.getTripId()))
-                    .map(trip -> {
-                        TripTask task = tasks.get(trip.getTripId());
-                        return TripEntry.builder()
-                                .taskId(task.getTaskId())
-                                .tripId(trip.getTripId())
-                                .taskName(task.getName())
-                                .taskAction(task.getAction())
-                                .flightBooked(trip.isFlightBooked())
-                                .hotelReserved(trip.isHotelReserved())
-                                .build();
-
-                    })
+                    .map(task -> TripEntry.builder()
+                            .taskId(task.getTaskId())
+                            .tripId(task.getTripId())
+                            .taskName(task.getName())
+                            .taskAction(task.getAction())
+                            .flightBooked(false)
+                            .hotelReserved(false)
+                            .build())
                     .toList();
 
         } catch (GenericTripFlowError e) {

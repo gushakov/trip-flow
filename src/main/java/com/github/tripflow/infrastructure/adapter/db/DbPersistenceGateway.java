@@ -9,7 +9,7 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
-import com.github.tripflow.core.port.operation.workflow.TaskNotFoundError;
+import com.github.tripflow.core.port.operation.workflow.TripTaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
@@ -23,7 +23,6 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
@@ -164,29 +163,49 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public Optional<TripTask> findAnyActivatedTaskForTripStartedByUser(TripId tripId, String tripStartedBy) {
+    public List<TripTask> findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(TripId tripId,
+                                                                                                     String candidateGroups,
+                                                                                                     String tripStartedBy) {
         try {
-            return retryTemplate.execute(retryContext ->
-                    taskEntityRepo.findAllByTripId(tripId.getId())
-                            .stream()
-                            .map(dbMapper::convert)
-                            .findAny());
-        } catch (TaskNotFoundError e) {
+            return retryTemplate.execute(retryContext -> {
+
+                List<TripTask> tasks = taskEntityRepo.findAllByTripIdAndCandidateGroupsAndTripStartedBy(tripId.getId(),
+                                candidateGroups, tripStartedBy)
+                        .stream()
+                        .map(dbMapper::convert)
+                        .toList();
+
+                if (tasks.isEmpty()) {
+                    // retry
+                    throw new TripTaskNotFoundError();
+                }
+
+                return tasks;
+            });
+        } catch (TripTaskNotFoundError e) {
             // will happen if retry limit has been exceeded
-            return Optional.empty();
+            return List.of();
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError(("Error when searching for all tasks of the trip with ID: %s," +
+                    " , started by %s, and assigned to the candidate group: %s")
+                    .formatted(tripId, tripStartedBy, candidateGroups), e);
         }
     }
 
     @Override
-    public List<TripTask> listAnyActivatedTripTasksStartedByUser(String tripStartedBy) {
+    public List<TripTask> findAnyTaskAssignedToCandidateGroupsAndWhereTripStartedByUser(String candidateGroups,
+                                                                                        String tripStartedBy) {
         try {
-            return taskEntityRepo.findAllByTripStartedBy(tripStartedBy)
+            return taskEntityRepo.findAllByCandidateGroupsAndTripStartedBy(
+                            candidateGroups, tripStartedBy)
                     .stream()
                     .map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {
-            throw new TripFlowDbPersistenceError("Error when searching for any activated trip tasks started by: %s"
-                    .formatted(tripStartedBy), e);
+            throw new TripFlowDbPersistenceError(("Error when searching for all tasks, started by %s," +
+                    " and assigned to the candidate group: %s")
+                    .formatted(tripStartedBy, candidateGroups), e);
         }
     }
+
 }

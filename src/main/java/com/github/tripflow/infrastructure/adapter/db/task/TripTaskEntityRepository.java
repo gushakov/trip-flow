@@ -6,8 +6,7 @@ import java.util.List;
 
 public interface TripTaskEntityRepository extends CrudRepository<TripTaskEntity, Long> {
 
-    List<TripTaskEntity> findAllByTripId(Long tripId);
-
-    List<TripTaskEntity> findAllByTripStartedBy(String tripStartedBy);
+    List<TripTaskEntity> findAllByTripIdAndCandidateGroupsAndTripStartedBy(Long tripId, String candidateGroups, String tripStartedBy);
+    List<TripTaskEntity> findAllByCandidateGroupsAndTripStartedBy(String candidateGroups, String tripStartedBy);
 
 }

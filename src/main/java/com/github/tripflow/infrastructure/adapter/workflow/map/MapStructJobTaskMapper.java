@@ -12,6 +12,7 @@ import java.util.Map;
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructJobTaskMapper implements JobTaskMapper {
 
+    @Mapping(target = "candidateGroups", ignore = true)
     @Mapping(target = "tripStartedBy", ignore = true)
     @Mapping(target = "action", ignore = true)
     @Mapping(target = "name", ignore = true)
@@ -26,7 +27,8 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
         Map<String, Object> vars = job.getVariablesAsMap();
         tripTaskBuilder.action((String) vars.get(Constants.ACTION_VARIABLE));
         tripTaskBuilder.tripStartedBy((String) vars.get(Constants.TRIP_STARTED_BY_VARIABLE));
-        tripTaskBuilder.name((String) vars.getOrDefault(Constants.NAME_VARIABLE, "unspecified task"));
+        tripTaskBuilder.name((String) vars.get(Constants.NAME_VARIABLE));
+        tripTaskBuilder.candidateGroups(job.getCustomHeaders().get(Constants.CANDIDATE_GROUPS_HEADER));
     }
 
     @IgnoreForMapping
