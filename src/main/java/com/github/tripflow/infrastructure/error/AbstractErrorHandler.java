@@ -13,7 +13,7 @@ import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 /**
- * This a common parent for all Presenters which must share some error handling logic.
+ * This a common parent for all adapters which must share some error handling logic.
  * This error handler will log any exception, and it will try rollback any active transaction.
  *
  * @see TransactionInterceptor#currentTransactionStatus()
