@@ -6,14 +6,14 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Table("activated_jobs")
+@Table("trip_task")
 public class TripTaskEntity {
 
     @Id
-    @Column("job_key")
-    private Long jobKey;
+    @Column("task_id")
+    private Long taskId;
 
-    @Column("tripId")
+    @Column("trip_id")
     private Long tripId;
 
     @Column("name")

@@ -31,18 +31,17 @@ public class WelcomeUseCase implements WelcomeInputPort {
     @Override
     public void welcomeUser() {
 
-        String userName;
-        boolean isCustomer;
+        String loggedInUsername;
 
         try {
-            userName = securityOps.loggedInUserName();
-            isCustomer = securityOps.isLoggedInUserCustomer();
+            loggedInUsername = securityOps.loggedInUserName();
+            securityOps.assertCustomerPermission(loggedInUsername);
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
             return;
         }
 
-        presenter.presentWelcomeView(userName, isCustomer);
+        presenter.presentWelcomeView(loggedInUsername, true);
 
     }
 

@@ -18,7 +18,6 @@ public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
 
     protected abstract TripEntity map(Trip trip);
 
-    @Mapping(target = "taskId", source = "jobKey")
     protected abstract TripTask map(TripTaskEntity tripTaskEntity);
 
     protected abstract Trip map(TripEntity tripEntity);

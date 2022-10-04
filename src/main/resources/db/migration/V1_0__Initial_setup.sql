@@ -1,14 +1,3 @@
-CREATE TABLE public.activated_jobs
-(
-    job_key         int8    NOT NULL,
-    "name"          varchar NOT NULL,
-    "type"          varchar NOT NULL,
-    trip_id         int8    NOT NULL,
-    trip_started_by varchar NOT NULL,
-    "action"        varchar NOT NULL,
-    CONSTRAINT activated_jobs_pk PRIMARY KEY (job_key)
-);
-
 CREATE TABLE public.flight
 (
     flight_number         varchar NOT NULL,
@@ -48,3 +37,17 @@ ALTER TABLE public.trip
     ADD CONSTRAINT trip_flight_fk FOREIGN KEY (flight_number) REFERENCES public.flight (flight_number);
 ALTER TABLE public.trip
     ADD CONSTRAINT trip_hotel_fk FOREIGN KEY (hotel_id) REFERENCES public.hotel (hotel_id);
+
+CREATE TABLE public.trip_task
+(
+    task_id         int8    NOT NULL,
+    "name"          varchar NOT NULL,
+    "type"          varchar NOT NULL,
+    trip_id         int8    NOT NULL,
+    trip_started_by varchar NOT NULL,
+    "action"        varchar NOT NULL,
+    CONSTRAINT activated_jobs_pk PRIMARY KEY (task_id)
+);
+
+ALTER TABLE public.trip_task
+    ADD CONSTRAINT trip_task_fk FOREIGN KEY (trip_id) REFERENCES public.trip (trip_id);

@@ -32,7 +32,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
             String loggedInUserName = securityOps.loggedInUserName();
             securityOps.assertCustomerPermission(loggedInUserName);
 
-            Map<TripId, TripTask> tasks = dbOps.listAnyActivatedTripTasksStartedByUser(securityOps.tripFlowAssigneeRole())
+            Map<TripId, TripTask> tasks = dbOps.listAnyActivatedTripTasksStartedByUser(loggedInUserName)
                     .stream()
                     .collect(Collectors.toUnmodifiableMap(TripTask::getTripId, Function.identity()));
 
