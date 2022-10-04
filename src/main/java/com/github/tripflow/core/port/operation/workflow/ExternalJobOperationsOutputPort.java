@@ -11,4 +11,6 @@ public interface ExternalJobOperationsOutputPort {
 
     void completeCreditCheck(boolean sufficientCredit);
 
+    void completeTask();
+
 }

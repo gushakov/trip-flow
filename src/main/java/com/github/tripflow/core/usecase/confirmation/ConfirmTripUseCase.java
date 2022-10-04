@@ -23,11 +23,19 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
     @Override
     public void confirmTrip() {
         try {
+            // get the task for the job
             TripTask tripTask = externalJobOps.activeTripTask();
             TripId tripId = tripTask.getTripId();
+
+            // load the trip
             Trip trip = dbOps.loadTrip(tripId);
+
+            // confirm and update the trip
             Trip confirmedTrip = trip.confirmTrip();
             dbOps.updateTrip(confirmedTrip);
+
+            // complete the task
+            externalJobOps.completeTask();
         } catch (GenericTripFlowError e) {
             externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
@@ -35,13 +43,20 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
     @Transactional
     @Override
-    public void cancelTrip() {
+    public void refuseTrip() {
         try {
+            // get the task for the job
             TripTask tripTask = externalJobOps.activeTripTask();
             TripId tripId = tripTask.getTripId();
+
+            // load the trip
             Trip trip = dbOps.loadTrip(tripId);
-            Trip canceledTrip = trip.cancelTrip();
+
+            // refuse and update the trip
+            Trip canceledTrip = trip.refuseTrip();
             dbOps.updateTrip(canceledTrip);
+
+            // complete the task
         } catch (GenericTripFlowError e) {
             externalJobOps.throwError(new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }

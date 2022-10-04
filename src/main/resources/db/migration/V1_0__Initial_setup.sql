@@ -28,7 +28,7 @@ CREATE TABLE public.trip
     hotel_id       varchar NULL,
     flight_booked  boolean NOT NULL DEFAULT false,
     hotel_reserved boolean NOT NULL DEFAULT false,
-    trip_cancelled boolean NOT NULL DEFAULT false,
+    trip_refused boolean NOT NULL DEFAULT false,
     trip_confirmed boolean NOT NULL DEFAULT false,
     CONSTRAINT trip_pk PRIMARY KEY (trip_id)
 );

@@ -70,4 +70,14 @@ public class ZeebeExternalJobOperationsAdapter extends AbstractErrorHandler impl
         }
 
     }
+
+    @Override
+    public void completeTask() {
+        try {
+            jobClient.newCompleteCommand(job).send();
+        } catch (Exception e) {
+            throw new ExternalJobOperationError("Cannot complete service task, job ID: %s"
+                    .formatted(job.getElementId()), e);
+        }
+    }
 }

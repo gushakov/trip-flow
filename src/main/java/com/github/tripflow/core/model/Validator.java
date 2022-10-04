@@ -5,7 +5,7 @@ import java.util.Optional;
 public class Validator {
 
     /**
-     * Throw {@code IllegalArgumentException} if {@code something} argument is {@code null}.
+     * Throws {@code TripFlowValidationError} if {@code something} argument is {@code null}.
      *
      * @param something any object
      * @param <T>       any type

@@ -7,7 +7,7 @@ import com.github.tripflow.core.GenericTripFlowError;
  * hold or if we are in an inconsistent workflow state: meaning
  * that, a state of {@code Trip} aggregate dos not correspond
  * to the logical state dictated by state of the workflow instance
- * (during a user task) represented by {@code TripTask}.
+ * (during a user task or a service task) represented by {@code TripTask}.
  */
 public class TripFlowValidationError extends GenericTripFlowError {
     public TripFlowValidationError(String message) {

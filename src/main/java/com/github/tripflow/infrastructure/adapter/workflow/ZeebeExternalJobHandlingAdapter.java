@@ -43,26 +43,26 @@ public class ZeebeExternalJobHandlingAdapter {
 
     @ZeebeWorker(type = "checkCredit", forceFetchAllVariables = true)
     public void checkCredit(final JobClient jobClient, final ActivatedJob job) {
-        log.debug("[Zeebe Worker][External Job] Executing external job: checkCredit for BPMN process instance with ID: {}",
-                job.getProcessInstanceKey());
+        log.debug("[Zeebe Worker][External Job] Executing external job: {} for BPMN process instance with ID: {}",
+               job.getType(), job.getProcessInstanceKey());
 
         checkCreditUseCase(jobClient, job).checkCreditLimit();
     }
 
     @ZeebeWorker(type = "confirmTrip", forceFetchAllVariables = true)
     public void confirmTrip(final JobClient jobClient, final ActivatedJob job) {
-        log.debug("[Zeebe Worker][External Job] Executing external job: confirmTrip for BPMN process instance with ID: {}",
-                job.getProcessInstanceKey());
+        log.debug("[Zeebe Worker][External Job] Executing external job: {} for BPMN process instance with ID: {}",
+               job.getType(), job.getProcessInstanceKey());
 
         confirmTripUseCase(jobClient, job).confirmTrip();
     }
 
-    @ZeebeWorker(type = "cancelTrip", forceFetchAllVariables = true)
-    public void cancelTrip(final JobClient jobClient, final ActivatedJob job) {
-        log.debug("[Zeebe Worker][External Job] Executing external job: cancelTrip for BPMN process instance with ID: {}",
-                job.getProcessInstanceKey());
+    @ZeebeWorker(type = "refuseTrip", forceFetchAllVariables = true)
+    public void refuseTrip(final JobClient jobClient, final ActivatedJob job) {
+        log.debug("[Zeebe Worker][External Job] Executing external job: {} for BPMN process instance with ID: {}",
+               job.getType(), job.getProcessInstanceKey());
 
-        confirmTripUseCase(jobClient, job).cancelTrip();
+        confirmTripUseCase(jobClient, job).refuseTrip();
     }
 
     private CheckCreditInputPort checkCreditUseCase(JobClient jobClient, ActivatedJob job) {

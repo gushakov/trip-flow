@@ -34,7 +34,7 @@ public class Trip {
 
     boolean hotelReserved;
 
-    boolean tripCancelled;
+    boolean tripRefused;
 
     boolean tripConfirmed;
 
@@ -42,7 +42,7 @@ public class Trip {
     public Trip(TripId tripId, String startedBy,
                 FlightNumber flightNumber, HotelId hotelId,
                 boolean flightBooked, boolean hotelReserved,
-                boolean tripCancelled, boolean tripConfirmed) {
+                boolean tripRefused, boolean tripConfirmed) {
         // these are never null
         this.tripId = notNull(tripId);
         this.startedBy = notNull(startedBy);
@@ -50,7 +50,7 @@ public class Trip {
         // there will be false by default
         this.flightBooked = flightBooked;
         this.hotelReserved = hotelReserved;
-        this.tripCancelled = tripCancelled;
+        this.tripRefused = tripRefused;
         this.tripConfirmed = tripConfirmed;
 
         // these can be null
@@ -100,15 +100,16 @@ public class Trip {
 
         return newTrip()
                 .tripConfirmed(true)
-                .tripCancelled(false)
                 .build();
     }
 
-    public Trip cancelTrip() {
-        // trip can be canceled from any state
+    public Trip refuseTrip() {
+        if (!isFlightBooked() || !isHotelReserved()) {
+            throw new TripFlowValidationError("Flight must be booked and trip must be reserved before trip can be refused, trip ID: %s"
+                    .formatted(tripId.getId()));
+        }
         return newTrip()
-                .tripConfirmed(false)
-                .tripCancelled(true)
+                .tripRefused(true)
                 .build();
     }
 
@@ -120,7 +121,7 @@ public class Trip {
                 .hotelId(hotelId)
                 .flightBooked(flightBooked)
                 .hotelReserved(hotelReserved)
-                .tripCancelled(tripCancelled)
+                .tripRefused(tripRefused)
                 .tripConfirmed(tripConfirmed);
     }
 }

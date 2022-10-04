@@ -27,8 +27,8 @@ public class TripEntity {
     @Column("hotel_reserved")
     private boolean hotelReserved;
 
-    @Column("trip_cancelled")
-    private boolean tripCancelled;
+    @Column("trip_refused")
+    private boolean tripRefused;
 
     @Column("trip_confirmed")
     private boolean tripConfirmed;
