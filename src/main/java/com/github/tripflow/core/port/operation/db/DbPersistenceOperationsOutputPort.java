@@ -26,14 +26,12 @@ public interface DbPersistenceOperationsOutputPort {
 
     Hotel loadHotel(HotelId hotelId);
 
-    List<Trip> findOpenTripsStartedByUser(String startedBy);
-
     void saveTripTask(TripTask tripTask);
 
     TripTask loadTripTask(Long taskId);
 
-    List<TripTask> findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(TripId tripId, String candidateGroups, String tripStartedBy);
+    List<TripTask> findAnyTasksForTripAndUser(TripId tripId, String candidateGroups, String tripStartedBy);
 
-    List<TripTask> findAnyTaskAssignedToCandidateGroupsAndWhereTripStartedByUser(String candidateGroups, String tripStartedBy);
+    List<TripTask> findAnyTasksForUser(String candidateGroups, String tripStartedBy);
 
 }

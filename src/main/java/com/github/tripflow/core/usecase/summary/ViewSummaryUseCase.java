@@ -75,7 +75,7 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
             String candidateGroups = securityOps.tripFlowAssigneeRole();
 
             // advance to the next task
-            nextTripTaskOpt = dbOps.findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(tripTask.getTripId(),
+            nextTripTaskOpt = dbOps.findAnyTasksForTripAndUser(tripTask.getTripId(),
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
         } catch (GenericTripFlowError e) {

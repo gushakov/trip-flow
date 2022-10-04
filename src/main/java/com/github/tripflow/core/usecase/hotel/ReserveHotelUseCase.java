@@ -121,7 +121,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = dbOps.findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(trip.getTripId(),
+            nextTripTaskOpt = dbOps.findAnyTasksForTripAndUser(trip.getTripId(),
                     candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 

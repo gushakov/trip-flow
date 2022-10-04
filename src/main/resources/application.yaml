@@ -39,9 +39,4 @@ logging:
       security: debug
 
 tripflow:
-  task-list-client-user-name: demo
-  task-list-client-password: demo
-  task-list-host: localhost
-  task-list-port: 8081
-  task-list-scheme: http
-  task-list-client-max-retries: 20
+  task-look-up-max-retries: 5

@@ -16,16 +16,19 @@ import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
 import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
+import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.retry.support.RetryTemplateBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
+
+    private final TripFlowProperties tripFlowProps;
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
 
@@ -39,21 +42,29 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     private final HotelEntityRepository hotelEntityRepo;
     private final FlightEntityRepository flightEntityRepo;
 
-    public DbPersistenceGateway(JdbcAggregateTemplate jdbcAggregateTemplate,
+    public DbPersistenceGateway(TripFlowProperties tripFlowProps,
+                                JdbcAggregateTemplate jdbcAggregateTemplate,
                                 TripFlowDbMapper dbMapper,
-                                @Qualifier("userTask")
-                                RetryTemplate retryTemplate,
                                 TripTaskEntityRepository taskEntityRepo,
                                 TripEntityRepository tripEntityRepo,
                                 HotelEntityRepository hotelEntityRepo,
                                 FlightEntityRepository flightEntityRepo) {
+        this.tripFlowProps = tripFlowProps;
         this.jdbcAggregateTemplate = jdbcAggregateTemplate;
         this.dbMapper = dbMapper;
-        this.retryTemplate = retryTemplate;
+        this.retryTemplate = initRetryTemplate();
         this.taskEntityRepo = taskEntityRepo;
         this.tripEntityRepo = tripEntityRepo;
         this.hotelEntityRepo = hotelEntityRepo;
         this.flightEntityRepo = flightEntityRepo;
+    }
+
+    private RetryTemplate initRetryTemplate() {
+        return new RetryTemplateBuilder()
+                .fixedBackoff(500L)
+                .retryOn(TripTaskNotFoundError.class)
+                .maxAttempts(tripFlowProps.getTaskLookUpMaxRetries())
+                .build();
     }
 
     @Override
@@ -136,18 +147,6 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public List<Trip> findOpenTripsStartedByUser(String startedBy) {
-        try {
-            return tripEntityRepo.findAllByStartedByAndTripRefusedIsFalseAndTripConfirmedIsFalse(startedBy)
-                    .stream().map(dbMapper::convert)
-                    .toList();
-        } catch (Exception e) {
-            throw new TripFlowDbPersistenceError("Cannot find open trips started by %s"
-                    .formatted(startedBy), e);
-        }
-    }
-
-    @Override
     public void saveTripTask(TripTask tripTask) {
         jdbcAggregateTemplate.save(tripTask);
     }
@@ -163,9 +162,9 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public List<TripTask> findAnyTasksForGivenTripAssignedToCandidateGroupsAndWhereTripStartedByUser(TripId tripId,
-                                                                                                     String candidateGroups,
-                                                                                                     String tripStartedBy) {
+    public List<TripTask> findAnyTasksForTripAndUser(TripId tripId,
+                                                     String candidateGroups,
+                                                     String tripStartedBy) {
         try {
             return retryTemplate.execute(retryContext -> {
 
@@ -193,8 +192,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public List<TripTask> findAnyTaskAssignedToCandidateGroupsAndWhereTripStartedByUser(String candidateGroups,
-                                                                                        String tripStartedBy) {
+    public List<TripTask> findAnyTasksForUser(String candidateGroups,
+                                              String tripStartedBy) {
         try {
             return taskEntityRepo.findAllByCandidateGroupsAndTripStartedBy(
                             candidateGroups, tripStartedBy)

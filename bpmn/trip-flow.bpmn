@@ -10,6 +10,7 @@
         <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;bookFlight&#34;" target="action" />
+          <zeebe:input source="=&#34;book flight&#34;" target="name" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02gp6dg</bpmn:incoming>
@@ -22,6 +23,7 @@
       <bpmn:extensionElements>
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;reserveHotel&#34;" target="action" />
+          <zeebe:input source="=&#34;reserve hotel&#34;" target="name" />
         </zeebe:ioMapping>
         <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
       </bpmn:extensionElements>
@@ -34,6 +36,7 @@
       <bpmn:extensionElements>
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;viewSummary&#34;" target="action" />
+          <zeebe:input source="=&#34;view summary&#34;" target="name" />
         </zeebe:ioMapping>
         <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
       </bpmn:extensionElements>
@@ -86,6 +89,7 @@
         <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;viewOutcome&#34;" target="action" />
+          <zeebe:input source="=&#34;view outcome&#34;" target="name" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_00eovwy</bpmn:incoming>
@@ -106,6 +110,7 @@
           <zeebe:assignmentDefinition candidateGroups="ROLE_TRIPFLOW_CUSTOMER" />
           <zeebe:ioMapping>
             <zeebe:input source="=&#34;error&#34;" target="action" />
+            <zeebe:input source="=&#34;view error&#34;" target="name" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_03od2kb</bpmn:incoming>

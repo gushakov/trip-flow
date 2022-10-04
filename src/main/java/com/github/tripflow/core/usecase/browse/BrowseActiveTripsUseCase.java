@@ -29,7 +29,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
 
             String candidateGroups = securityOps.tripFlowAssigneeRole();
 
-            tripEntries = dbOps.findAnyTaskAssignedToCandidateGroupsAndWhereTripStartedByUser(candidateGroups,
+            tripEntries = dbOps.findAnyTasksForUser(candidateGroups,
                             loggedInUserName)
                     .stream()
                     .map(task -> TripEntry.builder()

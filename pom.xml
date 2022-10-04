@@ -18,7 +18,6 @@
     <properties>
         <java.version>17</java.version>
         <camunda.platform.version>8.0.6</camunda.platform.version>
-        <tasklist.java.client.version>1.5.0</tasklist.java.client.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
         <mapstruct.lombok.binding.version>0.2.0</mapstruct.lombok.binding.version>
         <archunit.version>0.23.1</archunit.version>
@@ -32,13 +31,6 @@
             <groupId>io.camunda</groupId>
             <artifactId>spring-zeebe-starter</artifactId>
             <version>${camunda.platform.version}</version>
-        </dependency>
-
-        <!-- Needed to communicate with TaskList application via GraphQL -->
-        <dependency>
-            <groupId>io.camunda</groupId>
-            <artifactId>camunda-tasklist-client-java</artifactId>
-            <version>${tasklist.java.client.version}</version>
         </dependency>
 
         <dependency>
