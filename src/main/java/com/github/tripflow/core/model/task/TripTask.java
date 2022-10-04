@@ -2,6 +2,7 @@ package com.github.tripflow.core.model.task;
 
 import com.github.tripflow.core.model.trip.TripId;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +24,7 @@ public class TripTask {
      * ID of the task in the workflow, corresponds to the key of the corresponding job.
      */
     @EqualsAndHashCode.Include
-    String taskId;
+    Long taskId;
 
     /**
      * TripFlow process instance key, also the ID of the
@@ -48,7 +49,8 @@ public class TripTask {
      */
     String action;
 
-    public TripTask(String taskId, TripId tripId, String tripStartedBy, String name, String action) {
+    @Builder
+    public TripTask(Long taskId, TripId tripId, String tripStartedBy, String name, String action) {
         this.taskId = notNull(taskId);
         this.tripId = notNull(tripId);
         this.tripStartedBy = notNull(tripStartedBy);

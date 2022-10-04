@@ -30,6 +30,8 @@ public class Constants {
      */
     public static final String ACTION_VARIABLE = "action";
 
+    public static final String NAME_VARIABLE = "name";
+
     /**
      * Name of the variable set during the credit check job.
      */

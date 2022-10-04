@@ -37,6 +37,6 @@ public class ViewSummaryPresenter extends AbstractWebPresenter implements ViewSu
     public void presentResultOfProceedingWithPaymentWithNextActiveTask(TripTask tripTask) {
         message("Request for confirmation of the trip %s has been processed. Next task: %s."
                 .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
-        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
+        redirect(tripTask.getAction(), Map.of("taskId", Long.toString(tripTask.getTaskId())));
     }
 }

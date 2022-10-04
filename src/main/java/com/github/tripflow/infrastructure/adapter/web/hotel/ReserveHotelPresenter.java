@@ -56,6 +56,6 @@ public class ReserveHotelPresenter extends AbstractWebPresenter implements Reser
     public void presentResultOfConfirmingHotelReservationWithNextActiveTask(TripTask tripTask) {
         message("Successfully reserved hotel for the trip %s. Next task: %s."
                 .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
-        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
+        redirect(tripTask.getAction(), Map.of("taskId", Long.toString(tripTask.getTaskId())));
     }
 }

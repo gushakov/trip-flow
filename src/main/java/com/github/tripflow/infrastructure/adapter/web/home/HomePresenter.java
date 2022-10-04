@@ -46,6 +46,6 @@ public class HomePresenter extends AbstractWebPresenter implements WelcomePresen
     public void presentResultOfStartingNewTripBookingWithNextActiveTask(TripTask tripTask) {
         message("New process with ID: %s just started. Next task: %s."
                 .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
-        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
+        redirect(tripTask.getAction(), Map.of("taskId", Long.toString(tripTask.getTaskId())));
     }
 }

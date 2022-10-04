@@ -55,6 +55,6 @@ public class BookFlightPresenter extends AbstractWebPresenter implements BookFli
     public void presentResultOfConfirmingFlightWithNextActiveTask(TripTask tripTask) {
         message("Successfully booked the flight for trip %s. Next task: %s."
                 .formatted(tripTask.getTripId().getShortId(), tripTask.getName()));
-        redirect(tripTask.getAction(), Map.of("taskId", tripTask.getTaskId()));
+        redirect(tripTask.getAction(), Map.of("taskId", Long.toString(tripTask.getTaskId())));
     }
 }

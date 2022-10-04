@@ -11,25 +11,25 @@ public class FlightEntity {
 
     @Id
     @Column("flight_number")
-    String flightNumber;
+    private String flightNumber;
 
     @Column("airline")
-    String airline;
+    private String airline;
 
     @Column("origin_city")
-    String originCity;
+    private String originCity;
 
     @Column("origin_iata_code")
-    String originIataCode;
+    private String originIataCode;
 
     @Column("destination_city")
-    String destinationCity;
+    private String destinationCity;
 
     @Column("destination_iata_code")
-    String destinationIataCode;
+    private String destinationIataCode;
 
     @Column("price")
-    int price;
+    private int price;
 
 
 }

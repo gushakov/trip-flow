@@ -5,23 +5,28 @@ import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
+
+import java.util.Map;
 
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructJobTaskMapper implements JobTaskMapper {
 
-    @Mapping(target = "tripStartedBy", source = "job", qualifiedByName = "mapTripStartedByFromJobVariable")
+    @Mapping(target = "tripStartedBy", ignore = true)
     @Mapping(target = "action", ignore = true)
-    @Mapping(target = "name", source = "type")
-    @Mapping(target = "taskId", source = "elementInstanceKey")
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "taskId", source = "key")
     @Mapping(target = "tripId", source = "processInstanceKey")
     protected abstract TripTask map(ActivatedJob job);
 
-    @Named("mapTripStartedByFromJobVariable")
-    protected String mapTripStartedByFromJobVariable(ActivatedJob job) {
-        return (String) job.getVariablesAsMap().get(Constants.TRIP_STARTED_BY_VARIABLE);
+    @AfterMapping
+    protected void mapJobVariables(ActivatedJob job, @MappingTarget TripTask.TripTaskBuilder tripTaskBuilder){
+        // map job variables
+
+        Map<String, Object> vars = job.getVariablesAsMap();
+        tripTaskBuilder.action((String) vars.get(Constants.ACTION_VARIABLE));
+        tripTaskBuilder.tripStartedBy((String) vars.get(Constants.TRIP_STARTED_BY_VARIABLE));
+        tripTaskBuilder.name((String) vars.getOrDefault(Constants.NAME_VARIABLE, "unspecified task"));
     }
 
     @IgnoreForMapping

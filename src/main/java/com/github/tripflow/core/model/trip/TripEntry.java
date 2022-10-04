@@ -13,7 +13,7 @@ import lombok.Value;
 @Builder
 public class TripEntry {
 
-    String taskId;
+    Long taskId;
     TripId tripId;
     String taskName;
     String taskAction;

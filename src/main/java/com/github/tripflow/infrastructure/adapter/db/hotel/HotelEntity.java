@@ -11,17 +11,17 @@ public class HotelEntity {
 
     @Id
     @Column("hotel_id")
-    String hotelId;
+    private String hotelId;
 
     @Column("hotel_name")
-    String name;
+    private String name;
 
     @Column("city")
-    String city;
+    private String city;
 
     @Column("price")
-    int price;
+    private int price;
 
     @Column("image_file")
-    String imageFile;
+    private String imageFile;
 }
