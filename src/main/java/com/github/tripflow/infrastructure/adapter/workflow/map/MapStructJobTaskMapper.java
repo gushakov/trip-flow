@@ -34,6 +34,12 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
             tripTaskBuilder.candidateGroups(unwrapFirstCandidateGroup(job.getCustomHeaders().get(Constants.CANDIDATE_GROUPS_HEADER)));
             tripTaskBuilder.name((String) vars.getOrDefault(Constants.NAME_VARIABLE, job.getType()));
         }
+        else {
+            // these are not used for service tasks
+            tripTaskBuilder.action("NA");
+            tripTaskBuilder.candidateGroups("NA");
+            tripTaskBuilder.name(job.getType());
+        }
 
     }
 
@@ -53,7 +59,7 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
         try {
             return map(job, true);
         } catch (Exception e) {
-            throw new WorkflowJobToTaskMappingError("Error mapping job: %s to a trip task", e);
+            throw new WorkflowJobToTaskMappingError("Error mapping job: %s to a trip task".formatted(job), e);
         }
     }
 
@@ -63,7 +69,7 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
         try {
             return map(job, false);
         } catch (Exception e) {
-            throw new WorkflowJobToTaskMappingError("Error mapping job: %s to a trip task", e);
+            throw new WorkflowJobToTaskMappingError("Error mapping job: %s to a trip task".formatted(job), e);
         }
     }
 }
