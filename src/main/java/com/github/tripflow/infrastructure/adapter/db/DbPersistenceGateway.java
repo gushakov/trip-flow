@@ -6,6 +6,7 @@ import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
@@ -13,17 +14,21 @@ import com.github.tripflow.core.port.operation.workflow.TripTaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
+import com.github.tripflow.infrastructure.adapter.db.task.OpenTripQueryRow;
 import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.retry.support.RetryTemplateBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
@@ -31,6 +36,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     private final TripFlowProperties tripFlowProps;
 
     private final JdbcAggregateTemplate jdbcAggregateTemplate;
+
+    private final NamedParameterJdbcOperations jdbcQueryOps;
 
     private final TripFlowDbMapper dbMapper;
 
@@ -44,13 +51,14 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     public DbPersistenceGateway(TripFlowProperties tripFlowProps,
                                 JdbcAggregateTemplate jdbcAggregateTemplate,
-                                TripFlowDbMapper dbMapper,
+                                NamedParameterJdbcOperations jdbcQueryOps, TripFlowDbMapper dbMapper,
                                 TripTaskEntityRepository taskEntityRepo,
                                 TripEntityRepository tripEntityRepo,
                                 HotelEntityRepository hotelEntityRepo,
                                 FlightEntityRepository flightEntityRepo) {
         this.tripFlowProps = tripFlowProps;
         this.jdbcAggregateTemplate = jdbcAggregateTemplate;
+        this.jdbcQueryOps = jdbcQueryOps;
         this.dbMapper = dbMapper;
         this.retryTemplate = initRetryTemplate();
         this.taskEntityRepo = taskEntityRepo;
@@ -206,7 +214,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
             return List.of();
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError(("Error when searching for all tasks of the trip with ID: %s," +
-                    " started by %s, and assigned to the candidate group: %s")
+                    " trip started by %s, and assigned to the candidate group: %s")
                     .formatted(tripId, tripStartedBy, candidateGroups), e);
         }
     }
@@ -221,9 +229,25 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
                     .map(dbMapper::convert)
                     .toList();
         } catch (Exception e) {
-            throw new TripFlowDbPersistenceError(("Error when searching for all tasks, started by %s," +
+            throw new TripFlowDbPersistenceError(("Error when searching for all tasks, trip started by %s," +
                     " and assigned to the candidate group: %s")
                     .formatted(tripStartedBy, candidateGroups), e);
+        }
+    }
+
+    @Override
+    public List<TripEntry> findAllOpenTripsForUser(String candidateGroups, String tripStartedBy) {
+        try {
+            return jdbcQueryOps.queryForStream(OpenTripQueryRow.SQL,
+                            Map.of("candidate_groups", candidateGroups,
+                                    "trip_started_by", tripStartedBy),
+                            new BeanPropertyRowMapper<>(OpenTripQueryRow.class))
+                    .map(dbMapper::convert)
+                    .toList();
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Error when executing query for open trips, candidate groups: %s, trip started by: %s"
+                    .formatted(candidateGroups, tripStartedBy), e);
+
         }
     }
 

@@ -29,18 +29,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
 
             String candidateGroups = securityOps.tripFlowAssigneeRole();
 
-            tripEntries = dbOps.findTasksForUser(candidateGroups,
-                            loggedInUserName)
-                    .stream()
-                    .map(task -> TripEntry.builder()
-                            .taskId(task.getTaskId())
-                            .tripId(task.getTripId())
-                            .taskName(task.getName())
-                            .taskAction(task.getAction())
-                            .flightBooked(false)
-                            .hotelReserved(false)
-                            .build())
-                    .toList();
+            tripEntries = dbOps.findAllOpenTripsForUser(candidateGroups, loggedInUserName);
 
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);

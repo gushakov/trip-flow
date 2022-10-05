@@ -4,14 +4,15 @@ import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntity;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntity;
 import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntity;
+import com.github.tripflow.infrastructure.adapter.db.task.OpenTripQueryRow;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
 public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
@@ -23,6 +24,8 @@ public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
     protected abstract TripEntity map(Trip trip);
 
     protected abstract Trip map(TripEntity tripEntity);
+
+    protected abstract TripEntry map(OpenTripQueryRow row);
 
     protected abstract Flight map(FlightEntity flightEntity);
 
@@ -50,6 +53,12 @@ public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
     @Override
     public Trip convert(TripEntity tripEntity) {
         return map(tripEntity);
+    }
+
+    @IgnoreForMapping
+    @Override
+    public TripEntry convert(OpenTripQueryRow row) {
+        return map(row);
     }
 
     @IgnoreForMapping

@@ -6,6 +6,7 @@ import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
+import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.core.model.trip.TripId;
 
 import java.util.List;
@@ -37,5 +38,7 @@ public interface DbPersistenceOperationsOutputPort {
     List<TripTask> findTasksForTripAndUserWithRetry(TripId tripId, String candidateGroups, String tripStartedBy);
 
     List<TripTask> findTasksForUser(String candidateGroups, String tripStartedBy);
+
+    List<TripEntry> findAllOpenTripsForUser(String candidateGroups, String tripStartedBy);
 
 }
