@@ -27,7 +27,7 @@ public interface DbPersistenceOperationsOutputPort {
 
     Hotel loadHotel(HotelId hotelId);
 
-    void saveTripTask(TripTask tripTask);
+    void saveTripTaskIfNeeded(TripTask tripTask);
 
     TripTask loadTripTask(Long taskId);
 

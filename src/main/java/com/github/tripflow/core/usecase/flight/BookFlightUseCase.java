@@ -85,12 +85,10 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
             // complete the task
             workflowOps.completeTask(taskId);
-            // remove the obsolete entry in the table of active user tasks
-            dbOps.removeTripTask(taskId);
 
             // advance to the next task
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(trip.getTripId(),
-                    candidateGroups, tripTask.getTripStartedBy())
+                            candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
         } catch (GenericTripFlowError e) {

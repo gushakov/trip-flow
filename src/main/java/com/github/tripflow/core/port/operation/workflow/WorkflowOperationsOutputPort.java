@@ -8,10 +8,10 @@ public interface WorkflowOperationsOutputPort {
 
     void cancelTripBookingProcess(Long pik);
 
-    void throwBpmnError(Long jobKey, TripFlowBpmnError error);
+    void throwBpmnError(Long taskId, TripFlowBpmnError error);
 
 
-    void completeCreditCheck(Long jobKey, boolean sufficientCredit);
+    void completeCreditCheck(Long taskId, boolean sufficientCredit);
 
-    void completeTask(Long jobKey);
+    void completeTask(Long taskId);
 }

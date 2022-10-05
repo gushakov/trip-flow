@@ -92,7 +92,6 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
             // get the task
             String candidateGroups = securityOps.tripFlowAssigneeRole();
-            String assigneeRole = candidateGroups;
             TripTask tripTask = dbOps.loadTripTask(taskId);
 
             // get the trip
@@ -119,10 +118,11 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
             // complete the workflow task
             workflowOps.completeTask(taskId);
+            // remove
 
             // advance to the next task
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(trip.getTripId(),
-                    candidateGroups, tripTask.getTripStartedBy())
+                            candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
         } catch (GenericTripFlowError e) {

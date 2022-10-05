@@ -4,8 +4,10 @@ import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.infrastructure.adapter.db.DbPersistenceGateway;
 import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.api.command.ClientException;
+import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.response.SetVariablesResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
@@ -24,6 +26,8 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
     private final ZeebeClientLifecycle zeebeClientLifecycle;
 
     private final JobClient jobClient;
+
+    private final DbPersistenceGateway dbGateway;
 
     @Override
     public Long startNewTripBookingProcess(String tripStartedBy) {
@@ -71,43 +75,45 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
     }
 
     @Override
-    public void throwBpmnError(Long jobKey, TripFlowBpmnError error) {
+    public void throwBpmnError(Long taskId, TripFlowBpmnError error) {
         // log error and roll back transaction
         logErrorAndRollback(error);
 
         try {
-            jobClient.newThrowErrorCommand(jobKey)
+            jobClient.newThrowErrorCommand(taskId)
                     .errorCode(error.getBpmnCode())
                     .errorMessage(error.getMessage())
                     .send();
         } catch (Exception e) {
             throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
-                    .formatted(jobKey), e);
+                    .formatted(taskId), e);
         }
     }
 
     @Override
-    public void completeCreditCheck(Long jobKey, boolean sufficientCredit) {
+    public void completeCreditCheck(Long taskId, boolean sufficientCredit) {
+        doCompleteTask(taskId, Map.of(Constants.SUFFICIENT_CREDIT_VARIABLE, sufficientCredit));
+    }
 
+    @Override
+    public void completeTask(Long taskId) {
+        doCompleteTask(taskId, null);
+    }
+
+    protected void doCompleteTask(Long taskId, Map<String, Object> variables) {
         try {
-            jobClient.newCompleteCommand(jobKey)
-                    .variables(Map.of(Constants.SUFFICIENT_CREDIT_VARIABLE, sufficientCredit))
-                    .send();
+            CompleteJobCommandStep1 commandStep = jobClient.newCompleteCommand(taskId);
+            if (variables != null && !variables.isEmpty()) {
+                commandStep.variables(variables);
+            }
+            commandStep.send();
+
+            // remove task from the database
+            dbGateway.removeTripTask(taskId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
-                    .formatted(jobKey), e);
-        }
-
-    }
-
-    @Override
-    public void completeTask(Long jobKey) {
-        try {
-            jobClient.newCompleteCommand(jobKey).send();
-        } catch (Exception e) {
-            throw new WorkflowClientOperationError("Cannot complete service task, job key: %s"
-                    .formatted(jobKey), e);
+            throw new WorkflowClientOperationError("Cannot complete task with ID: %s, and variables: %s"
+                    .formatted(taskId, variables), e);
         }
     }
 }

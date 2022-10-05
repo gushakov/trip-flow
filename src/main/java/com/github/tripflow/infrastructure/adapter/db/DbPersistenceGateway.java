@@ -155,12 +155,17 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public void saveTripTask(TripTask tripTask) {
+    public void saveTripTaskIfNeeded(TripTask tripTask) {
+        Long taskId = tripTask.getTaskId();
         try {
-            taskEntityRepo.save(dbMapper.convert(tripTask));
+            // do not try to save again when Zeebe's worker tries to
+            // handle the user task again
+            if (!taskEntityRepo.existsById(taskId)){
+                taskEntityRepo.save(dbMapper.convert(tripTask));
+            }
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot save trip task with ID: %s"
-                    .formatted(tripTask.getTaskId()), e);
+                    .formatted(taskId), e);
         }
     }
 
