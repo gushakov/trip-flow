@@ -28,7 +28,7 @@ an example application.
 **Special thanks** to Camunda team who gave me some pointers about how to integrate Zeebe's Java client. [This GitHub
 repo](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template) was especially helpful.
 
-:star: As I am writing this, [CamundaCon2022](https://www.camundacon.com/) is taking place! There is a great
+:star: As I am writing this, [CamundaCon 2022](https://www.camundacon.com/) is taking place! There is a great
 presentation by Luc Weinbrecht, speaking exactly about how to use Camunda and Clean Architecture together.
 
 Here is the list of main references consulted while working on this project. Please, see JavaDoc in the relevant source
