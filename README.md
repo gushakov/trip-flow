@@ -31,9 +31,10 @@ repo](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template) wa
 Here is the list of main references consulted while working on this project. Please, see JavaDoc in the relevant source
 code for more detailed references.
 
-1. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started/blob/main/spring/src/main/java/io/camunda/getstarted/ProcessApplication.java)
-2. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
-3. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
+1. [Camunda Community Hub, Lowcode UI template example](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template)
+2. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started/blob/main/spring/src/main/java/io/camunda/getstarted/ProcessApplication.java)
+3. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
+4. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
 
 ## Credits for the sample data and images
 
