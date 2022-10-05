@@ -57,3 +57,5 @@ a space between "=" and the beginning of the expression, like here:
 Otherwise, you get XML parsing exception when deploying the BPMN to Camunda.
 3. When executing a use case for a service task, we cannot access a logged-in user since we are not in the
 web authenticated context anymore. User related data should be accessed using `tripStartedBy` process variable.
+4. Candidate groups can be accessed from `ActivatedJob` via custom header: "io.camunda.zeebe:candidateGroups". This headear
+will contain one string representing the array of groups in the form `"[\"FOOBAR\",\"WAMBAZ\"]"` (serialized JSON array).
