@@ -74,7 +74,6 @@ public class BookFlightUseCase implements BookFlightInputPort {
         try {
             // get the task
             String candidateGroups = securityOps.tripFlowAssigneeRole();
-            String assigneeRole = candidateGroups;
             TripTask tripTask = dbOps.loadTripTask(taskId);
             tripId = tripTask.getTripId();
 
@@ -86,6 +85,8 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
             // complete the task
             workflowOps.completeTask(taskId);
+            // remove the obsolete entry in the table of active user tasks
+            dbOps.removeTripTask(taskId);
 
             // advance to the next task
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(trip.getTripId(),
