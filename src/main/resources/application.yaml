@@ -29,14 +29,23 @@ zeebe:
     security:
       plaintext: true
 
+com:
+  github:
+    tripflow:
+      infrastructure:
+        adapter:
+          web:
+            LocalDispatcherServlet: info
+
 
 logging:
   level:
     com.github.tripflow: debug
+    com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet: info
     org.springframework:
-      data.jdbc: debug
-      jdbc: debug
-      security: debug
+      data.jdbc: info
+      jdbc: info
+      security: info
 
 tripflow:
   task-look-up-max-retries: 5
