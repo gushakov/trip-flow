@@ -3,26 +3,16 @@ package com.github.tripflow.infrastructure.adapter.db;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.TripTaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.db.map.MapStructTripFlowDbMapperImpl;
-import com.github.tripflow.infrastructure.config.JdbcConfig;
-import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.retry.support.RetryTemplate;
-import org.springframework.retry.support.RetryTemplateBuilder;
 
 import java.util.List;
 
@@ -63,7 +53,6 @@ public class DbPersistenceGatewayTestIT {
                 .containsExactly(FlightNumber.of("LX1712"), "SWISS", "Zurich", "ZRH", "Naples", "NAP", 301);
     }
 
-    @NotNull
     private static Flight getOneFlight(List<Flight> flights, String flightNumber) {
         return flights.stream()
                 .filter(flight -> flight.getFlightNumber()

@@ -21,11 +21,12 @@ an example application.
 - TripFlow applicaiton: http://localhost:8080/trip
 - Camunda Self-Managed instance (with Hazelcast exporter): localhost, ports: 26500 (and others)
 - Zeebe Simple Monitor: http://localhost:8082/
-- Tasklist application: http://localhost:8081/
-- Elastic search: localhost, port 9200
 - Postgres database: localhost, port 5432, database: `tripflow`
 
 ## References
+
+**Special thanks** to Camunda team who gave me some pointers about how to integrate Zeebe's Java client. [This GitHub
+repo](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template) was especially helpful.
 
 Here is the list of main references consulted while working on this project. Please, see JavaDoc in the relevant source
 code for more detailed references.

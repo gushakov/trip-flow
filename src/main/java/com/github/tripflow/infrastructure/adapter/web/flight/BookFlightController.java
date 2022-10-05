@@ -5,7 +5,6 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.usecase.flight.BookFlightInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +45,6 @@ public class BookFlightController {
     }
 
 
-    @NotNull
     private BookFlightInputPort useCase() {
         return applicationContext.getBean(BookFlightInputPort.class);
     }

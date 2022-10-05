@@ -4,7 +4,6 @@ import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +51,6 @@ public class SpringSecurityAdapter implements SecurityOperationsOutputPort {
         }
     }
 
-    @NotNull
     private Authentication authentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
