@@ -88,7 +88,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
             workflowOps.completeTask(taskId);
 
             // advance to the next task
-            nextTripTaskOpt = dbOps.findAnyTasksForTripAndUser(trip.getTripId(),
+            nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(trip.getTripId(),
                     candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 

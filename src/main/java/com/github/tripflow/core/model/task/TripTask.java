@@ -54,13 +54,18 @@ public class TripTask {
      */
     String candidateGroups;
 
+    Integer version;
+
     @Builder
-    public TripTask(Long taskId, TripId tripId, String tripStartedBy, String name, String action, String candidateGroups) {
+    public TripTask(Long taskId, TripId tripId, String tripStartedBy, String name, String action, String candidateGroups, Integer version) {
         this.taskId = notNull(taskId);
         this.tripId = notNull(tripId);
         this.tripStartedBy = notNull(tripStartedBy);
         this.name = notNull(name);
         this.action = notNull(action);
         this.candidateGroups = notNull(candidateGroups);
+
+        // this can be null for tasks which we not yet persisted
+        this.version = version;
     }
 }

@@ -31,7 +31,7 @@ public abstract class MapStructTripFlowDbMapper implements TripFlowDbMapper {
     @IgnoreForMapping
     @Override
     public TripTaskEntity convert(TripTask tripTask) {
-        return null;
+        return map(tripTask);
     }
 
     @IgnoreForMapping

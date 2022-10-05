@@ -7,6 +7,7 @@ import com.github.tripflow.infrastructure.map.IgnoreForMapping;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import org.mapstruct.*;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @Mapper(componentModel = "spring", uses = {CommonMapStructConverters.class})
@@ -28,7 +29,17 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
         tripTaskBuilder.action((String) vars.get(Constants.ACTION_VARIABLE));
         tripTaskBuilder.tripStartedBy((String) vars.get(Constants.TRIP_STARTED_BY_VARIABLE));
         tripTaskBuilder.name((String) vars.get(Constants.NAME_VARIABLE));
-        tripTaskBuilder.candidateGroups(job.getCustomHeaders().get(Constants.CANDIDATE_GROUPS_HEADER));
+        tripTaskBuilder.candidateGroups(unwrapFirstCandidateGroup(job.getCustomHeaders().get(Constants.CANDIDATE_GROUPS_HEADER)));
+    }
+
+    // Unwrap "[\"ROLE_TRIPFLOW_CUSTOMER,SOME_OTHER_ROLE\"]" into "ROLE_TRIPFLOW_CUSTOMER"
+    private String unwrapFirstCandidateGroup(String candidateGroupsRaw){
+        return Arrays.stream(candidateGroupsRaw
+                .strip()
+                .replaceFirst("^\\[\"", "")
+                .replaceFirst("\"]$", "")
+                .split(","))
+                .findFirst().orElseThrow(IllegalStateException::new);
     }
 
     @IgnoreForMapping

@@ -68,10 +68,10 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public Trip saveNewTrip(Trip trip) {
+    public void saveNewTrip(Trip trip) {
         try {
             TripEntity saved = jdbcAggregateTemplate.insert(dbMapper.convert(trip));
-            return dbMapper.convert(saved);
+            dbMapper.convert(saved);
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot save Trip: %s"
                     .formatted(trip.getTripId()), e);
@@ -79,10 +79,10 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public Trip updateTrip(Trip trip) {
+    public void updateTrip(Trip trip) {
         try {
             TripEntity updated = jdbcAggregateTemplate.update(dbMapper.convert(trip));
-            return dbMapper.convert(updated);
+            dbMapper.convert(updated);
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot update Trip: %s"
                     .formatted(trip.getTripId()), e);
@@ -148,7 +148,12 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     @Override
     public void saveTripTask(TripTask tripTask) {
-        jdbcAggregateTemplate.save(dbMapper.convert(tripTask));
+        try {
+            taskEntityRepo.save(dbMapper.convert(tripTask));
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot save trip task with ID: %s"
+                    .formatted(tripTask.getTaskId()), e);
+        }
     }
 
     @Override
@@ -162,9 +167,24 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public List<TripTask> findAnyTasksForTripAndUser(TripId tripId,
-                                                     String candidateGroups,
-                                                     String tripStartedBy) {
+    public void removeTripTask(Long taskId) {
+        try {
+            taskEntityRepo.deleteById(taskId);
+        } catch (Exception e) {
+            throw new TripFlowDbPersistenceError("Cannot delete trip task with ID: %s"
+                    .formatted(taskId), e);
+        }
+    }
+
+    @Override
+    public boolean tripTaskExists(Long taskId) {
+        return taskEntityRepo.existsById(taskId);
+    }
+
+    @Override
+    public List<TripTask> findTasksForTripAndUserWithRetry(TripId tripId,
+                                                           String candidateGroups,
+                                                           String tripStartedBy) {
         try {
             return retryTemplate.execute(retryContext -> {
 
@@ -192,8 +212,8 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public List<TripTask> findAnyTasksForUser(String candidateGroups,
-                                              String tripStartedBy) {
+    public List<TripTask> findTasksForUser(String candidateGroups,
+                                           String tripStartedBy) {
         try {
             return taskEntityRepo.findAllByCandidateGroupsAndTripStartedBy(
                             candidateGroups, tripStartedBy)

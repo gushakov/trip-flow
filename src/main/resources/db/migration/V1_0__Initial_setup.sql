@@ -46,8 +46,6 @@ CREATE TABLE public.trip_task
     trip_started_by    varchar NOT NULL,
     "action"           varchar NOT NULL,
     candidate_groups varchar NOT NULL,
+    "version"             int   NULL,
     CONSTRAINT trip_task_pk PRIMARY KEY (task_id)
 );
-
-ALTER TABLE public.trip_task
-    ADD CONSTRAINT trip_task_fk FOREIGN KEY (trip_id) REFERENCES public.trip (trip_id);

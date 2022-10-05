@@ -6,20 +6,21 @@ import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputP
 import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
-
 @RequiredArgsConstructor
 public class RegisterUserTaskUseCase implements RegisterUserTaskInputPort {
 
     private final ErrorHandlingPresenterOutputPort presenter;
     private final DbPersistenceOperationsOutputPort dbOps;
 
-    @Transactional
     @Override
     public void registerActivatedUserTask(TripTask userTask) {
         try {
-            // just save user task in the database
-            dbOps.saveTripTask(userTask);
+            // Workflow engine will most likely try to execute
+            // this until the job is complete. So we can skip
+            // saving the task if it is already there.
+            if (!dbOps.tripTaskExists(userTask.getTaskId())){
+                dbOps.saveTripTask(userTask);
+            }
         } catch (GenericTripFlowError e) {
             presenter.presentError(e);
         }

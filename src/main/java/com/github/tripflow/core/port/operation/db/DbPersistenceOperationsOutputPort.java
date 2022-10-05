@@ -12,9 +12,9 @@ import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
 
-    Trip saveNewTrip(Trip trip);
+    void saveNewTrip(Trip trip);
 
-    Trip updateTrip(Trip trip);
+    void updateTrip(Trip trip);
 
     Trip loadTrip(TripId tripId);
 
@@ -30,8 +30,12 @@ public interface DbPersistenceOperationsOutputPort {
 
     TripTask loadTripTask(Long taskId);
 
-    List<TripTask> findAnyTasksForTripAndUser(TripId tripId, String candidateGroups, String tripStartedBy);
+    void removeTripTask(Long taskId);
 
-    List<TripTask> findAnyTasksForUser(String candidateGroups, String tripStartedBy);
+    boolean tripTaskExists(Long taskId);
+
+    List<TripTask> findTasksForTripAndUserWithRetry(TripId tripId, String candidateGroups, String tripStartedBy);
+
+    List<TripTask> findTasksForUser(String candidateGroups, String tripStartedBy);
 
 }

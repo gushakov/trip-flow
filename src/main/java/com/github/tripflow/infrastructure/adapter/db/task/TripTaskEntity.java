@@ -1,30 +1,39 @@
 package com.github.tripflow.infrastructure.adapter.db.task;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("trip_task")
 public class TripTaskEntity {
 
     @Id
     @Column("task_id")
-    private Long taskId;
+    Long taskId;
 
     @Column("trip_id")
-    private Long tripId;
+    Long tripId;
 
     @Column("name")
-    private String name;
+    String name;
 
     @Column("action")
-    private String action;
+    String action;
 
     @Column("trip_started_by")
-    private String tripStartedBy;
+    String tripStartedBy;
 
     @Column("candidate_groups")
-    private String candidateGroups;
+    String candidateGroups;
+
+    @Column("version")
+    @Version
+    Integer version;
+
 }
