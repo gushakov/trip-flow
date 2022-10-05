@@ -8,6 +8,7 @@ import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenter
 import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
 import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
+import com.github.tripflow.core.port.presenter.outcome.ViewOutcomePresenterOutputPort;
 import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
@@ -21,6 +22,8 @@ import com.github.tripflow.core.usecase.home.WelcomeInputPort;
 import com.github.tripflow.core.usecase.home.WelcomeUseCase;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelInputPort;
 import com.github.tripflow.core.usecase.hotel.ReserveHotelUseCase;
+import com.github.tripflow.core.usecase.outcome.ViewOutcomeInputPort;
+import com.github.tripflow.core.usecase.outcome.ViewOutcomeUseCase;
 import com.github.tripflow.core.usecase.summary.ViewSummaryInputPort;
 import com.github.tripflow.core.usecase.summary.ViewSummaryUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +52,7 @@ public class UseCaseConfig {
     @Autowired
     private ConfigurationOperationsOutputPort configOps;
 
-    // web use cases
+    // use cases for user tasks (run with user participation)
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -81,7 +84,14 @@ public class UseCaseConfig {
         return new ViewSummaryUseCase(viewSummaryPresenter, securityOps, dbOps, workflowOps);
     }
 
-    // workflow use cases
+    @Bean(autowireCandidate = false)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ViewOutcomeInputPort viewOutcomeUseCase(ViewOutcomePresenterOutputPort viewOutcomePresenter) {
+        return new ViewOutcomeUseCase(viewOutcomePresenter, dbOps, workflowOps);
+    }
+
+
+    // use cases for service tasks (run unattended)
 
     @Bean(autowireCandidate = false)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

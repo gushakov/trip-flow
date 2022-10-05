@@ -12,7 +12,6 @@ import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
 import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
 import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
@@ -68,7 +67,7 @@ public class CheckCreditUseCase implements CheckCreditInputPort {
             // check if the customer has a sufficient credit, completing the task
             // with the appropriate variable value
 
-            workflowOps.completeCreditCheck(taskId,totalPrice <= creditLimit);
+            workflowOps.completeCreditCheck(taskId, totalPrice <= creditLimit);
         } catch (GenericTripFlowError e) {
             workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }

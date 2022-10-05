@@ -40,7 +40,7 @@ public class ZeebeJobHandlingAdapter {
     }
 
     @ZeebeWorker(type = "confirmTrip", forceFetchAllVariables = true)
-    public void handleConfirmTripTask(final ActivatedJob job){
+    public void handleConfirmTripTask(final ActivatedJob job) {
         TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());
         dbGateway.saveTripTaskIfNeeded(tripTask);
@@ -48,8 +48,8 @@ public class ZeebeJobHandlingAdapter {
     }
 
     @ZeebeWorker(type = "refuseTrip", forceFetchAllVariables = true)
-    public void handleRefuseTripTask(final ActivatedJob job){
-        TripTask tripTask = jobTaskMapper.convertUserTask(job);
+    public void handleRefuseTripTask(final ActivatedJob job) {
+        TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());
         dbGateway.saveTripTaskIfNeeded(tripTask);
         confirmTripUseCase().refuseTrip(tripTask.getTaskId());
@@ -59,7 +59,7 @@ public class ZeebeJobHandlingAdapter {
         return applicationContext.getBean(CheckCreditInputPort.class);
     }
 
-    private ConfirmTripInputPort confirmTripUseCase(){
+    private ConfirmTripInputPort confirmTripUseCase() {
         return applicationContext.getBean(ConfirmTripInputPort.class);
     }
 

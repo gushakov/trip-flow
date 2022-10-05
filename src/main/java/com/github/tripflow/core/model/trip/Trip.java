@@ -113,6 +113,10 @@ public class Trip {
                 .build();
     }
 
+    public boolean hasConsistentOutcome() {
+        return (tripConfirmed && !tripRefused) || (!tripConfirmed && tripRefused);
+    }
+
     private TripBuilder newTrip() {
         return new TripBuilder()
                 .tripId(tripId)

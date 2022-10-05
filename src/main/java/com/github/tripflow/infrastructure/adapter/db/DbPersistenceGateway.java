@@ -69,7 +69,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
     private RetryTemplate initRetryTemplate() {
         return new RetryTemplateBuilder()
-                .fixedBackoff(500L)
+                .fixedBackoff(tripFlowProps.getTaskLookUpBackoffIntervalMillis())
                 .retryOn(TripTaskNotFoundError.class)
                 .maxAttempts(tripFlowProps.getTaskLookUpMaxRetries())
                 .build();
@@ -160,7 +160,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         try {
             // do not try to save again when Zeebe's worker tries to
             // handle the user task again
-            if (!taskEntityRepo.existsById(taskId)){
+            if (!taskEntityRepo.existsById(taskId)) {
                 taskEntityRepo.save(dbMapper.convert(tripTask));
             }
         } catch (Exception e) {

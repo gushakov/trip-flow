@@ -33,8 +33,7 @@ public abstract class MapStructJobTaskMapper implements JobTaskMapper {
             tripTaskBuilder.action((String) vars.get(Constants.ACTION_VARIABLE));
             tripTaskBuilder.candidateGroups(unwrapFirstCandidateGroup(job.getCustomHeaders().get(Constants.CANDIDATE_GROUPS_HEADER)));
             tripTaskBuilder.name((String) vars.getOrDefault(Constants.NAME_VARIABLE, job.getType()));
-        }
-        else {
+        } else {
             // these are not used for service tasks
             tripTaskBuilder.action("NA");
             tripTaskBuilder.candidateGroups("NA");

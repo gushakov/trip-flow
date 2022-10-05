@@ -11,6 +11,7 @@ import java.util.Map;
 @Setter
 public class TripFlowProperties {
 
+    private long taskLookUpBackoffIntervalMillis = 250L;
     private int taskLookUpMaxRetries = 5;
 
     private Map<String, Integer> creditLimit = Map.of("customer1", 500, "customer2", 400);

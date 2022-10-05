@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 public interface JobTaskMapper {
 
     TripTask convertUserTask(ActivatedJob job);
+
     TripTask convertServiceTask(ActivatedJob job);
 
 }

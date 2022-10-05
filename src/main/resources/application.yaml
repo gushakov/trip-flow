@@ -40,3 +40,7 @@ logging:
 
 tripflow:
   task-look-up-max-retries: 5
+  task-look-up-backoff-interval-millis: 250
+  credit-limit:
+    customer1: 500
+    customer2: 400

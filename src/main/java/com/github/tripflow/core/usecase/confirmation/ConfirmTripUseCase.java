@@ -53,10 +53,11 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
             Trip trip = dbOps.loadTrip(tripId);
 
             // refuse and update the trip
-            Trip canceledTrip = trip.refuseTrip();
-            dbOps.updateTrip(canceledTrip);
+            Trip refusedTrip = trip.refuseTrip();
+            dbOps.updateTrip(refusedTrip);
 
             // complete the task
+            workflowOps.completeTask(taskId);
         } catch (GenericTripFlowError e) {
             workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
         }
