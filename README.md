@@ -28,10 +28,14 @@ an example application.
 **Special thanks** to Camunda team who gave me some pointers about how to integrate Zeebe's Java client. [This GitHub
 repo](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template) was especially helpful.
 
+:star: As I am writing this, [CamundaCon2022](https://www.camundacon.com/) is taking place! There is a great
+presentation by Luc Weinbrecht, speaking exactly about how to use Camunda and Clean Architecture together.
+
 Here is the list of main references consulted while working on this project. Please, see JavaDoc in the relevant source
 code for more detailed references.
 
 1. [Camunda Community Hub, Lowcode UI template example](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template)
+2. [Luc Weinbrecht, GitHub, "Camunda DDD and Clean Architecture"](https://github.com/lwluc/camunda-ddd-and-clean-architecture)
 2. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started/blob/main/spring/src/main/java/io/camunda/getstarted/ProcessApplication.java)
 3. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
 4. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
