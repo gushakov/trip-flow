@@ -29,6 +29,9 @@ public class ZeebeJobHandlingAdapter {
         TripTask tripTask = jobTaskMapper.convertUserTask(job);
         log.debug("[Zeebe worker] Handling user task: {}, job key: {}", tripTask.getName(), job.getKey());
         dbGateway.saveTripTaskIfNeeded(tripTask);
+        // for user tasks, we do not call any use case here: the use case will
+        // be called eventually from the MVC controller responsible for servicing
+        // the UI of the user task
     }
 
     @ZeebeWorker(type = "checkCredit", forceFetchAllVariables = true)
@@ -36,6 +39,8 @@ public class ZeebeJobHandlingAdapter {
         TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());
         dbGateway.saveTripTaskIfNeeded(tripTask);
+        // for service tasks, we call the use case directly,
+        // transferring control to it
         checkCreditUseCase().checkCreditLimit(tripTask.getTaskId());
     }
 

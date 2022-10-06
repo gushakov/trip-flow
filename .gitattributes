@@ -3,3 +3,4 @@
 *.jpg   binary
 *.zip   binary
 *.jar   binary
+*.drawio    text

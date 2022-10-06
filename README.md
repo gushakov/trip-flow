@@ -18,7 +18,7 @@ an example application.
 
 ## What is running
 
-- TripFlow applicaiton: http://localhost:8080/trip
+- TripFlow applicaiton: http://localhost:8080/trip (username: `customer1` or `customer2`, password: `demo`)
 - Camunda Self-Managed instance (with Hazelcast exporter): localhost, ports: 26500 (and others)
 - Zeebe Simple Monitor: http://localhost:8082/
 - Postgres database: localhost, port 5432, database: `tripflow`
