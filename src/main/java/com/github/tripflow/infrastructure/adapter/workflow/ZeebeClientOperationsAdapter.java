@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+/**
+ * Secondary adapter which uses {@link ZeebeClientLifecycle} and {@link JobClient} to communicate
+ * with Zeebe.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
