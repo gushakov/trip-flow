@@ -38,11 +38,12 @@ code for more detailed references.
 
 1. [Camunda Community Hub, Lowcode UI template example](https://github.com/camunda-community-hub/camunda-8-lowcode-ui-template)
 2. [Luc Weinbrecht, GitHub, "Camunda DDD and Clean Architecture"](https://github.com/lwluc/camunda-ddd-and-clean-architecture)
-2. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started)
-3. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
-4. [Revisiting Cargo tracking with Clean Architecture](https://github.com/gushakov/cargo-clean)
+3. [Camunda Platform, Getting Started, Spring Boot client](https://github.com/camunda/camunda-platform-get-started)
+4. [Camunda Platform 8, GraphQL API Tasklist, Java client](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
 5. ["Ports & Adapters Architecture", Herberto Graça](https://herbertograca.com/2017/09/14/ports-adapters-architecture/)
 6. ["Clean Architecture", Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+7. ["Clean Domain-Driven Design"](https://medium.com/@gushakov/clean-domain-driven-design-2236f5430a05)
+8. ["Revisiting cargo tracking application using Clean DDD"](https://medium.com/@gushakov/revisiting-cargo-tracking-application-using-clean-ddd-4ed16c0e6ae1)
 
 ## Credits for the sample data and images
 
