@@ -7,7 +7,7 @@ import com.github.tripflow.core.usecase.creditcheck.CheckCreditInputPort;
 import com.github.tripflow.infrastructure.adapter.db.DbPersistenceGateway;
 import com.github.tripflow.infrastructure.adapter.workflow.map.JobTaskMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +27,7 @@ public class ZeebeJobHandlingAdapter {
 
     private final DbPersistenceGateway dbGateway;
 
-    @ZeebeWorker(type = Constants.USER_TASK_TYPE, forceFetchAllVariables = true)
+    @JobWorker(type = Constants.USER_TASK_TYPE, fetchAllVariables = true, autoComplete = false)
     public void handleUserTask(final ActivatedJob job) {
         TripTask tripTask = jobTaskMapper.convertUserTask(job);
         log.debug("[Zeebe worker] Handling user task: {}, job key: {}", tripTask.getName(), job.getKey());
@@ -37,7 +37,7 @@ public class ZeebeJobHandlingAdapter {
         // the UI of the user task
     }
 
-    @ZeebeWorker(type = "checkCredit", forceFetchAllVariables = true)
+    @JobWorker(type = "checkCredit", fetchAllVariables = true, autoComplete = false)
     public void handleCheckCreditTask(final ActivatedJob job) {
         TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());
@@ -47,7 +47,7 @@ public class ZeebeJobHandlingAdapter {
         checkCreditUseCase().checkCreditLimit(tripTask.getTaskId());
     }
 
-    @ZeebeWorker(type = "confirmTrip", forceFetchAllVariables = true)
+    @JobWorker(type = "confirmTrip", fetchAllVariables = true, autoComplete = false)
     public void handleConfirmTripTask(final ActivatedJob job) {
         TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());
@@ -55,7 +55,7 @@ public class ZeebeJobHandlingAdapter {
         confirmTripUseCase().confirmTrip(tripTask.getTaskId());
     }
 
-    @ZeebeWorker(type = "refuseTrip", forceFetchAllVariables = true)
+    @JobWorker(type = "refuseTrip", fetchAllVariables = true, autoComplete = false)
     public void handleRefuseTripTask(final ActivatedJob job) {
         TripTask tripTask = jobTaskMapper.convertServiceTask(job);
         log.debug("[Zeebe worker] Handling service task: {}, job key: {}", tripTask.getName(), job.getKey());

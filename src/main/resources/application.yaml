@@ -29,15 +29,6 @@ zeebe:
     security:
       plaintext: true
 
-com:
-  github:
-    tripflow:
-      infrastructure:
-        adapter:
-          web:
-            LocalDispatcherServlet: info
-
-
 logging:
   level:
     com.github.tripflow: debug

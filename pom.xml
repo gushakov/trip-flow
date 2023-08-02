@@ -10,14 +10,14 @@
     </parent>
     <groupId>com.github</groupId>
     <artifactId>trip-flow</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>trip-flow</name>
     <description><![CDATA[
     Trip planning workflow with Camunda and Spring Boot.
     ]]></description>
     <properties>
         <java.version>17</java.version>
-        <camunda.platform.version>8.0.6</camunda.platform.version>
+        <camunda.platform.version>8.2.4</camunda.platform.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
         <mapstruct.lombok.binding.version>0.2.0</mapstruct.lombok.binding.version>
         <archunit.version>0.23.1</archunit.version>
@@ -26,10 +26,9 @@
     </properties>
     <dependencies>
 
-        <!-- Make sure to align with the version of Zeebe's broker  -->
         <dependency>
-            <groupId>io.camunda</groupId>
-            <artifactId>spring-zeebe-starter</artifactId>
+            <groupId>io.camunda.spring</groupId>
+            <artifactId>spring-boot-starter-camunda</artifactId>
             <version>${camunda.platform.version}</version>
         </dependency>
 

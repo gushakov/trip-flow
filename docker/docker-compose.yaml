@@ -17,8 +17,8 @@ version: '3.7'
 services:
   zeebe:
     container_name: zeebe
-#    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.0.6-1.2.2-snapshot
-    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter@sha256:93c12cd47e0d78dfc263985d51b5225a25f6f8964da9678f1bdd4f8ca0d767b7
+#    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.2.0
+    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter@sha256:f05c53ccede0a47161eb863057c87dd2143764525e18913ab2354b82375619b0
     environment:
       - ZEEBE_LOG_LEVEL=debug
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
@@ -33,8 +33,8 @@ services:
 
   monitor:
     container_name: monitor
-#    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.4.1-snapshot
-    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor@sha256:cd1b10061d2cd87027557c32c89970b5eabed57978ee68c0e71b51b0e4748fd8
+#    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.4.1
+    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor@sha256:99ae10ed57b086dc898b348500ef87debe724904a49671bebf02569110b3a8e0
     environment:
       - zeebe.client.broker.gatewayAddress=zeebe:26500
       - zeebe.client.worker.hazelcast.connection=zeebe:5701
