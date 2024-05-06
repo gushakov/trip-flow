@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.config;
 
-import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
+import com.github.tripflow.core.port.config.ConfigurationOperationsOutputPort;
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

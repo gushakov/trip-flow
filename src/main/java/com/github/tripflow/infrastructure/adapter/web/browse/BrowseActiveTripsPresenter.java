@@ -1,7 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.browse;
 
 import com.github.tripflow.core.model.trip.TripEntry;
-import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
+import com.github.tripflow.core.usecase.browse.BrowseActiveTripsPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.context.annotation.Scope;

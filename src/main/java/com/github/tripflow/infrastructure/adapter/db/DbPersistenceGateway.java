@@ -8,9 +8,9 @@ import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripEntry;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.db.TripFlowDbPersistenceError;
-import com.github.tripflow.core.port.operation.workflow.TripTaskNotFoundError;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.db.TripFlowDbPersistenceError;
+import com.github.tripflow.core.port.workflow.TripTaskNotFoundError;
 import com.github.tripflow.infrastructure.adapter.db.flight.FlightEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository;
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
@@ -26,9 +26,19 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.retry.support.RetryTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.util.List;
 import java.util.Map;
+
+/*
+    References:
+    ----------
+
+    1.  Rollback active transaction: https://stackoverflow.com/a/23502214
+ */
+
 
 @Service
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
@@ -74,6 +84,17 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
                 .maxAttempts(tripFlowProps.getTaskLookUpMaxRetries())
                 .build();
     }
+
+    @Override
+    public void rollback() {
+        // we need to roll back any active transaction
+        try {
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+        } catch (NoTransactionException nte) {
+            // do nothing if not running in a transactional context
+        }
+    }
+
 
     @Override
     public void saveNewTrip(Trip trip) {

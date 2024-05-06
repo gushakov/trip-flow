@@ -1,13 +1,11 @@
 package com.github.tripflow.core.usecase.outcome;
 
-import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.outcome.ViewOutcomePresenterOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
@@ -38,7 +36,7 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
 
             flight = dbOps.loadFlight(trip.getFlightNumber());
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
@@ -58,7 +56,7 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
             TripTask tripTask = dbOps.loadTripTask(taskId);
             trip = dbOps.loadTrip(tripTask.getTripId());
             workflowOps.completeTask(taskId);
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }

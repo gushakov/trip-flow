@@ -1,15 +1,15 @@
 package com.github.tripflow.infrastructure.config;
 
-import com.github.tripflow.core.port.operation.config.ConfigurationOperationsOutputPort;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
-import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
-import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
-import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
-import com.github.tripflow.core.port.presenter.outcome.ViewOutcomePresenterOutputPort;
-import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
+import com.github.tripflow.core.port.config.ConfigurationOperationsOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.core.usecase.browse.BrowseActiveTripsPresenterOutputPort;
+import com.github.tripflow.core.usecase.flight.BookFlightPresenterOutputPort;
+import com.github.tripflow.core.usecase.home.WelcomePresenterOutputPort;
+import com.github.tripflow.core.usecase.hotel.ReserveHotelPresenterOutputPort;
+import com.github.tripflow.core.usecase.outcome.ViewOutcomePresenterOutputPort;
+import com.github.tripflow.core.usecase.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsInputPort;
 import com.github.tripflow.core.usecase.browse.BrowseActiveTripsUseCase;
 import com.github.tripflow.core.usecase.confirmation.ConfirmTripInputPort;

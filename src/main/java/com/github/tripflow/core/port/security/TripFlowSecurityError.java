@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.security;
+package com.github.tripflow.core.port.security;
 
 import com.github.tripflow.core.GenericTripFlowError;
 

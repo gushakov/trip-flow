@@ -1,13 +1,11 @@
 package com.github.tripflow.core.usecase.home;
 
-import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.home.WelcomePresenterOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
@@ -36,7 +34,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
         try {
             loggedInUsername = securityOps.loggedInUserName();
             securityOps.assertCustomerPermission(loggedInUsername);
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
@@ -83,7 +81,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(tripId, candidateGroups, tripStartedBy)
                     .stream().findAny();
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
 
             // to be consistent, we need to cancel the created workflow
             // if there were problems creating, validating, or persisting

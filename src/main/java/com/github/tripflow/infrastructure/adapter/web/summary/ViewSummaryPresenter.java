@@ -3,7 +3,7 @@ package com.github.tripflow.infrastructure.adapter.web.summary;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.model.trip.TripSummary;
-import com.github.tripflow.core.port.presenter.summary.ViewSummaryPresenterOutputPort;
+import com.github.tripflow.core.usecase.summary.ViewSummaryPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.context.annotation.Scope;

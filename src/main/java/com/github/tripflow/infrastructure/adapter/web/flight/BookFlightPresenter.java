@@ -5,7 +5,7 @@ import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
+import com.github.tripflow.core.usecase.flight.BookFlightPresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.context.annotation.Scope;

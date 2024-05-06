@@ -1,15 +1,13 @@
 package com.github.tripflow.core.usecase.flight;
 
-import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.flight.BookFlightPresenterOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +40,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
             // load all flights
             flights = dbOps.loadAllFlights();
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
@@ -58,7 +56,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
         try {
             trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignFlightBooking(flightNumber));
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
@@ -91,7 +89,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }

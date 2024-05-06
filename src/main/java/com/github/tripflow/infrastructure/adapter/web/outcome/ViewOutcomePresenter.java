@@ -1,7 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.outcome;
 
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.outcome.ViewOutcomePresenterOutputPort;
+import com.github.tripflow.core.usecase.outcome.ViewOutcomePresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.context.annotation.Scope;

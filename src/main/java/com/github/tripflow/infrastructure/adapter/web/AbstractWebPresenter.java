@@ -56,7 +56,7 @@ public abstract class AbstractWebPresenter extends AbstractErrorHandler {
     public void presentError(Exception e) {
 
         // do common error handling
-        logErrorAndRollback(e);
+        logError(e);
 
         // redirect to special error handling controller
         redirectError(e.getMessage());

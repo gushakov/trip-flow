@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.security;
+package com.github.tripflow.core.port.security;
 
 public interface SecurityOperationsOutputPort {
 

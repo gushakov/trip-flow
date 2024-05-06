@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.error;
 
-import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 import org.springframework.stereotype.Component;
 
 @Component

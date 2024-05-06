@@ -2,8 +2,8 @@ package com.github.tripflow.infrastructure.adapter.workflow;
 
 import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
-import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowClientOperationError;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.db.DbPersistenceGateway;
 import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.ZeebeClient;
@@ -81,7 +81,7 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
     @Override
     public void throwBpmnError(Long taskId, TripFlowBpmnError error) {
         // log error and roll back transaction
-        logErrorAndRollback(error);
+        logError(error);
 
         try {
             jobClient.newThrowErrorCommand(taskId)

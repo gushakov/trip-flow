@@ -1,11 +1,11 @@
-package com.github.tripflow.core.port.presenter.flight;
+package com.github.tripflow.core.usecase.flight;
 
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 
 import java.util.List;
 

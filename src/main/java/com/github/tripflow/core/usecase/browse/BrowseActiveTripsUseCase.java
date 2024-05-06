@@ -1,10 +1,8 @@
 package com.github.tripflow.core.usecase.browse;
 
-import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.trip.TripEntry;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.browse.BrowseActiveTripsPresenterOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -31,7 +29,7 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
 
             tripEntries = dbOps.findAllOpenTripsForUser(candidateGroups, loggedInUserName);
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
