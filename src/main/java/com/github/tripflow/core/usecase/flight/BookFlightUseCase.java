@@ -53,12 +53,19 @@ public class BookFlightUseCase implements BookFlightInputPort {
     @Transactional
     public void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
         Trip trip;
+        boolean rollback = false;
         try {
             trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignFlightBooking(flightNumber));
         } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         presenter.presentResultOfRegisteringSelectedFlightWithTrip(taskId, tripId, flightNumber);
@@ -69,6 +76,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
     public void confirmFlightBooking(Long taskId) {
         Optional<TripTask> nextTripTaskOpt;
         TripId tripId;
+        boolean rollback = false;
         try {
             // get the task
             String candidateGroups = securityOps.tripFlowAssigneeRole();
@@ -90,8 +98,14 @@ public class BookFlightUseCase implements BookFlightInputPort {
                     .stream().findAny();
 
         } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         if (nextTripTaskOpt.isPresent()) {

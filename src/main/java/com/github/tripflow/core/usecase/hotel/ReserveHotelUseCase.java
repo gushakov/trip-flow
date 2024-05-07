@@ -70,12 +70,19 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     public void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId) {
 
         Trip trip;
+        boolean rollback = false;
         try {
             trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignHotelReservation(hotelId));
         } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);

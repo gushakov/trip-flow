@@ -5,7 +5,6 @@ import com.github.tripflow.core.model.Constants;
 import com.github.tripflow.core.port.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.db.DbPersistenceGateway;
-import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.ClientException;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
@@ -31,7 +30,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implements WorkflowOperationsOutputPort {
+public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPort {
 
     private final ZeebeClient zeebeClient;
 
@@ -80,8 +79,8 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
 
     @Override
     public void throwBpmnError(Long taskId, TripFlowBpmnError error) {
-        // log error and roll back transaction
-        logError(error);
+        // log error for debugging
+        log.error(error.getMessage(), error);
 
         try {
             jobClient.newThrowErrorCommand(taskId)
@@ -115,7 +114,8 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
             // remove task from the database
             dbGateway.removeTripTask(taskId);
         } catch (Exception e) {
-            e.printStackTrace();
+            // log error
+            log.error(e.getMessage(), e);
             throw new WorkflowClientOperationError("Cannot complete task with ID: %s, and variables: %s"
                     .formatted(taskId, variables), e);
         }

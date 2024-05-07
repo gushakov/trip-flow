@@ -52,13 +52,20 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
     @Override
     public void finishProcess(Long taskId) {
         Trip trip;
+        boolean rollback = false;
         try {
             TripTask tripTask = dbOps.loadTripTask(taskId);
             trip = dbOps.loadTrip(tripTask.getTripId());
             workflowOps.completeTask(taskId);
         } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         presenter.presentResultOfSuccessfullyFinishingProcess(trip.getTripId());

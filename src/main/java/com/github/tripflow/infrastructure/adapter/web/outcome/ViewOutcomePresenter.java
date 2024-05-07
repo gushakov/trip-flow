@@ -48,7 +48,8 @@ public class ViewOutcomePresenter extends AbstractWebPresenter implements ViewOu
 
     @Override
     public void presentResultOfSuccessfullyFinishingProcess(TripId tripId) {
-        message("Process for trip booking with ID: %s has finished. You may need to refresh this view.");
+        message("Process for trip booking with ID: %s has finished. You may need to refresh this view."
+                .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
     }
 }

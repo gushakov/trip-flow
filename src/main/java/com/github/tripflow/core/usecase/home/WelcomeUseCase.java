@@ -55,6 +55,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
         String tripStartedBy;
         Trip trip;
         Optional<TripTask> nextTripTaskOpt;
+        boolean rollback = false;
         try {
             // get the current user's username and TripFlow assignee role
 
@@ -82,6 +83,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
                     .stream().findAny();
 
         } catch (Exception e) {
+            rollback = true;
 
             // to be consistent, we need to cancel the created workflow
             // if there were problems creating, validating, or persisting
@@ -92,6 +94,11 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         if (nextTripTaskOpt.isPresent()) {
