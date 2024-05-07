@@ -21,6 +21,7 @@ import java.util.Map;
     ----------
 
     1. Starting a new process instance: https://github.com/camunda-community-hub/spring-zeebe/blob/main/example/src/main/java/io/camunda/zeebe/spring/example/PeriodicProcessStarter.java
+    2. Transactions and Job Workers: https://medium.com/berndruecker/navigating-technical-transactions-with-camunda-8-and-spring-d77d48f16ab9
  */
 
 /**
@@ -103,16 +104,29 @@ public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPor
         doCompleteTask(taskId, null);
     }
 
+    /**
+     * Completes the task by sending a blocking call to Camunda. Please, note
+     * that this method will be executed from a transactional context (i.e. use case).
+     *
+     * @param taskId    ID of the job to complete in Camunda
+     * @param variables any process variables which need to be set in the workflow
+     *                  after the completion of the job
+     * @see <a href="https://medium.com/berndruecker/navigating-technical-transactions-with-camunda-8-and-spring-d77d48f16ab9">this article</a>
+     * about deails of transactional handling of job tasks with Camunda
+     */
     protected void doCompleteTask(Long taskId, Map<String, Object> variables) {
         try {
+
+            // remove task from the database
+            dbGateway.removeTripTask(taskId);
+
+            // send command to Camunda to complete the job
             CompleteJobCommandStep1 commandStep = jobClient.newCompleteCommand(taskId);
             if (variables != null && !variables.isEmpty()) {
                 commandStep.variables(variables);
             }
-            commandStep.send();
+            commandStep.send().join();
 
-            // remove task from the database
-            dbGateway.removeTripTask(taskId);
         } catch (Exception e) {
             // log error
             log.error(e.getMessage(), e);
