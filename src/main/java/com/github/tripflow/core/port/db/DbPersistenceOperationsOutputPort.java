@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.db;
+package com.github.tripflow.core.port.db;
 
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
@@ -12,6 +12,8 @@ import com.github.tripflow.core.model.trip.TripId;
 import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
+
+    void rollback();
 
     void saveNewTrip(Trip trip);
 

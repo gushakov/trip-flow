@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.workflow;
+package com.github.tripflow.core.port.workflow;
 
 import com.github.tripflow.core.TripFlowBpmnError;
 
@@ -9,7 +9,6 @@ public interface WorkflowOperationsOutputPort {
     void cancelTripBookingProcess(Long pik);
 
     void throwBpmnError(Long taskId, TripFlowBpmnError error);
-
 
     void completeCreditCheck(Long taskId, boolean sufficientCredit);
 

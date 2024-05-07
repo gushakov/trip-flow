@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.config;
+package com.github.tripflow.core.port.config;
 
 public interface ConfigurationOperationsOutputPort {
 

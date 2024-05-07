@@ -1,6 +1,6 @@
 package com.github.tripflow.infrastructure.adapter.web;
 
-import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,7 +37,7 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractWebPresenter extends AbstractErrorHandler {
+public abstract class AbstractWebPresenter implements ErrorHandlingPresenterOutputPort {
 
     private final LocalDispatcherServlet dispatcher;
     private final HttpServletRequest httpRequest;
@@ -55,8 +55,8 @@ public abstract class AbstractWebPresenter extends AbstractErrorHandler {
 
     public void presentError(Exception e) {
 
-        // do common error handling
-        logErrorAndRollback(e);
+        // log error for debugging
+        log.error(e.getMessage(), e);
 
         // redirect to special error handling controller
         redirectError(e.getMessage());

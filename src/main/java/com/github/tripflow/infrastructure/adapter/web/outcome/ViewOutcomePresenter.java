@@ -1,7 +1,7 @@
 package com.github.tripflow.infrastructure.adapter.web.outcome;
 
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.outcome.ViewOutcomePresenterOutputPort;
+import com.github.tripflow.core.usecase.outcome.ViewOutcomePresenterOutputPort;
 import com.github.tripflow.infrastructure.adapter.web.AbstractWebPresenter;
 import com.github.tripflow.infrastructure.adapter.web.LocalDispatcherServlet;
 import org.springframework.context.annotation.Scope;
@@ -48,7 +48,8 @@ public class ViewOutcomePresenter extends AbstractWebPresenter implements ViewOu
 
     @Override
     public void presentResultOfSuccessfullyFinishingProcess(TripId tripId) {
-        message("Process for trip booking with ID: %s has finished. You may need to refresh this view.");
+        message("Process for trip booking with ID: %s has finished. You may need to refresh this view."
+                .formatted(tripId.getShortId()));
         redirect("browseActiveTrips");
     }
 }

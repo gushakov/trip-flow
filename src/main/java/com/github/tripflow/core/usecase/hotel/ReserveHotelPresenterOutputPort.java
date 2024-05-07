@@ -1,11 +1,11 @@
-package com.github.tripflow.core.port.presenter.hotel;
+package com.github.tripflow.core.usecase.hotel;
 
 import com.github.tripflow.core.model.hotel.Hotel;
 import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 
 import java.util.List;
 

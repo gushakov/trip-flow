@@ -1,8 +1,8 @@
 package com.github.tripflow.infrastructure.adapter.security;
 
 import com.github.tripflow.core.model.Constants;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.TripFlowSecurityError;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.security.TripFlowSecurityError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

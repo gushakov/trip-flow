@@ -38,7 +38,8 @@
 
                 <td th:text="${entry.taskName}"></td>
                 <td>
-                    <form method="post" action="#" th:action="@{/performTaskAction(action=${entry.taskAction},taskId=${entry.taskId})}">
+                    <form method="post" action="#"
+                          th:action="@{/performTaskAction(action=${entry.taskAction},taskId=${entry.taskId})}">
                         <button class="btn btn-sm btn-success" onclick="submitForm(this)">Continue
                         </button>
                     </form>

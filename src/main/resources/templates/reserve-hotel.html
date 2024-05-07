@@ -28,8 +28,10 @@
                                     <span>Selected</span>
                                 </th:block>
                                 <th:block th:if="${#object.selectedHotelId != hotel.hotelId.id}">
-                                    <form method="post" action="#" th:action="@{/selectHotelForTrip(taskId=*{taskId},tripId=*{tripId},hotelId=${hotel.hotelId.id})}">
-                                        <button class="btn btn-sm btn-success" onclick="submitForm(this)">Reserve</button>
+                                    <form method="post" action="#"
+                                          th:action="@{/selectHotelForTrip(taskId=*{taskId},tripId=*{tripId},hotelId=${hotel.hotelId.id})}">
+                                        <button class="btn btn-sm btn-success" onclick="submitForm(this)">Reserve
+                                        </button>
                                     </form>
                                 </th:block>
                             </div>

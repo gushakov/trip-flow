@@ -1,7 +1,7 @@
-package com.github.tripflow.core.port.presenter.outcome;
+package com.github.tripflow.core.usecase.outcome;
 
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 
 public interface ViewOutcomePresenterOutputPort extends ErrorHandlingPresenterOutputPort {
     void presentSuccessfulTripConfirmation(Long taskId, TripId tripId, String city);

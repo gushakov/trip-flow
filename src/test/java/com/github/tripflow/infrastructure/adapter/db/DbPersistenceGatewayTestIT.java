@@ -2,7 +2,7 @@ package com.github.tripflow.infrastructure.adapter.db;
 
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.flight.FlightNumber;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.db.map.MapStructTripFlowDbMapperImpl;
 import com.github.tripflow.infrastructure.map.CommonMapStructConverters;
 import org.assertj.core.api.Assertions;

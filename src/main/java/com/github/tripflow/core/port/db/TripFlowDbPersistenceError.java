@@ -1,4 +1,4 @@
-package com.github.tripflow.core.port.operation.db;
+package com.github.tripflow.core.port.db;
 
 import com.github.tripflow.core.GenericTripFlowError;
 

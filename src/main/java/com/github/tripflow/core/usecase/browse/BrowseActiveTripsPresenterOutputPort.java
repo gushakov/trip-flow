@@ -1,7 +1,7 @@
-package com.github.tripflow.core.port.presenter.browse;
+package com.github.tripflow.core.usecase.browse;
 
 import com.github.tripflow.core.model.trip.TripEntry;
-import com.github.tripflow.core.port.presenter.ErrorHandlingPresenterOutputPort;
+import com.github.tripflow.core.port.ErrorHandlingPresenterOutputPort;
 
 import java.util.List;
 

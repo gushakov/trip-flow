@@ -1,6 +1,5 @@
 package com.github.tripflow.core.usecase.hotel;
 
-import com.github.tripflow.core.GenericTripFlowError;
 import com.github.tripflow.core.model.TripFlowValidationError;
 import com.github.tripflow.core.model.flight.Flight;
 import com.github.tripflow.core.model.hotel.Hotel;
@@ -8,10 +7,9 @@ import com.github.tripflow.core.model.hotel.HotelId;
 import com.github.tripflow.core.model.task.TripTask;
 import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
-import com.github.tripflow.core.port.operation.db.DbPersistenceOperationsOutputPort;
-import com.github.tripflow.core.port.operation.security.SecurityOperationsOutputPort;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
-import com.github.tripflow.core.port.presenter.hotel.ReserveHotelPresenterOutputPort;
+import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
+import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -58,7 +56,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             city = flight.getDestinationCity();
             hotels = dbOps.hotelsInCity(city);
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
             presenter.presentError(e);
             return;
         }
@@ -72,12 +70,18 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     public void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId) {
 
         Trip trip;
+        boolean rollback = false;
         try {
             trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignHotelReservation(hotelId));
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        } finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
@@ -88,6 +92,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     public void confirmHotelReservation(Long taskId) {
         Optional<TripTask> nextTripTaskOpt;
         TripId tripId;
+        boolean rollback = false;
         try {
 
             // get the task
@@ -125,9 +130,14 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
-        } catch (GenericTripFlowError e) {
+        } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        } finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         if (nextTripTaskOpt.isPresent()) {

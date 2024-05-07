@@ -2,10 +2,9 @@ package com.github.tripflow.infrastructure.adapter.workflow;
 
 import com.github.tripflow.core.TripFlowBpmnError;
 import com.github.tripflow.core.model.Constants;
-import com.github.tripflow.core.port.operation.workflow.WorkflowClientOperationError;
-import com.github.tripflow.core.port.operation.workflow.WorkflowOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowClientOperationError;
+import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import com.github.tripflow.infrastructure.adapter.db.DbPersistenceGateway;
-import com.github.tripflow.infrastructure.error.AbstractErrorHandler;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.ClientException;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
@@ -22,6 +21,7 @@ import java.util.Map;
     ----------
 
     1. Starting a new process instance: https://github.com/camunda-community-hub/spring-zeebe/blob/main/example/src/main/java/io/camunda/zeebe/spring/example/PeriodicProcessStarter.java
+    2. Transactions and Job Workers: https://medium.com/berndruecker/navigating-technical-transactions-with-camunda-8-and-spring-d77d48f16ab9
  */
 
 /**
@@ -31,7 +31,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implements WorkflowOperationsOutputPort {
+public class ZeebeClientOperationsAdapter implements WorkflowOperationsOutputPort {
 
     private final ZeebeClient zeebeClient;
 
@@ -80,8 +80,8 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
 
     @Override
     public void throwBpmnError(Long taskId, TripFlowBpmnError error) {
-        // log error and roll back transaction
-        logErrorAndRollback(error);
+        // log error for debugging
+        log.error(error.getMessage(), error);
 
         try {
             jobClient.newThrowErrorCommand(taskId)
@@ -104,18 +104,32 @@ public class ZeebeClientOperationsAdapter extends AbstractErrorHandler implement
         doCompleteTask(taskId, null);
     }
 
+    /**
+     * Completes the task by sending a blocking call to Camunda. Please, note
+     * that this method will be executed from a transactional context (i.e. use case).
+     *
+     * @param taskId    ID of the job to complete in Camunda
+     * @param variables any process variables which need to be set in the workflow
+     *                  after the completion of the job
+     * @see <a href="https://medium.com/berndruecker/navigating-technical-transactions-with-camunda-8-and-spring-d77d48f16ab9">this article</a>
+     * about deails of transactional handling of job tasks with Camunda
+     */
     protected void doCompleteTask(Long taskId, Map<String, Object> variables) {
         try {
+
+            // remove task from the database
+            dbGateway.removeTripTask(taskId);
+
+            // send command to Camunda to complete the job
             CompleteJobCommandStep1 commandStep = jobClient.newCompleteCommand(taskId);
             if (variables != null && !variables.isEmpty()) {
                 commandStep.variables(variables);
             }
-            commandStep.send();
+            commandStep.send().join();
 
-            // remove task from the database
-            dbGateway.removeTripTask(taskId);
         } catch (Exception e) {
-            e.printStackTrace();
+            // log error
+            log.error(e.getMessage(), e);
             throw new WorkflowClientOperationError("Cannot complete task with ID: %s, and variables: %s"
                     .formatted(taskId, variables), e);
         }
