@@ -94,8 +94,7 @@ public class WelcomeUseCase implements WelcomeInputPort {
 
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }

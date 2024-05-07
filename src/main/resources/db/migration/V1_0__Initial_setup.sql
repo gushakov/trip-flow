@@ -40,12 +40,12 @@ ALTER TABLE public.trip
 
 CREATE TABLE public.trip_task
 (
-    task_id            int8    NOT NULL,
-    "name"             varchar NOT NULL,
-    trip_id            int8    NOT NULL,
-    trip_started_by    varchar NOT NULL,
-    "action"           varchar NOT NULL,
+    task_id          int8    NOT NULL,
+    "name"           varchar NOT NULL,
+    trip_id          int8    NOT NULL,
+    trip_started_by  varchar NOT NULL,
+    "action"         varchar NOT NULL,
     candidate_groups varchar NOT NULL,
-    "version"             int   NULL,
+    "version"        int NULL,
     CONSTRAINT trip_task_pk PRIMARY KEY (task_id)
 );

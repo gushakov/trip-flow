@@ -44,7 +44,8 @@
                     <td th:text="${#strings.concat(flight.getPrice(), ' CHF')}"></td>
                     <td style="text-align: right">
                         <th:block th:if="${#object.selectedFlightNumber != flight.flightNumber.number}">
-                            <form method="post" action="#" th:action="@{/selectFlightForTrip(taskId=*{taskId},tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
+                            <form method="post" action="#"
+                                  th:action="@{/selectFlightForTrip(taskId=*{taskId},tripId=*{tripId},flightNumber=${flight.flightNumber.number})}">
                                 <button class="btn btn-sm btn-success" onclick="submitForm(this)">Select</button>
                             </form>
                         </th:block>

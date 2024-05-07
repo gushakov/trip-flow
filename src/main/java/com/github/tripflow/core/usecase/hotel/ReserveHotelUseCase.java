@@ -78,8 +78,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             rollback = true;
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }
@@ -135,8 +134,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             rollback = true;
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }

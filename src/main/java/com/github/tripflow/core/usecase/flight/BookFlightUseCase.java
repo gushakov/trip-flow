@@ -61,8 +61,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
             rollback = true;
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }
@@ -101,8 +100,7 @@ public class BookFlightUseCase implements BookFlightInputPort {
             rollback = true;
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }

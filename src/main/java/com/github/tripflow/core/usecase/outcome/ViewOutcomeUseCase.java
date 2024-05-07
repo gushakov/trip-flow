@@ -61,8 +61,7 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
             rollback = true;
             presenter.presentError(e);
             return;
-        }
-        finally {
+        } finally {
             if (rollback) {
                 dbOps.rollback();
             }
