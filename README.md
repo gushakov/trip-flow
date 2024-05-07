@@ -44,6 +44,7 @@ code for more detailed references.
 6. ["Clean Architecture", Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 7. [Clean Domain-Driven Design](https://medium.com/@gushakov/clean-domain-driven-design-2236f5430a05)
 8. [Revisiting cargo tracking application using Clean DDD](https://medium.com/@gushakov/revisiting-cargo-tracking-application-using-clean-ddd-4ed16c0e6ae1)
+9. [Bernd Rücker, "Navigating Technical Transactions with Camunda 8 and Spring"](https://medium.com/berndruecker/navigating-technical-transactions-with-camunda-8-and-spring-d77d48f16ab9)
 
 ## Credits for the sample data and images
 
