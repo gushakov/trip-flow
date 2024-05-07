@@ -93,6 +93,7 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     public void confirmHotelReservation(Long taskId) {
         Optional<TripTask> nextTripTaskOpt;
         TripId tripId;
+        boolean rollback = false;
         try {
 
             // get the task
@@ -131,8 +132,14 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
                     .stream().findAny();
 
         } catch (Exception e) {
+            rollback = true;
             presenter.presentError(e);
             return;
+        }
+        finally {
+            if (rollback) {
+                dbOps.rollback();
+            }
         }
 
         if (nextTripTaskOpt.isPresent()) {
