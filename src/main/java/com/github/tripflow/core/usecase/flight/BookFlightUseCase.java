@@ -11,7 +11,6 @@ import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +27,11 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
     @Override
     public void proposeFlightsForSelectionByCustomer(Long taskId) {
-        List<Flight> flights;
-        TripTask tripTask;
-        Trip trip;
         try {
+            List<Flight> flights;
+            TripTask tripTask;
+            Trip trip;
+
             // get the task from the workflow engine
             tripTask = dbOps.loadTripTask(taskId);
 
@@ -40,43 +40,33 @@ public class BookFlightUseCase implements BookFlightInputPort {
 
             // load all flights
             flights = dbOps.loadAllFlights();
+
+            presenter.presentFlightsForSelectionByCustomer(taskId, trip, flights);
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
-
-        presenter.presentFlightsForSelectionByCustomer(taskId, trip, flights);
 
     }
 
     @Override
-    @Transactional
     public void registerSelectedFlightWithTrip(String taskId, TripId tripId, FlightNumber flightNumber) {
-        Trip trip;
-        boolean rollback = false;
         try {
-            trip = dbOps.loadTrip(tripId);
+            Trip trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignFlightBooking(flightNumber));
+            presenter.presentResultOfRegisteringSelectedFlightWithTrip(taskId, tripId, flightNumber);
         } catch (Exception e) {
-            rollback = true;
             presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
         }
 
-        presenter.presentResultOfRegisteringSelectedFlightWithTrip(taskId, tripId, flightNumber);
     }
 
-    @Transactional
     @Override
     public void confirmFlightBooking(Long taskId) {
-        Optional<TripTask> nextTripTaskOpt;
-        TripId tripId;
-        boolean rollback = false;
         try {
+            Optional<TripTask> nextTripTaskOpt;
+            TripId tripId;
+
             // get the task
             String candidateGroups = securityOps.tripFlowAssigneeRole();
             TripTask tripTask = dbOps.loadTripTask(taskId);
@@ -96,21 +86,16 @@ public class BookFlightUseCase implements BookFlightInputPort {
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
-        } catch (Exception e) {
-            rollback = true;
-            presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
+            if (nextTripTaskOpt.isPresent()) {
+                presenter.presentResultOfConfirmingFlightWithNextActiveTask(nextTripTaskOpt.get());
+            } else {
+                presenter.presentResultOfConfirmingFlightWithoutNextActiveTask(tripId);
             }
+
+        } catch (Exception e) {
+            presenter.presentError(e);
         }
 
-        if (nextTripTaskOpt.isPresent()) {
-            presenter.presentResultOfConfirmingFlightWithNextActiveTask(nextTripTaskOpt.get());
-        } else {
-            presenter.presentResultOfConfirmingFlightWithoutNextActiveTask(tripId);
-        }
     }
 
 }

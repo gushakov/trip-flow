@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
 
-    void rollback();
+    void doInTransaction(Runnable runnable);
 
     void saveNewTrip(Trip trip);
 

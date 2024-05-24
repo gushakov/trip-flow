@@ -8,8 +8,6 @@ import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
-
 @RequiredArgsConstructor
 public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
 
@@ -21,9 +19,10 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
 
     @Override
     public void viewOutcome(Long taskId) {
-        Trip trip;
-        Flight flight;
         try {
+            Trip trip;
+            Flight flight;
+
             TripTask tripTask = dbOps.loadTripTask(taskId);
 
             trip = dbOps.loadTrip(tripTask.getTripId());
@@ -36,37 +35,27 @@ public class ViewOutcomeUseCase implements ViewOutcomeInputPort {
 
             flight = dbOps.loadFlight(trip.getFlightNumber());
 
+            if (trip.isTripConfirmed()) {
+                presenter.presentSuccessfulTripConfirmation(taskId, trip.getTripId(), flight.getDestinationCity());
+            } else {
+                presenter.presentRefusedTripBooking(taskId, trip.getTripId(), flight.getDestinationCity());
+            }
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
 
-        if (trip.isTripConfirmed()) {
-            presenter.presentSuccessfulTripConfirmation(taskId, trip.getTripId(), flight.getDestinationCity());
-        } else {
-            presenter.presentRefusedTripBooking(taskId, trip.getTripId(), flight.getDestinationCity());
-        }
     }
 
-    @Transactional
     @Override
     public void finishProcess(Long taskId) {
-        Trip trip;
-        boolean rollback = false;
         try {
             TripTask tripTask = dbOps.loadTripTask(taskId);
-            trip = dbOps.loadTrip(tripTask.getTripId());
             workflowOps.completeTask(taskId);
+            presenter.presentResultOfSuccessfullyFinishingProcess(tripTask.getTripId());
         } catch (Exception e) {
-            rollback = true;
             presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
         }
 
-        presenter.presentResultOfSuccessfullyFinishingProcess(trip.getTripId());
     }
 }

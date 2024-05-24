@@ -16,18 +16,20 @@ import com.github.tripflow.infrastructure.adapter.db.hotel.HotelEntityRepository
 import com.github.tripflow.infrastructure.adapter.db.map.TripFlowDbMapper;
 import com.github.tripflow.infrastructure.adapter.db.task.OpenTripQueryRow;
 import com.github.tripflow.infrastructure.adapter.db.task.TripTaskEntityRepository;
-import com.github.tripflow.infrastructure.adapter.db.trip.TripEntity;
 import com.github.tripflow.infrastructure.adapter.db.trip.TripEntityRepository;
 import com.github.tripflow.infrastructure.config.TripFlowProperties;
 import com.github.tripflow.infrastructure.utils.StreamUtils;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.retry.support.RetryTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -37,31 +39,34 @@ import java.util.Map;
     ----------
 
     1.  Rollback active transaction: https://stackoverflow.com/a/23502214
+    2.  Spring, TransactionTemplate: source code and JavaDoc
  */
 
-
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
 public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
 
-    private final TripFlowProperties tripFlowProps;
+    TripFlowProperties tripFlowProps;
 
-    private final JdbcAggregateTemplate jdbcAggregateTemplate;
+    JdbcAggregateTemplate jdbcAggregateTemplate;
 
-    private final NamedParameterJdbcOperations jdbcQueryOps;
+    NamedParameterJdbcOperations jdbcQueryOps;
 
-    private final TripFlowDbMapper dbMapper;
+    TransactionTemplate transactionTemplate;
 
-    private final RetryTemplate retryTemplate;
+    TripFlowDbMapper dbMapper;
 
-    private final TripTaskEntityRepository taskEntityRepo;
+    RetryTemplate retryTemplate;
 
-    private final TripEntityRepository tripEntityRepo;
-    private final HotelEntityRepository hotelEntityRepo;
-    private final FlightEntityRepository flightEntityRepo;
+    TripTaskEntityRepository taskEntityRepo;
+
+    TripEntityRepository tripEntityRepo;
+    HotelEntityRepository hotelEntityRepo;
+    FlightEntityRepository flightEntityRepo;
 
     public DbPersistenceGateway(TripFlowProperties tripFlowProps,
                                 JdbcAggregateTemplate jdbcAggregateTemplate,
-                                NamedParameterJdbcOperations jdbcQueryOps, TripFlowDbMapper dbMapper,
+                                NamedParameterJdbcOperations jdbcQueryOps, TransactionTemplate transactionTemplate, TripFlowDbMapper dbMapper,
                                 TripTaskEntityRepository taskEntityRepo,
                                 TripEntityRepository tripEntityRepo,
                                 HotelEntityRepository hotelEntityRepo,
@@ -69,6 +74,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         this.tripFlowProps = tripFlowProps;
         this.jdbcAggregateTemplate = jdbcAggregateTemplate;
         this.jdbcQueryOps = jdbcQueryOps;
+        this.transactionTemplate = transactionTemplate;
         this.dbMapper = dbMapper;
         this.retryTemplate = initRetryTemplate();
         this.taskEntityRepo = taskEntityRepo;
@@ -86,38 +92,37 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
     }
 
     @Override
-    public void rollback() {
-        // we need to roll back any active transaction
+    public void doInTransaction(Runnable runnable) {
         try {
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-        } catch (NoTransactionException nte) {
-            // do nothing if not running in a transactional context
+            transactionTemplate.executeWithoutResult(status -> runnable.run());
+        } catch (TransactionException | Error e) {
+            throw new TripFlowDbPersistenceError("Error while executing transaction", e);
         }
     }
 
-
+    @Transactional
     @Override
     public void saveNewTrip(Trip trip) {
         try {
-            TripEntity saved = jdbcAggregateTemplate.insert(dbMapper.convert(trip));
-            dbMapper.convert(saved);
+            jdbcAggregateTemplate.insert(dbMapper.convert(trip));
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot save Trip: %s"
                     .formatted(trip.getTripId()), e);
         }
     }
 
+    @Transactional
     @Override
     public void updateTrip(Trip trip) {
         try {
-            TripEntity updated = jdbcAggregateTemplate.update(dbMapper.convert(trip));
-            dbMapper.convert(updated);
+            jdbcAggregateTemplate.update(dbMapper.convert(trip));
         } catch (Exception e) {
             throw new TripFlowDbPersistenceError("Cannot update Trip: %s"
                     .formatted(trip.getTripId()), e);
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Trip loadTrip(TripId tripId) {
         try {
@@ -129,6 +134,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Flight> loadAllFlights() {
         try {
@@ -140,6 +146,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Hotel> hotelsInCity(String city) {
 
@@ -153,6 +160,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Flight loadFlight(FlightNumber flightNumber) {
         try {
@@ -164,6 +172,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Hotel loadHotel(HotelId hotelId) {
         try {
@@ -175,6 +184,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional
     @Override
     public void saveTripTaskIfNeeded(TripTask tripTask) {
         Long taskId = tripTask.getTaskId();
@@ -190,6 +200,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TripTask loadTripTask(Long taskId) {
         try {
@@ -200,6 +211,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional
     @Override
     public void removeTripTask(Long taskId) {
         try {
@@ -210,11 +222,13 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean tripTaskExists(Long taskId) {
         return taskEntityRepo.existsById(taskId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TripTask> findTasksForTripAndUserWithRetry(TripId tripId,
                                                            String candidateGroups,
@@ -245,6 +259,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TripTask> findTasksForUser(String candidateGroups,
                                            String tripStartedBy) {
@@ -261,6 +276,7 @@ public class DbPersistenceGateway implements DbPersistenceOperationsOutputPort {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TripEntry> findAllOpenTripsForUser(String candidateGroups, String tripStartedBy) {
         try {

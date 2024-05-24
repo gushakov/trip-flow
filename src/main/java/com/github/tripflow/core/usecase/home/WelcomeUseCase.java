@@ -5,10 +5,10 @@ import com.github.tripflow.core.model.trip.Trip;
 import com.github.tripflow.core.model.trip.TripId;
 import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.security.SecurityOperationsOutputPort;
+import com.github.tripflow.core.port.workflow.WorkflowClientOperationError;
 import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,35 +28,29 @@ public class WelcomeUseCase implements WelcomeInputPort {
      */
     @Override
     public void welcomeUser() {
-
-        String loggedInUsername;
-
         try {
-            loggedInUsername = securityOps.loggedInUserName();
+            String loggedInUsername = securityOps.loggedInUserName();
             securityOps.assertCustomerPermission(loggedInUsername);
+            presenter.presentWelcomeView(loggedInUsername, true);
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
-
-        presenter.presentWelcomeView(loggedInUsername, true);
-
     }
 
     /**
      * Start new trip booking workflow process and record corresponding
      * {@link Trip} aggregate instance in the database.
      */
-    @Transactional
     @Override
     public void startNewTripBooking() {
 
         Long pik = null;
-        String tripStartedBy;
-        Trip trip;
-        Optional<TripTask> nextTripTaskOpt;
-        boolean rollback = false;
         try {
+            String tripStartedBy;
+            Trip trip;
+            Optional<TripTask> nextTripTaskOpt;
+
             // get the current user's username and TripFlow assignee role
 
             tripStartedBy = securityOps.loggedInUserName();
@@ -82,8 +76,15 @@ public class WelcomeUseCase implements WelcomeInputPort {
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(tripId, candidateGroups, tripStartedBy)
                     .stream().findAny();
 
-        } catch (Exception e) {
-            rollback = true;
+            if (nextTripTaskOpt.isPresent()) {
+                // go directly to the next active task for the user
+                presenter.presentResultOfStartingNewTripBookingWithNextActiveTask(nextTripTaskOpt.get());
+            } else {
+                // it's OK, we'll present an (incomplete) list of tasks and let the user refresh
+                presenter.presentResultOfStartingNewTripBookingWithoutNextActiveTask(trip.getTripId());
+            }
+
+        } catch (WorkflowClientOperationError e) {
 
             // to be consistent, we need to cancel the created workflow
             // if there were problems creating, validating, or persisting
@@ -93,19 +94,10 @@ public class WelcomeUseCase implements WelcomeInputPort {
             }
 
             presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
+        } catch (Exception e) {
+            // for any other errors
+            presenter.presentError(e);
         }
 
-        if (nextTripTaskOpt.isPresent()) {
-            // go directly to the next active task for the user
-            presenter.presentResultOfStartingNewTripBookingWithNextActiveTask(nextTripTaskOpt.get());
-        } else {
-            // it's OK, we'll present an (incomplete) list of tasks and let the user refresh
-            presenter.presentResultOfStartingNewTripBookingWithoutNextActiveTask(trip.getTripId());
-        }
     }
 }

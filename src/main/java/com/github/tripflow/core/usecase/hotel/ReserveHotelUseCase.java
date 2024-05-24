@@ -14,7 +14,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +31,12 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
     @Override
     public void proposeHotelsForSelectionByCustomer(Long taskId) {
 
-        TripTask tripTask;
-        Trip trip;
-        List<Hotel> hotels;
-        String city;
         try {
+            TripTask tripTask;
+            Trip trip;
+            List<Hotel> hotels;
+            String city;
+
             // get the task from the workflow engine
             tripTask = dbOps.loadTripTask(taskId);
 
@@ -56,44 +56,32 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
             city = flight.getDestinationCity();
             hotels = dbOps.hotelsInCity(city);
 
+            presenter.presentHotelsInDestinationCityForSelectionByCustomer(taskId, trip, city, hotels);
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
-
-        presenter.presentHotelsInDestinationCityForSelectionByCustomer(taskId, trip, city, hotels);
 
     }
 
     @Override
-    @Transactional
     public void registerSelectedHotelWithTrip(String taskId, TripId tripId, HotelId hotelId) {
 
-        Trip trip;
-        boolean rollback = false;
         try {
-            trip = dbOps.loadTrip(tripId);
+            Trip trip = dbOps.loadTrip(tripId);
             dbOps.updateTrip(trip.assignHotelReservation(hotelId));
+            presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
         } catch (Exception e) {
-            rollback = true;
             presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
         }
 
-        presenter.presentResultOfRegisteringSelectedHotelWithTrip(taskId, tripId, hotelId);
     }
 
-    @Transactional
     @Override
     public void confirmHotelReservation(Long taskId) {
-        Optional<TripTask> nextTripTaskOpt;
-        TripId tripId;
-        boolean rollback = false;
         try {
+            Optional<TripTask> nextTripTaskOpt;
+            TripId tripId;
 
             // get the task
             String candidateGroups = securityOps.tripFlowAssigneeRole();
@@ -123,27 +111,21 @@ public class ReserveHotelUseCase implements ReserveHotelInputPort {
 
             // complete the workflow task
             workflowOps.completeTask(taskId);
-            // remove
 
             // advance to the next task
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(trip.getTripId(),
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
 
-        } catch (Exception e) {
-            rollback = true;
-            presenter.presentError(e);
-            return;
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
+            if (nextTripTaskOpt.isPresent()) {
+                presenter.presentResultOfConfirmingHotelReservationWithNextActiveTask(nextTripTaskOpt.get());
+            } else {
+                presenter.presentResultOfConfirmingHotelReservationWithoutNextActiveTask(tripId);
             }
+
+        } catch (Exception e) {
+            presenter.presentError(e);
         }
 
-        if (nextTripTaskOpt.isPresent()) {
-            presenter.presentResultOfConfirmingHotelReservationWithNextActiveTask(nextTripTaskOpt.get());
-        } else {
-            presenter.presentResultOfConfirmingHotelReservationWithoutNextActiveTask(tripId);
-        }
     }
 }
