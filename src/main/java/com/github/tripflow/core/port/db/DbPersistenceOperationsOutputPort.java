@@ -13,6 +13,16 @@ import java.util.List;
 
 public interface DbPersistenceOperationsOutputPort {
 
+    /**
+     * Executes provided {@linkplain Runnable} in a transaction configured
+     * with default propagation strategy and isolation level.
+     *
+     * @param runnable runnable to execute
+     * @throws TripFlowDbPersistenceError if there was a problem setting up or executing
+     *                                    a transaction, all other {@linkplain RuntimeException}s
+     *                                    which may be thrown by the {@code runnable} itself are
+     *                                    propagated to the caller
+     */
     void doInTransaction(Runnable runnable);
 
     void saveNewTrip(Trip trip);
