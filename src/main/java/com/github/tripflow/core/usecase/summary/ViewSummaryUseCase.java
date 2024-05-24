@@ -24,10 +24,11 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
 
     @Override
     public void viewTripSummary(Long taskId) {
-        Trip trip;
-        Flight flight;
-        Hotel hotel;
         try {
+            Trip trip;
+            Flight flight;
+            Hotel hotel;
+
             TripTask tripTask = dbOps.loadTripTask(taskId);
 
             trip = dbOps.loadTrip(tripTask.getTripId());
@@ -49,22 +50,22 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
 
             hotel = dbOps.loadHotel(trip.getHotelId());
 
+            // construct summary object for the trip and present it
+            presenter.presentTripSummary(summarizeTrip(taskId, trip, flight, hotel));
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
-
-        // construct summary object for the trip and present it
-        presenter.presentTripSummary(summarizeTrip(taskId, trip, flight, hotel));
 
     }
 
     @Override
     public void proceedWithPayment(Long taskId) {
 
-        Optional<TripTask> nextTripTaskOpt;
-        TripTask tripTask;
         try {
+            Optional<TripTask> nextTripTaskOpt;
+            TripTask tripTask;
+
             tripTask = dbOps.loadTripTask(taskId);
 
             // complete view summary task
@@ -76,16 +77,17 @@ public class ViewSummaryUseCase implements ViewSummaryInputPort {
             nextTripTaskOpt = dbOps.findTasksForTripAndUserWithRetry(tripTask.getTripId(),
                             candidateGroups, tripTask.getTripStartedBy())
                     .stream().findAny();
+
+            if (nextTripTaskOpt.isPresent()) {
+                presenter.presentResultOfProceedingWithPaymentWithNextActiveTask(nextTripTaskOpt.get());
+            } else {
+                presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(tripTask.getTripId());
+            }
+
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
 
-        if (nextTripTaskOpt.isPresent()) {
-            presenter.presentResultOfProceedingWithPaymentWithNextActiveTask(nextTripTaskOpt.get());
-        } else {
-            presenter.presentResultOfProceedingWithPaymentWithoutNextActiveTask(tripTask.getTripId());
-        }
     }
 
     private TripSummary summarizeTrip(Long taskId, Trip trip, Flight flight, Hotel hotel) {

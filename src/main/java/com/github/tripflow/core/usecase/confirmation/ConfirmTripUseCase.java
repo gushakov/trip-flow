@@ -9,8 +9,6 @@ import com.github.tripflow.core.port.db.DbPersistenceOperationsOutputPort;
 import com.github.tripflow.core.port.workflow.WorkflowOperationsOutputPort;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
-
 @RequiredArgsConstructor
 public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
@@ -18,10 +16,8 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
     private final DbPersistenceOperationsOutputPort dbOps;
 
-    @Transactional
     @Override
     public void confirmTrip(Long taskId) {
-        boolean rollback = false;
         try {
             // get the task for the job
             TripTask tripTask = dbOps.loadTripTask(taskId);
@@ -32,24 +28,18 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
 
             // confirm and update the trip
             Trip confirmedTrip = trip.confirmTrip();
+
             dbOps.updateTrip(confirmedTrip);
 
             // complete the task
             workflowOps.completeTask(taskId);
         } catch (Exception e) {
-            rollback = true;
             workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
         }
     }
 
-    @Transactional
     @Override
     public void refuseTrip(Long taskId) {
-        boolean rollback = false;
         try {
             // get the task for the job
             TripTask tripTask = dbOps.loadTripTask(taskId);
@@ -65,12 +55,7 @@ public class ConfirmTripUseCase implements ConfirmTripInputPort {
             // complete the task
             workflowOps.completeTask(taskId);
         } catch (Exception e) {
-            rollback = true;
             workflowOps.throwBpmnError(taskId, new TripFlowBpmnError(Constants.EXTERNAL_JOB_ERROR_CODE, e.getMessage()));
-        } finally {
-            if (rollback) {
-                dbOps.rollback();
-            }
         }
     }
 }

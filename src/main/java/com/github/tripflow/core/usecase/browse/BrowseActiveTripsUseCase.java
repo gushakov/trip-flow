@@ -19,8 +19,8 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
     @Override
     public void listEntriesForActiveTripsStartedByUser() {
 
-        List<TripEntry> tripEntries;
         try {
+            List<TripEntry> tripEntries;
             // get all active tasks for trips started by the user
             String loggedInUserName = securityOps.loggedInUserName();
             securityOps.assertCustomerPermission(loggedInUserName);
@@ -29,11 +29,10 @@ public class BrowseActiveTripsUseCase implements BrowseActiveTripsInputPort {
 
             tripEntries = dbOps.findAllOpenTripsForUser(candidateGroups, loggedInUserName);
 
+            presenter.presentActiveTasksForTripsStartedByUser(tripEntries);
         } catch (Exception e) {
             presenter.presentError(e);
-            return;
         }
 
-        presenter.presentActiveTasksForTripsStartedByUser(tripEntries);
     }
 }
