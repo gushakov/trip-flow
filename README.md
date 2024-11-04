@@ -52,5 +52,3 @@ To have somewhat realistic data samples for flights, hotels, etc., the following
 
 1. [Google Travel](https://www.google.com/travel)
 2. [Unsplash images](https://unsplash.com/), please, also consult [Unsplash licence](https://unsplash.com/license)
-
-<!-- test push -->
