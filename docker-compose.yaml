@@ -12,13 +12,11 @@
 ##  9. Task List, configuration: https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
 ##
 
-version: '3.7'
-
 services:
   zeebe:
     container_name: zeebe
-#    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.2.0
-    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter@sha256:f05c53ccede0a47161eb863057c87dd2143764525e18913ab2354b82375619b0
+    #    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.5.2
+    image: ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter@sha256:c39e77597a688bf6ce90e06591aca3d561dfc11111916b2cce9e3a439a92abfd
     environment:
       - ZEEBE_LOG_LEVEL=debug
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
@@ -33,8 +31,8 @@ services:
 
   monitor:
     container_name: monitor
-#    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.4.1
-    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor@sha256:99ae10ed57b086dc898b348500ef87debe724904a49671bebf02569110b3a8e0
+    #    image  ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.7.2
+    image: ghcr.io/camunda-community-hub/zeebe-simple-monitor@sha256:73ed5c83fc10d60a64076c49a07cf61ab6e6f7202f3a35b26f80e514f35052c8
     environment:
       - zeebe.client.broker.gatewayAddress=zeebe:26500
       - zeebe.client.worker.hazelcast.connection=zeebe:5701
@@ -45,7 +43,7 @@ services:
 
   db:
     build:
-      context: ./postgres
+      context: ./docker/postgres
     container_name: db
     ports:
       - "5432:5432"
